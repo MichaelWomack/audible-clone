@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "skipLibCheck": true, //removes the issues with parent node_modules
+    "lib": ["es6"],
+    "module": "commonjs",
+    "noImplicitReturns": true,
+    "outDir": "lib",
+    "sourceMap": true,
+    "target": "es5"
+  },
+  "compileOnSave": true,
+  "include": [
+    "src"
+  ]
+}

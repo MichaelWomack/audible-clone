@@ -1,0 +1,21 @@
+node_modules
+dist
+
+**/*.env
+
+.DS_Store
+.idea
+
+# FIREBASE
+.firebase
+.firebaserc
+firebase-debug.log
+
+# CONFIG
+**.env
+functions/.runtimeconfig.json
+
+# OUTPUT
+dist
+public
+coverage

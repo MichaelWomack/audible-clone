@@ -1,0 +1,13 @@
+TODO:
+- fix audio player NAN bug right before audio starts playing ✅
+- fix authentication flow ✅
+    - leverage redux for logging in/out ✅
+- fullscreen player ✅
+- capture last played audio position, and resume from there on playing ✅
+- move loading REQUEST, SUCCESS, FAILURE listener to a middleware ✅
+- move snackbar toasting into a middleware ❗️
+- show audio details on info icon click ❗️
+- implement theme changes (light/dark mode?) ❗️
+- Facebook and Twitter AuthProviders ❗️
+- Progressive Web App ❗️❗️❗️
+- splash screen ❗️
