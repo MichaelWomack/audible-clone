@@ -60,7 +60,7 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
         this.audioRef.current.ontimeupdate = (event: Event) => {
             console.log(this.audioRef.current.currentTime);
             this.setState({
-                currentPosition: Math.floor(this.audioRef.current.currentTime)
+                currentPosition: Math.floor(audioCurrentTime)
             });
         }
     }
@@ -88,7 +88,7 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
 
         /** update the audioRef currentTime if a new audio file has been selected */
         if (prevProps.audio !== this.props.audio) {
-            this.audioRef.current.currentTime = this.props.audio.currentTime;
+            this.audioRef.current.currentTime = this.props.audio.currentTime || 0;
             this.props.updateAudio(prevProps.audio);
         }
     }

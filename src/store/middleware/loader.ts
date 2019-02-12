@@ -7,18 +7,16 @@ const actionBlacklist: any[] = [
     ...Object.keys(UploadTaskActionType), /* uploading handled separately */
 ];
 
-console.log('loading blacklist: ', actionBlacklist);
 export const loaderMiddleware: Middleware = (store: MiddlewareAPI) => (next: Dispatch) => action => {
-    const actionType = new String(action.type);
+    const actionType = new String(action.type).toString();
 
-    console.log(actionType);
-    if (!actionBlacklist.includes(action)) {
+    if (!actionBlacklist.includes(actionType)) {
         if (actionType.endsWith('REQUEST')) {
-            store.dispatch(uiLoadingStart(actionType as string));
+            store.dispatch(uiLoadingStart(actionType));
         } else if (actionType.endsWith('SUCCESS')) {
-            store.dispatch(uiLoadingEnd(actionType as string))
+            store.dispatch(uiLoadingEnd(actionType))
         } else if (actionType.endsWith('FAILURE')) {
-            store.dispatch(uiSetError(actionType as string))
+            store.dispatch(uiSetError(actionType))
         }
     }
     return next(action);

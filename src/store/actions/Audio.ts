@@ -172,7 +172,6 @@ export interface UploadTaskAction {
     isUploading: boolean;
     uploadProgress: number;
     error?: Error;
-    library?: AudioMap;
     document: firestore.DocumentReference;
     uploadTask: storage.UploadTask;
 }
@@ -197,9 +196,8 @@ const setUploadError = (error: Error) => ({
 });
 
 
-const completeUpload = (library: AudioMap) => ({
-    type: UploadTaskActionType.UPLOAD_AUDIO_SUCCESS,
-    library
+const completeUpload = () => ({
+    type: UploadTaskActionType.UPLOAD_AUDIO_SUCCESS
 });
 
 
@@ -240,17 +238,17 @@ const onUploadComplete = async (audio: Audio, uploadTask: storage.UploadTask, di
     audioElement.addEventListener('loadedmetadata', async () => {
         audio.duration = audioElement.duration;
         try {
-            await audioService.updateAudio(audio);
-            const store = getState();
-            const library = { ...store.audio.library, [audio.id]: audio };
-            console.log('complete upload!!!!!!!!!!');
-            dispatch(completeUpload(library)); //never gets dispatched
-
-            /** move all snackbar stuff into middleware */
-            dispatch(uiOpenSnackbar(UploadTaskActionType.UPLOAD_AUDIO_SUCCESS, `Successfully uploaded ${audio.title}`));
-            setTimeout(() => {
-                dispatch(uiCloseSnackbar(UploadTaskActionType.UPLOAD_AUDIO_SUCCESS));
-            }, 4000);
+            /* Nested try/catch is yucky, but necessary to handle document update errors */
+            // dispatch(updateAudio(audio)); /* update error doesn't get handled */
+            dispatch(updateAudioRequest());
+            try {
+                await audioService.updateAudio(audio); //failure to update means 
+                dispatch(updateAudioSuccess(audio)); 
+            } catch (error) {
+                dispatch(updateAudioFailure(error));
+                throw error;
+            }
+            dispatch(completeUpload());
         } catch (error) {
             dispatch(setUploadError(error));
             dispatch(deleteAudio(audio));

@@ -89,7 +89,6 @@ export const audio = (state = defaultState, action: AudioAction) => {
                 isUploading: false,
                 uploadTask: null as storage.UploadTask,
                 uploadProgress: null as number,
-                library: action.library
             };
         case UploadTaskActionType.UPLOAD_AUDIO_FAILURE:
             return {

@@ -6,9 +6,10 @@ import storage from 'redux-persist/lib/storage/session'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import * as reducers from './reducers';
 import { loaderMiddleware } from './middleware/loader';
+import { snackbarMiddleware } from './middleware/snackbar';
  
 export const configureStore = (preloadedState: any = {}) => {
-    const middlewares = [ thunk, loaderMiddleware ];
+    const middlewares = [ thunk, loaderMiddleware, snackbarMiddleware ];
     const rootReducer: Reducer = combineReducers(reducers);
 
     const persistConfig: PersistConfig = {
