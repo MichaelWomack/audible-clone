@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Component } from 'react';
+import { Component, ChangeEvent } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -45,9 +45,7 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
 
     constructor(props: AudioPlayerProps) {
         super(props);
-        this.audioRef = React.createRef<
-            HTMLAudioElement
-        >(); /** Needs to be done here, not in componentDidMount */
+        this.audioRef = React.createRef<HTMLAudioElement>(); /** Needs to be done here, not in componentDidMount */
     }
 
     componentDidMount() {
@@ -55,34 +53,32 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
         const audioCurrentTime = audio.currentTime || 0;
         this.audioRef.current.currentTime = audioCurrentTime;
         this.setState({ currentPosition: audioCurrentTime });
-        // this.setIntervalListener();
-        this.audioRef.current.onended = (event: Event) => this.pause();
-        this.audioRef.current.ontimeupdate = (event: Event) => {
-            console.log(this.audioRef.current.currentTime);
-            this.setState({
-                currentPosition: Math.floor(audioCurrentTime)
-            });
+        this.registerAudioHandlers();
+    }
+    
+    registerAudioHandlers() {
+        const { current } = this.audioRef;
+        current.onended = (event: Event) => {
+            const { duration } = current;
+            current.currentTime = duration;
+            this.pause();
+        }
+        current.ontimeupdate = (event: Event) => {
+            const currentTime = current.currentTime;
+            if (!current.ended) { /* fixes async problem on ending audio */
+                this.setState({ currentPosition: Math.floor(currentTime) });
+            }
         }
     }
 
     componentWillUnmount() {
-        // clearInterval(this.intervalHandle);
         this.saveAudioPosition();
     }
 
-    // react-dom.development.js:55 Uncaught (in promise) Error: Maximum update depth exceeded. This can happen when a component repeatedly calls setState inside componentWillUpdate or componentDidUpdate. React limits the number of nested updates to prevent infinite loops.
-    componentDidUpdate(
-        prevProps: AudioPlayerProps,
-        prevState: AudioPlayerState,
-    ) {
-        
-        console.log(this.audioRef.current.currentTime);
+    componentDidUpdate(prevProps: AudioPlayerProps, prevState: AudioPlayerState) {
         if (this.audioRef.current.paused && this.props.player.isPlaying) {
             this.play();
-        } else if (
-            !this.audioRef.current.paused &&
-            !this.props.player.isPlaying
-        ) {
+        } else if (!this.audioRef.current.paused && !this.props.player.isPlaying) {
             this.pause();
         }
 
@@ -93,16 +89,6 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
         }
     }
 
-    // setIntervalListener = () => {
-    //     this.intervalHandle = setInterval(() => {
-    //         if (this.props.player.isPlaying && this.audioRef.current) {
-    //             this.setState({
-    //                 currentPosition: this.audioRef.current.currentTime,
-    //             });
-    //         }
-    //     }, 1000);
-    // };
-
     saveAudioPosition = () => {
         const { audio, updateAudio } = this.props;
         audio.currentTime = this.audioRef.current.currentTime;
@@ -111,7 +97,10 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
 
     play = () => {
         this.props.playAudio();
-        this.audioRef.current.play();
+        const playPromise = this.audioRef.current.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(error => console.error(error));
+        }
     };
 
     pause = () => {
@@ -125,17 +114,21 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
         player.isPlaying ? this.pause() : this.play();
     };
 
-    changeCurrentTime = (change: number) => {
-        // this.audioRef.current.currentTime += change;
+    addToCurrentTime = (change: number) => {
         this.setState({ currentPosition: this.audioRef.current.currentTime += change });
     };
 
+    setCurrentTime = (time: number) => {
+        this.audioRef.current.currentTime = time
+        this.setState({currentPosition: time});
+    }
+
     decrement30 = () => {
-        this.changeCurrentTime(-30);
+        this.addToCurrentTime(-30);
     }
 
     increment30 = () => {
-        this.changeCurrentTime(30);
+        this.addToCurrentTime(30);
     }
 
     displayAudioTime = () => {
@@ -215,7 +208,6 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
                             </IconButton>
                         )}
                     </Toolbar>
-                    {/* <Slider value={ Math.floor(currentPosition) } onChange={() => alert('change')}/> */}
                     {this.audioRef.current && <FullScreenAudioPlayer
                         onClose={closeFullscreen}
                         onOpen={openFullscreen}
@@ -227,6 +219,7 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
                         play={this.play}
                         pause={this.pause}
                         isPlaying={player.isPlaying}
+                        setCurrentTime={this.setCurrentTime}
                     />}
                     <audio ref={this.audioRef} src={audio.downloadUrl} />
                 </AppBar>

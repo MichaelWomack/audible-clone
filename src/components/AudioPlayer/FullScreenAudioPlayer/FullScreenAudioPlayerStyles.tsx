@@ -3,32 +3,31 @@ import { createStyles, Theme } from "@material-ui/core/styles";
 
 export default (theme: Theme) => 
     createStyles({
-        container: {
-        },
         header: {
             display: 'flex',
             justifyContent: 'space-between'
         },
-        // content: {
-        //     display: 'flex',
-        //     flexDirection: 'column',
-        //     justifyContent: 'space-evenly'
-        // },
+        dialogContent: {
+            overflow: 'hidden',
+            padding: 0,
+            paddingTop: '0 !important' /* QUIRK: DialogContent adds padding to top */
+        },
         image: {
-            margin: 'auto',
-            marginTop: 60 
+            display: 'block',
+            margin: '60px auto 60px auto' 
 
         },
         sliderLabel: {
             textAlign: 'center',
-            margin: 40
+            paddingTop: 15
         },
         slider: {
             width: 300,
-            margin: '0 auto'
+            margin: '0 auto',
+            marginTop: 40
         },
         controls: {
-            marginBottom: 80,
+            marginBottom: '35%',
             display: 'flex',
             justifyContent: 'space-evenly'
         }
