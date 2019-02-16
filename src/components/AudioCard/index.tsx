@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
+import ReplayIcon from '@material-ui/icons/Replay';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import Favorite from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
@@ -29,8 +30,6 @@ export interface AudioCardState {
 
 class AudioCard extends Component<AudioCardProps, AudioCardState> {
 
-    audioRef: React.RefObject<HTMLAudioElement>;
-
     readonly state: AudioCardState = {
         isFavorite: this.props.audio.favorite
     }
@@ -44,6 +43,13 @@ class AudioCard extends Component<AudioCardProps, AudioCardState> {
     playAudio = () => {
         const { audio, playAudio } = this.props;
         playAudio(audio); // also sets the currently playing audio object in redux
+    }
+
+    replayAudio = () => {
+        const { audio, playAudio, updateAudio } = this.props;
+        audio.currentTime = 0;
+        updateAudio(audio);
+        playAudio(audio);
     }
 
     render() {
@@ -74,10 +80,9 @@ class AudioCard extends Component<AudioCardProps, AudioCardState> {
                     />
                     <div className={classes.controls}>
                         <IconButton aria-label="Play/pause">
-                            {   isCurrentlyPlaying ? 
-                                <PauseIcon fontSize="large" onClick={pauseAudio} /> :
-                                <PlayArrowIcon fontSize="large" onClick={this.playAudio}/>
-                            }
+                        {   isCurrentlyPlaying && (percentDone !== 100) && <PauseIcon fontSize="large" onClick={pauseAudio} /> }
+                        {   !isCurrentlyPlaying && (percentDone !== 100) && <PlayArrowIcon fontSize="large" onClick={this.playAudio}/> }
+                        {   percentDone === 100 && <ReplayIcon fontSize="large" onClick={this.replayAudio} /> }
                         </IconButton>
                         <IconButton
                             aria-label="Play/pause"
@@ -93,7 +98,6 @@ class AudioCard extends Component<AudioCardProps, AudioCardState> {
                             <InfoOutlinedIcon />
                         </IconButton>
                     </div>
-                    <audio ref={this.audioRef} src={audio.downloadUrl} />
                 </div>
             </Card>
         );
