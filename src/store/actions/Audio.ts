@@ -1,9 +1,7 @@
-import { Audio, AudioMap } from '../../model/audio';
+import { Audio, AudioMap, AudioLibraryFilter } from '../../model/audio';
 import { audioService, storageHelper, authService } from '../../services';
 import { firestore, storage } from 'firebase';
 import { Dispatch } from 'redux';
-import { uiOpenSnackbar, uiCloseSnackbar } from './Ui';
-import { ReduxState } from '../../model/state';
 
 /*********** FETCH AUDIO ACTIONS ***********/
 export enum FetchAudioActionType {
@@ -34,11 +32,8 @@ const receiveUserAudioFailure = (error: Error) => ({
     error,
 });
 
-export const fetchUserAudio = (userId: string, invalidateCache: boolean = true) => {
-    return async (dispatch: Function, getState: Function) => {
-        if (!invalidateCache) {
-            return;
-        }
+export const fetchUserAudio = (userId: string) => {
+    return async (dispatch: Function) => {
         dispatch(fetchUserAudioRequest(userId));
         try {
             const value = await audioService.getAll(userId);
@@ -50,6 +45,7 @@ export const fetchUserAudio = (userId: string, invalidateCache: boolean = true) 
         }
     };
 };
+
 
 
 /********** AUDIO CRUD ACTIONS **************/ 
@@ -75,7 +71,6 @@ export enum AudioCrudActionType {
 export interface AudioCrudAction {
     type: AudioCrudActionType;
     audio?: Audio;
-    createdDocument?: firestore.DocumentReference;
     error?: Error;
 }
 
@@ -83,9 +78,9 @@ const createAudioDocumentRequest = (): AudioCrudAction => ({
     type: AudioCrudActionType.CREATE_AUDIO_DOCUMENT_REQUEST,
 })
 
-const createAudioDocumentSuccess = (createdDocument: firestore.DocumentReference): AudioCrudAction => ({
+const createAudioDocumentSuccess = (audio: Audio): AudioCrudAction => ({
     type: AudioCrudActionType.CREATE_AUDIO_DOCUMENT_SUCCESS,
-    createdDocument 
+    audio 
 });
 
 const createAudioDocumentFailure = (error: Error): AudioCrudAction => ({
@@ -136,8 +131,9 @@ const deleteAudioRequest = (audio: Audio): AudioCrudAction => ({
     audio
 });
 
-const deleteAudioSuccess = (): AudioCrudAction => ({
+const deleteAudioSuccess = (deletedAudio: Audio): AudioCrudAction => ({
     type: AudioCrudActionType.DELETE_AUDIO_DOCUMENT_SUCCESS,
+    audio: deletedAudio
 });
 
 const deleteAudioFailure = (error: Error): AudioCrudAction => ({
@@ -146,11 +142,12 @@ const deleteAudioFailure = (error: Error): AudioCrudAction => ({
 });
 
 export const deleteAudio = (audio: Audio) => {
-    return async (dispatch: Dispatch) => {
+    return async (dispatch: Dispatch, getState: Function) => {
         dispatch(deleteAudioRequest(audio));
         try {
+            await storageHelper.deleteBlob(audio.storagePath);
             await audioService.deleteAudio(audio);
-            dispatch(deleteAudioSuccess());
+            dispatch(deleteAudioSuccess(audio));
         } catch (error) {
             dispatch(deleteAudioFailure(error));
         }
@@ -164,7 +161,7 @@ export enum UploadTaskActionType {
     UPLOAD_AUDIO_REQUEST = 'UPLOAD_AUDIO_REQUEST',
     UPLOAD_AUDIO_PROGRESS = 'UPLOAD_AUDIO_PROGRESS',
     UPLOAD_AUDIO_SUCCESS = 'UPLOAD_AUDIO_SUCCESS',
-    UPLOAD_AUDIO_FAILURE = 'UPLOAD_AUDIO_FAILURE'
+    UPLOAD_AUDIO_FAILURE = 'UPLOAD_AUDIO_FAILURE',
 }
 
 export interface UploadTaskAction {
@@ -172,7 +169,7 @@ export interface UploadTaskAction {
     isUploading: boolean;
     uploadProgress: number;
     error?: Error;
-    document: firestore.DocumentReference;
+    audio?: Audio;
     uploadTask: storage.UploadTask;
 }
 
@@ -196,8 +193,9 @@ const setUploadError = (error: Error) => ({
 });
 
 
-const completeUpload = () => ({
-    type: UploadTaskActionType.UPLOAD_AUDIO_SUCCESS
+const completeUpload = (audio: Audio) => ({
+    type: UploadTaskActionType.UPLOAD_AUDIO_SUCCESS,
+    audio
 });
 
 
@@ -248,7 +246,7 @@ const onUploadComplete = async (audio: Audio, uploadTask: storage.UploadTask, di
                 dispatch(updateAudioFailure(error));
                 throw error;
             }
-            dispatch(completeUpload());
+            dispatch(completeUpload(audio));
         } catch (error) {
             dispatch(setUploadError(error));
             dispatch(deleteAudio(audio));
@@ -262,7 +260,9 @@ export const uploadAudio = (audio: Audio, file: File) => {
         dispatch(uploadAudioRequest());
         let createdDocument;
         try {
+            dispatch(createAudioDocumentRequest());
             createdDocument = await audioService.addAudio(audio);
+            dispatch(createAudioDocumentSuccess(audio));
         } catch(error) {
             dispatch(setUploadError(error));
             return;
@@ -279,3 +279,19 @@ export const uploadAudio = (audio: Audio, file: File) => {
         );
     }
 }
+
+
+/******** LIBRARY ************/
+export enum AudioFilterActionType {
+    SET_AUDIO_LIBRARY_FILTER = 'SET_AUDIO_LIBRARY_FILTER',
+}
+
+export interface AudioFilterAction {
+    type: AudioFilterActionType,
+    filter: AudioFilterAction
+}
+
+export const setAudioLibraryFilter = (filter: AudioLibraryFilter) => ({
+    type: AudioFilterActionType.SET_AUDIO_LIBRARY_FILTER,
+    filter
+});

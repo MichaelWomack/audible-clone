@@ -15,17 +15,17 @@ import AudioPlayer from '../../containers/AudioPlayer';
 import AddAudio from '../../containers/AddAudio';
 import AudioList from '../AudioList';
 import HomeStyles from './HomeStyles';
-import { Audio, AudioBook } from '../../model/audio';
+import { Audio, AudioBook, AudioLibraryFilter } from '../../model/audio';
 import Snackbar from '@material-ui/core/Snackbar';
 import { PlayerState, UiState, AudioState } from '../../model/state';
 import Slide from '@material-ui/core/Slide';
+import GitHubButton from '../GitHubButton';
 
-export interface HomeProps
-    extends WithStyles<typeof HomeStyles>,
-        RouteComponentProps {
+export interface HomeProps extends WithStyles<typeof HomeStyles>, RouteComponentProps {
     playAudio: (audio: AudioBook) => void;
     pauseAudio: () => void;
     updateAudio: (audio: Audio) => void;
+    deleteAudio: (audio: Audio) => void;
     toggleFavorite: (audio: Audio) => void;
     logout: () => void;
     user: firebase.User;
@@ -54,6 +54,7 @@ export class Home extends Component<HomeProps, {}> {
             player,
             ui,
             updateAudio,
+            deleteAudio,
             playAudio,
             pauseAudio,
             logout,
@@ -84,14 +85,17 @@ export class Home extends Component<HomeProps, {}> {
                         exact
                         path={`${match.path}`}
                         render={props => (
+                            !ui.isLoading ? 
                             <AudioList
                                 audioList={Object.values(audio.library)}
                                 updateAudio={updateAudio}
+                                deleteAudio={deleteAudio}
                                 playAudio={playAudio}
                                 pauseAudio={pauseAudio}
                                 isPlaying={player.isPlaying}
                                 selectedAudioId={selectedAudioId}
-                            />
+                                filter={AudioLibraryFilter.ALL}
+                            /> : null
                         )}
                     />
                     <Route
@@ -109,6 +113,7 @@ export class Home extends Component<HomeProps, {}> {
                     <AudioPlayer />
                 </Slide>
 
+
                 <Snackbar
                     anchorOrigin={{
                         vertical: 'bottom',
@@ -117,6 +122,9 @@ export class Home extends Component<HomeProps, {}> {
                     open={ui.snackbarOpen}
                     message={ui.snackbarMessage}
                 />
+                <div className={classes.githubButtonContainer}>
+                    <GitHubButton/>
+                </div>
             </Fragment>
         );
     }

@@ -8,6 +8,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import SettingsIcon from '@material-ui/icons/Settings';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 
 import NavBarStyles from './NavBarStyles';
@@ -68,13 +69,10 @@ export class NavBar extends Component<NavBarProps, NavBarState> {
                         onClose={this.closeAccountMenu}
                     >
                         <MenuItem onClick={this.closeAccountMenu}>
-                            Profile
-                        </MenuItem>
-                        <MenuItem onClick={this.closeAccountMenu}>
-                            Settings
+                            settings
                         </MenuItem>
                         <MenuItem onClick={this.logout}>
-                            Log out
+                            logout
                         </MenuItem>
                     </Menu>
                 </Toolbar>

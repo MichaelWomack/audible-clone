@@ -5,9 +5,10 @@ TODO:
 - fullscreen player ✅
 - capture last played audio position, and resume from there on playing ✅
 - move loading REQUEST, SUCCESS, FAILURE listener to a middleware ✅
-- move snackbar toasting into a middleware ❗️
-- show audio details on info icon click ❗️
+- move snackbar toasting into a middleware ✅
+- show audio details on info icon click ✅
+- implement delete functionality ✅
 - implement theme changes (light/dark mode?) ❗️
 - Facebook and Twitter AuthProviders ❗️
 - Progressive Web App ❗️❗️❗️
-- splash screen ❗️
+- splash screen for redux persist ❗️

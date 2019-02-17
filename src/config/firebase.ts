@@ -9,6 +9,6 @@ const firebaseInstance = firebase.initializeApp({
     messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
 });
 
-firebaseInstance.firestore().settings({timestampsInSnapshots: true});
+firebaseInstance.firestore().settings({ timestampsInSnapshots: true });
 
 export default firebaseInstance;

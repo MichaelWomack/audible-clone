@@ -3,7 +3,13 @@ import { uiLoadingStart, uiLoadingEnd, uiSetError } from '../actions/Ui';
 import { AudioCrudActionType, UploadTaskActionType } from '../actions/Audio';
 
 const actionBlacklist: any[] = [
-    ...Object.keys(AudioCrudActionType), /* don't show loading everytime something is updated */
+    AudioCrudActionType.CREATE_AUDIO_DOCUMENT_REQUEST,
+    AudioCrudActionType.CREATE_AUDIO_DOCUMENT_FAILURE,
+    AudioCrudActionType.CREATE_AUDIO_DOCUMENT_SUCCESS,
+    AudioCrudActionType.UPDATE_AUDIO_DOCUMENT_REQUEST,
+    AudioCrudActionType.UPDATE_AUDIO_DOCUMENT_SUCCESS,
+    AudioCrudActionType.UPDATE_AUDIO_DOCUMENT_FAILURE,
+                                                         /* don't show loading everytime something is updated */
     ...Object.keys(UploadTaskActionType), /* uploading handled separately */
 ];
 

@@ -4,17 +4,20 @@ import {
     UploadTaskAction,
     UploadTaskActionType,
     AudioCrudAction,
-    AudioCrudActionType
+    AudioCrudActionType,
+    AudioFilterActionType,
+    AudioFilterAction
 } from '../actions/Audio';
-import { Audio, AudioMap } from '../../model/audio';
+import { Audio, AudioMap, AudioLibraryFilter } from '../../model/audio';
 import { storage } from 'firebase';
 
-type AudioAction = FetchAudioAction | UploadTaskAction | AudioCrudAction;
+type AudioAction = FetchAudioAction | UploadTaskAction | AudioCrudAction | AudioFilterAction;
 
 const defaultState = {
     library: {} as AudioMap,
     isLoading: false,
     error: null as any,
+    filter: AudioLibraryFilter.ALL
 };
 
 export const audio = (state = defaultState, action: AudioAction) => {
@@ -47,7 +50,7 @@ export const audio = (state = defaultState, action: AudioAction) => {
         case AudioCrudActionType.CREATE_AUDIO_DOCUMENT_SUCCESS:
             return {
                 ...state,
-                createdDocument: action.createdDocument
+                audio: action.audio
             };
         case AudioCrudActionType.CREATE_AUDIO_DOCUMENT_FAILURE:
             return {
@@ -64,6 +67,22 @@ export const audio = (state = defaultState, action: AudioAction) => {
                 ...state,
                 error: action.error
             };
+        case AudioCrudActionType.DELETE_AUDIO_DOCUMENT_REQUEST:
+            return {
+                ...state,
+                audio: action.audio
+            };
+
+        case AudioCrudActionType.DELETE_AUDIO_DOCUMENT_SUCCESS:
+            const library = state.library;
+            delete library[action.audio.id];
+            return {
+                ...state,
+                ...library
+            };
+
+        case AudioCrudActionType.DELETE_AUDIO_DOCUMENT_FAILURE:
+            return state;
 
         /********* UPLOAD AUDIO **********/
         case UploadTaskActionType.SET_UPLOAD_TASK:
@@ -95,6 +114,13 @@ export const audio = (state = defaultState, action: AudioAction) => {
                 ...state,
                 isUploading: false,
                 error: action.error,
+            };
+
+        /** LIBRARY FILTER ACTIONS */
+        case AudioFilterActionType.SET_AUDIO_LIBRARY_FILTER:
+            return {
+                ...state,
+                filter: action.filter
             };
         default:
             return state;

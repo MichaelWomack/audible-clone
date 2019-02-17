@@ -3,7 +3,6 @@ import { Component, Fragment, ChangeEvent } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import EditDetailsStyles from './EditDetailsStyles';
-import { AudioBook } from '../../model/audio';
 import { VolumeInfo } from '../../model/volume';
 
 export interface EditDetailsProps extends WithStyles<typeof EditDetailsStyles> {
@@ -18,7 +17,6 @@ export interface EditDetailsState {
     author?: string;
     description?: string;
     imageUrl?: string;
-    audio?: AudioBook;
 }
 
 export class EditDetails extends Component<EditDetailsProps, EditDetailsState> {
@@ -28,16 +26,22 @@ export class EditDetails extends Component<EditDetailsProps, EditDetailsState> {
         author: this.props.volume.authors.join(', '),
         description: this.props.volume.description || '',
         imageUrl: '',
-        audio: null,
     };
 
     handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { volume, setSelectedVolume } = this.props;
-        const updatedVolume: VolumeInfo = {
-            ...volume,
-            [event.target.name]: event.target.value,
-        };
-        setSelectedVolume(updatedVolume);
+        this.setState({
+            [event.target.name]: event.target.value
+        }, () => {
+            const updatedVolume: VolumeInfo = {
+                ...volume,
+                title: this.state.title,
+                authors: this.state.author.split(','),
+                subtitle: this.state.subtitle,
+                description: this.state.description,
+            };
+            setSelectedVolume(updatedVolume);
+        });
     };
 
     render() {

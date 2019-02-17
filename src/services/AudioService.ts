@@ -32,6 +32,7 @@ export class AudioService {
     };
 
     async updateAudio(audio: Audio): Promise<void> {
+        audio.lastUpdated = new Date().getTime();
         await this.collection
             .doc(audio.id)
             .update(audio);

@@ -72,7 +72,7 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
     }
 
     componentWillUnmount() {
-        this.saveAudioPosition();
+        this.saveAudioMetrics();
     }
 
     componentDidUpdate(prevProps: AudioPlayerProps, prevState: AudioPlayerState) {
@@ -89,9 +89,10 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
         }
     }
 
-    saveAudioPosition = () => {
+    saveAudioMetrics = () => {
         const { audio, updateAudio } = this.props;
         audio.currentTime = this.audioRef.current.currentTime;
+        audio.lastPlayed = new Date().getTime();
         updateAudio(audio);
     };
 
@@ -106,7 +107,7 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
     pause = () => {
         this.props.pauseAudio();
         this.audioRef.current.pause();
-        this.saveAudioPosition();
+        this.saveAudioMetrics();
     };
 
     togglePlaying = () => {
@@ -158,55 +159,58 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
                     className={classes.audioPlayerBar}
                 >
                     <Toolbar className={classes.toolbar}>
-                        {
-                            <Typography
-                                component="span"
-                                variant="caption"
-                                color="inherit"
-                                className={classes.audioTime}
-                            >
-                                {this.displayAudioTime()}
-                            </Typography>
-                        }
-                        <IconButton
-                            color="inherit"
-                            onClick={this.decrement30}
-                        >
-                            <Replay30 />
-                        </IconButton>
-                        <div>
+                        {/* <img className={classes.toolbarAudioImage} src={audio.imageUrl} />
+                        <div className={classes.toolbarControls}> */}
+                            {
+                                <Typography
+                                    component="span"
+                                    variant="caption"
+                                    color="inherit"
+                                    className={classes.audioTime}
+                                >
+                                    {this.displayAudioTime()}
+                                </Typography>
+                            }
                             <IconButton
                                 color="inherit"
-                                onClick={this.togglePlaying}
+                                onClick={this.decrement30}
                             >
-                                {player.isPlaying ? (
-                                    <PauseSharp />
-                                ) : (
-                                    <PlayArrowSharpIcon />
-                                )}
+                                <Replay30 />
                             </IconButton>
-                        </div>
-                        <IconButton
-                            color="inherit"
-                            onClick={this.increment30}
-                        >
-                            <Forward30 />
-                        </IconButton>
-                        {player.isPlaying ? (
+                            <div>
+                                <IconButton
+                                    color="inherit"
+                                    onClick={this.togglePlaying}
+                                >
+                                    {player.isPlaying ? (
+                                        <PauseSharp />
+                                        ) : (
+                                            <PlayArrowSharpIcon />
+                                            )}
+                                </IconButton>
+                            </div>
                             <IconButton
                                 color="inherit"
-                                onClick={openFullscreen}
+                                onClick={this.increment30}
                             >
-                                <KeyboardArrowUpSharp />
+                                <Forward30 />
                             </IconButton>
-                        ) : (
-                            <IconButton
-                                color="inherit"
-                                onClick={hidePlayer}
-                            >
-                                <KeyboardArrowDownSharp />
-                            </IconButton>
-                        )}
+                            {player.isPlaying ? (
+                                <IconButton
+                                    color="inherit"
+                                    onClick={openFullscreen}
+                                >
+                                    <KeyboardArrowUpSharp />
+                                </IconButton>
+                            ) : (
+                                <IconButton
+                                    color="inherit"
+                                    onClick={hidePlayer}
+                                >
+                                    <KeyboardArrowDownSharp />
+                                </IconButton>
+                            )}
+                            {/* </div> */}
                     </Toolbar>
                     {this.audioRef.current && <FullScreenAudioPlayer
                         onClose={closeFullscreen}

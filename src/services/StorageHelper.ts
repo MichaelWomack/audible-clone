@@ -18,6 +18,16 @@ export class StorageHelper {
     getAudioStoragePath(userId: string, audioId: string): string {
         return `users/${userId}/uploads/${audioId}`;
     }
+
+    blobExists(path: string): boolean {
+        return this.reference.child(path) !== null;
+    }
+
+    deleteBlob(path: string): Promise<void> {
+        return this.reference
+            .child(path)
+            .delete();
+    }
 }
 
 const reference: storage.Reference = firebaseInstance.storage().ref();

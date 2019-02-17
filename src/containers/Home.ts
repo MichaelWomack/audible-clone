@@ -1,7 +1,7 @@
 import Home from '../components/Home';
-import { AudioBook } from '../model/audio';
+import { AudioBook, Audio } from '../model/audio';
 import { togglePlaying, setAudio, pauseAudio } from '../store/actions/AudioPlayer';
-import { fetchUserAudio, updateAudio } from '../store/actions/Audio';
+import { fetchUserAudio, updateAudio, deleteAudio } from '../store/actions/Audio';
 import { connect } from 'react-redux';
 import { ReduxState } from '../model/state';
 import { logout } from '../store/actions/User';
@@ -22,6 +22,7 @@ export const mapDispatchToProps = (dispatch: Function) => {
         pauseAudio: () => dispatch(pauseAudio()),
         getUserAudio: (userId: string) => dispatch(fetchUserAudio(userId)),
         updateAudio: (audio: AudioBook) => dispatch(updateAudio(audio)),
+        deleteAudio: (audio: Audio) => dispatch(deleteAudio(audio)),
         logout: () => dispatch(logout())
     }
 }

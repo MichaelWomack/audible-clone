@@ -12,8 +12,9 @@ import {
 } from '@material-ui/core';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { TwitterIcon, GoogleIcon, FacebookIcon } from '../Icons';
+import GitHubButton from '../GitHubButton';
 
-import {auth} from 'firebase';
+import { auth } from 'firebase';
 import LoginStyles from './LoginStyles';
 import { UiState } from '../../model/state';
 
@@ -69,21 +70,26 @@ export class Login extends Component<LoginProps, LoginState> {
         loginWithAuthProvider(authProvider, () => history.push('/home'));
     };
 
+    navigateToSignUp = () => {
+        this.props.history.push('/signup');
+    }
+
     render() {
-        const { classes, ui } = this.props;
+        const { classes } = this.props;
         return (
             <Fragment>
                 <AppBar position="static" color="inherit">
                     <Toolbar className={classes.toolbar}>
                         <Typography variant="headline">Audiobucket</Typography>
                         <Typography variant="subheading">
-                            <Button>sign up</Button>
+                            <Button onClick={this.navigateToSignUp}>sign up</Button>
                         </Typography>
                     </Toolbar>
                 </AppBar>
                 <div className={classes.container}>
-                    {/* <div className={classes.header}>
-                    </div> */}
+                    <div className={classes.header}>
+                        <Typography variant="h5">Login</Typography>
+                    </div>
                     <form className={classes.formContainer}>
                         <TextField
                             className={classes.textField}

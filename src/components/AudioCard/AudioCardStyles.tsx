@@ -19,6 +19,12 @@ export default (theme: Theme) =>
         content: {
             flex: '1 0 auto',
         },
+        moreIconContainer: {
+            position: 'relative',
+            width: 'min-content',
+            left: 175,
+            bottom: 25
+        },
         cover: {
             width: 231,
         },

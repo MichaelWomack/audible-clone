@@ -1,4 +1,4 @@
-import {createStyles, Theme} from '@material-ui/core/styles';
+import { createStyles, Theme } from '@material-ui/core/styles';
 
 export default (theme: Theme) => 
     createStyles({
@@ -14,4 +14,8 @@ export default (theme: Theme) =>
             right: '8%',
             zIndex: 1
         },
+        githubButtonContainer: {
+            display: 'flex',
+            justifyContent: 'center',
+        }
     });

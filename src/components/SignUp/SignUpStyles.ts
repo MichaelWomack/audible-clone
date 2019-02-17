@@ -1,10 +1,10 @@
-import { createStyles, Theme } from '@material-ui/core';
+import { createStyles, Theme } from '@material-ui/core/styles';
 
-export default (theme: Theme) =>
+export default (theme: Theme) => 
     createStyles({
         container: {
             position: "relative",
-            top: 100
+            top: 80
         },
         header: {
             textAlign: "center",
@@ -28,16 +28,4 @@ export default (theme: Theme) =>
             marginTop: theme.spacing.unit * 2,
             justifyContent: 'space-evenly'
         },
-        githubContainer: {
-            
-        },
-        alternateLogins: {
-            display: "flex",
-            flexGrow: 1
-        },
-        circleProgress: {
-            position: 'absolute',
-            width: '75',
-            height: '75'
-        }
     });

@@ -1,10 +1,6 @@
 import { Middleware, MiddlewareAPI, Dispatch } from 'redux';
-import { UploadTaskActionType, UploadTaskAction } from '../actions/Audio';
+import { UploadTaskActionType, AudioCrudActionType, AudioCrudAction, UploadTaskAction } from '../actions/Audio';
 import { uiOpenSnackbar, uiCloseSnackbar } from '../actions/Ui';
-
-// const whitelist: any[] = [
-//     UploadTaskActionType
-// ];
 
 export const snackbarMiddleware: Middleware = (store: MiddlewareAPI) => (next: Dispatch) => action => {
 
@@ -17,13 +13,16 @@ export const snackbarMiddleware: Middleware = (store: MiddlewareAPI) => (next: D
         }, timeout);
     }
 
-    // if (whitelist.includes(actionType)) {
-        switch(action.type) {
-            case UploadTaskActionType.UPLOAD_AUDIO_SUCCESS:
-                toastSnackbar(`Upload complete!`, 4000);
-                break;
-        }
-    // }
+    switch(action.type) {
+        case UploadTaskActionType.UPLOAD_AUDIO_SUCCESS:
+            const uploadAction = action as UploadTaskAction;
+            toastSnackbar(`Successfully uploaded ${uploadAction.audio.title}!`, 4000);
+            break;
+        case AudioCrudActionType.DELETE_AUDIO_DOCUMENT_SUCCESS:
+            const deleteAction = action as AudioCrudAction;
+            toastSnackbar(`Successfully deleted ${deleteAction.audio.title}!`, 4000);
+            break;
+    }
 
     next(action);
 };

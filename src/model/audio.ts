@@ -13,12 +13,14 @@ export interface Audio {
     title?: string;
     subtitle?: string;
     author?: string;
+    description?: string;
     favorite?: boolean;
     storagePath?: string;
     downloadUrl?: string;
     imageUrl?: string;
     currentTime?: number;
-    lastPlayed?: Date; 
+    lastPlayed?: number;
+    lastUpdated?: number;
     duration?: number;
     multipartIndex?: number;
 }
@@ -27,7 +29,13 @@ export interface AudioBook extends Audio {
     title?: string;
     subtitle?: string;
     author?: string;
-    description?: string;
+    // description?: string;
+}
+
+export enum AudioLibraryFilter {
+    ALL,
+    FAVORITE,
+    RECENT
 }
 
 export type AudioMap = { [ key: string ] : Audio };

@@ -8,7 +8,18 @@ export default (theme: Theme) =>
         },
         toolbar: {
             alignItems: 'center',
-            justifyContent: 'space-evenly'
+            justifyContent: 'space-evenly',
+            // paddingLeft: 0 //for image
+        },
+        toolbarAudioImage: {
+            height: 56,
+            width: 35
+        },
+        toolbarControls: {
+            display: 'flex',
+            flexGrow: 1,
+            alignItems: 'center',
+            justifyContent: 'space-evenly',
         },
         audioTime: {
             // textAlign: 'center',
