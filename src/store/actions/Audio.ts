@@ -1,7 +1,9 @@
-import { Audio, AudioMap, AudioLibraryFilter } from '../../model/audio';
+import { Audio, AudioMap, AudioLibraryFilter, AudioFile } from '../../model/audio';
 import { audioService, storageHelper, authService } from '../../services';
 import { firestore, storage } from 'firebase';
 import { Dispatch } from 'redux';
+import { ReduxState } from '../../model/state';
+import { number } from 'prop-types';
 
 /*********** FETCH AUDIO ACTIONS ***********/
 export enum FetchAudioActionType {
@@ -157,7 +159,8 @@ export const deleteAudio = (audio: Audio) => {
 /*********** AUDIO UPLOAD ACTIONS ***********/
 
 export enum UploadTaskActionType {
-    SET_UPLOAD_TASK = 'SET_UPLOAD_TASK',
+    SET_UPLOAD_TASKS = 'SET_UPLOAD_TASKS',
+    SET_COMPLETED_UPLOADS = 'SET_COMPLETED_UPLOADS',
     UPLOAD_AUDIO_REQUEST = 'UPLOAD_AUDIO_REQUEST',
     UPLOAD_AUDIO_PROGRESS = 'UPLOAD_AUDIO_PROGRESS',
     UPLOAD_AUDIO_SUCCESS = 'UPLOAD_AUDIO_SUCCESS',
@@ -170,21 +173,30 @@ export interface UploadTaskAction {
     uploadProgress: number;
     error?: Error;
     audio?: Audio;
-    uploadTask: storage.UploadTask;
+    uploadTasks: storage.UploadTask[];
+    completedUploads: number;
+    totalBytesUploaded: number;
+    totalBytesToUpload: number;
 }
 
 const uploadAudioRequest = () => ({
     type: UploadTaskActionType.UPLOAD_AUDIO_REQUEST
 })
 
-const setUploadTask = (uploadTask: storage.UploadTask) => ({
-    type: UploadTaskActionType.SET_UPLOAD_TASK,
-    uploadTask
+const setUploadTasks = (uploadTasks: storage.UploadTask[]) => ({
+    type: UploadTaskActionType.SET_UPLOAD_TASKS,
+    uploadTasks
 });
 
-const setUploadProgress = (uploadProgress: number) => ({
+const setUploadsCompleted = (completedUploads: number) => ({
+    type: UploadTaskActionType.SET_COMPLETED_UPLOADS,
+    completedUploads
+});
+
+const setUploadProgress = (totalBytesUploaded: number, totalBytesToUpload: number) => ({
     type: UploadTaskActionType.UPLOAD_AUDIO_PROGRESS,
-    uploadProgress  
+    totalBytesUploaded,
+    totalBytesToUpload,
 });
 
 const setUploadError = (error: Error) => ({
@@ -200,13 +212,23 @@ const completeUpload = (audio: Audio) => ({
 
 
 /* Upload Progress Handler */
-const onUploadProgress = (snapshot: storage.UploadTaskSnapshot, dispatch: Function) => {
-    const uploadProgress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+const onUploadProgress = (snapshot: storage.UploadTaskSnapshot, dispatch: Function, getState: Function) => {
+    const { audio: { uploadTasks } } : ReduxState = getState();
+    const { totalBytesTransferred, totalBytes } = calculateTotalProgress(uploadTasks);
     switch (snapshot.state) {
         case storage.TaskState.RUNNING:
-            dispatch(setUploadProgress(uploadProgress));
+            dispatch(setUploadProgress(totalBytesTransferred, totalBytes));
             break;
     }
+}
+
+const calculateTotalProgress = (uploadTasks: storage.UploadTask[]) => {
+    return uploadTasks.reduce(({ totalBytesTransferred, totalBytes }, task: storage.UploadTask) => {
+        return { 
+            totalBytesTransferred: totalBytesTransferred + task.snapshot.bytesTransferred, 
+            totalBytes: totalBytes + task.snapshot.totalBytes
+        };
+    }, { totalBytesTransferred: 0, totalBytes: 0});
 }
 
 /* Upload Error Handler */
@@ -230,32 +252,51 @@ const onUploadError = (error: Error&{ code: string }, audio: Audio, dispatch: Fu
 };
 
 /* Upload Completion Handler */
-const onUploadComplete = async (audio: Audio, uploadTask: storage.UploadTask, dispatch: Function, getState: Function) => {
-    audio.downloadUrl = await uploadTask.snapshot.ref.getDownloadURL();
-    const audioElement: HTMLAudioElement = new Audio(audio.downloadUrl);
+const onUploadComplete = async (audio: Audio, index: number, dispatch: Function, getState: Function) => {
+    const state: ReduxState = getState();
+    const { uploadTasks } = state.audio;
+
+    const newTotalCompleted = uploadTasks.reduce((totalComplete: number, uploadTask: storage.UploadTask) => {
+        return uploadTask.snapshot.state === storage.TaskState.SUCCESS ? ++totalComplete : totalComplete;
+    }, 0);
+
+    const uploadTask = uploadTasks[index];
+    const uploadedTrack = audio.trackList[index];
+    uploadedTrack.downloadUrl = await uploadTask.snapshot.ref.getDownloadURL();
+    const audioElement: HTMLAudioElement = new Audio(uploadedTrack.downloadUrl);
     audioElement.addEventListener('loadedmetadata', async () => {
-        audio.duration = audioElement.duration;
-        try {
-            /* Nested try/catch is yucky, but necessary to handle document update errors */
-            // dispatch(updateAudio(audio)); /* update error doesn't get handled */
-            dispatch(updateAudioRequest());
-            try {
-                await audioService.updateAudio(audio); //failure to update means 
-                dispatch(updateAudioSuccess(audio)); 
-            } catch (error) {
-                dispatch(updateAudioFailure(error));
-                throw error;
-            }
-            dispatch(completeUpload(audio));
-        } catch (error) {
-            dispatch(setUploadError(error));
-            dispatch(deleteAudio(audio));
+        uploadedTrack.duration = audioElement.duration;
+        uploadedTrack.currentTime = 0;
+        audio.trackList[index] = uploadedTrack;
+        dispatch(setUploadsCompleted(newTotalCompleted));
+        if (newTotalCompleted === uploadTasks.length) {
+            finalizeUploads(audio, dispatch);
         }
     });
 };
 
+const finalizeUploads = async (audio: Audio, dispatch: Function) => {
+    console.log('finalizeUploads()');
+    try {
+        /* Nested try/catch is yucky, but necessary to handle document update errors */
+        dispatch(updateAudio(audio)); /* update error doesn't get handled */
+        dispatch(updateAudioRequest());
+        try {
+            await audioService.updateAudio(audio); //failure to update means 
+            dispatch(updateAudioSuccess(audio)); 
+        } catch (error) {
+            dispatch(updateAudioFailure(error));
+            throw error;
+        }
+        dispatch(completeUpload(audio));
+    } catch (error) {
+        dispatch(setUploadError(error));
+        dispatch(deleteAudio(audio));
+    }
+}
+
 //should this be called something else
-export const uploadAudio = (audio: Audio, file: File) => {
+export const uploadAudio = (audio: Audio, files: File[]) => {
     return async (dispatch: Function, getState: Function) => {
         dispatch(uploadAudioRequest());
         let createdDocument;
@@ -270,13 +311,28 @@ export const uploadAudio = (audio: Audio, file: File) => {
         audio.id = createdDocument.id;
         audio.userId = await authService.getAuth().currentUser.uid;
         audio.storagePath = storageHelper.getAudioStoragePath(audio.userId, createdDocument.id);
-        const uploadTask = storageHelper.getUploadTask(audio.storagePath, file);
-        dispatch(setUploadTask(uploadTask));
-        uploadTask.on(storage.TaskEvent.STATE_CHANGED, 
-            (snapshot: storage.UploadTaskSnapshot) => onUploadProgress(snapshot, dispatch), 
-            (error: Error|any) => onUploadError(error, audio, dispatch), 
-            () => onUploadComplete(audio, uploadTask, dispatch, getState)
-        );
+        audio.currentTrack = 0;
+        audio.trackList = [];
+
+        let totalBytesUploaded = 0, totalBytesToUpload = 0;
+        const uploadTasks = files.map((file: File) => {
+            audio.trackList.push({ fileName: file.name });
+            const uploadTask = storageHelper.getUploadTask(audio.storagePath, file);
+            totalBytesUploaded += uploadTask.snapshot.bytesTransferred;
+            totalBytesToUpload += uploadTask.snapshot.totalBytes;
+            return uploadTask;
+        });
+        console.log('uploadAudio() => total bytes to upload ', totalBytesToUpload);
+        dispatch(setUploadProgress(totalBytesUploaded, totalBytesToUpload));
+        dispatch(setUploadTasks(uploadTasks)); //I don't think this is necessary
+
+        uploadTasks.forEach((uploadTask: storage.UploadTask, index: number) => {
+            uploadTask.on(storage.TaskEvent.STATE_CHANGED, 
+                (snapshot: storage.UploadTaskSnapshot) => onUploadProgress(snapshot, dispatch, getState), 
+                (error: Error|any) => onUploadError(error, audio, dispatch), 
+                () => onUploadComplete(audio, index, dispatch, getState)
+            );
+        });
     }
 }
 

@@ -17,7 +17,8 @@ const defaultState = {
     library: {} as AudioMap,
     isLoading: false,
     error: null as any,
-    filter: AudioLibraryFilter.ALL
+    filter: AudioLibraryFilter.ALL,
+    completedUploads: 0,
 };
 
 export const audio = (state = defaultState, action: AudioAction) => {
@@ -85,11 +86,16 @@ export const audio = (state = defaultState, action: AudioAction) => {
             return state;
 
         /********* UPLOAD AUDIO **********/
-        case UploadTaskActionType.SET_UPLOAD_TASK:
+        case UploadTaskActionType.SET_UPLOAD_TASKS:
             return {
                 ...state,
-                uploadTask: action.uploadTask
+                uploadTasks: action.uploadTasks
             }
+        case UploadTaskActionType.SET_COMPLETED_UPLOADS:
+            return {
+                ...state,
+                completedUploads: action.completedUploads
+            };
         case UploadTaskActionType.UPLOAD_AUDIO_REQUEST:
             return {
                 ...state,
@@ -97,10 +103,14 @@ export const audio = (state = defaultState, action: AudioAction) => {
                 uploadProgress: 0
             };
         case UploadTaskActionType.UPLOAD_AUDIO_PROGRESS:
+            const value = ( action.totalBytesUploaded / action.totalBytesToUpload) * 100;
+            console.log('upload progress => ', value);
             return {
                 ...state,
                 isUploading: true,
-                uploadProgress: action.uploadProgress
+                uploadProgress: value,
+                totalBytesUploaded: action.totalBytesUploaded,
+                totalBytesToUpload: action.totalBytesToUpload
             };
         case UploadTaskActionType.UPLOAD_AUDIO_SUCCESS:
             return {

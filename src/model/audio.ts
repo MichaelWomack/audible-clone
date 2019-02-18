@@ -6,6 +6,13 @@ export enum AudioType {
     OTHER
 }
 
+export interface AudioFile {
+    fileName?: string; //could be chapter name, etc.
+    downloadUrl?: string;
+    currentTime?: number;
+    duration?: number;
+    lastPlayed?: number;
+}
 
 export interface Audio {
     id?: string;
@@ -15,6 +22,7 @@ export interface Audio {
     author?: string;
     description?: string;
     favorite?: boolean;
+    trackList?: AudioFile[];
     storagePath?: string;
     downloadUrl?: string;
     imageUrl?: string;
@@ -22,7 +30,9 @@ export interface Audio {
     lastPlayed?: number;
     lastUpdated?: number;
     duration?: number;
-    multipartIndex?: number;
+    totalProgress?: number;
+    totalDuration?: number;
+    currentTrack?: number;
 }
 
 export interface AudioBook extends Audio {

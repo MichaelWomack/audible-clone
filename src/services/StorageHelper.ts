@@ -12,6 +12,7 @@ export class StorageHelper {
     getUploadTask(storagePath: string, file: File): storage.UploadTask {
         return this.reference
             .child(storagePath)
+            .child(file.name)
             .put(file);
     }
 

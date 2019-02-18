@@ -10,7 +10,7 @@ export const mapStateToProps = (state: ReduxState) => {
         uploadProgress: state.audio.uploadProgress,
         isUploading: state.audio.isUploading,
         isLoading: state.audio.isLoading,
-        uploadTask: state.audio.uploadTask,
+        uploadTasks: state.audio.uploadTasks,
         createdDocument: state.audio.createdDocument
     };
 }
@@ -19,7 +19,7 @@ export const mapDispatchToProps = (dispatch: Function) => {
     return {
         addAudio: (audio: Audio) => dispatch(insertAudioDocument(audio)),
         updateAudio: (audio: Audio) => dispatch(updateAudio(audio)),
-        uploadAudio: (audio: Audio, file: File) => dispatch(uploadAudio(audio, file)),
+        uploadAudio: (audio: Audio, files: File[]) => dispatch(uploadAudio(audio, files)),
     };
 }
 
