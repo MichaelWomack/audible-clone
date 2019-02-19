@@ -83,7 +83,10 @@ export const audio = (state = defaultState, action: AudioAction) => {
             };
 
         case AudioCrudActionType.DELETE_AUDIO_DOCUMENT_FAILURE:
-            return state;
+            return {
+                ...state,
+                error: action.error
+            };
 
         /********* UPLOAD AUDIO **********/
         case UploadTaskActionType.SET_UPLOAD_TASKS:

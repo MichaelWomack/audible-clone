@@ -9,6 +9,7 @@ export enum AudioType {
 export interface AudioFile {
     fileName?: string; //could be chapter name, etc.
     downloadUrl?: string;
+    storagePath?: string;
     currentTime?: number;
     duration?: number;
     lastPlayed?: number;

@@ -147,7 +147,9 @@ export const deleteAudio = (audio: Audio) => {
     return async (dispatch: Dispatch, getState: Function) => {
         dispatch(deleteAudioRequest(audio));
         try {
-            await storageHelper.deleteBlob(audio.storagePath);
+            audio.trackList.forEach(async (track) => {
+                await storageHelper.deleteBlob(track.storagePath);
+            });
             await audioService.deleteAudio(audio);
             dispatch(deleteAudioSuccess(audio));
         } catch (error) {
@@ -228,7 +230,7 @@ const calculateTotalProgress = (uploadTasks: storage.UploadTask[]) => {
             totalBytesTransferred: totalBytesTransferred + task.snapshot.bytesTransferred, 
             totalBytes: totalBytes + task.snapshot.totalBytes
         };
-    }, { totalBytesTransferred: 0, totalBytes: 0});
+    }, { totalBytesTransferred: 0, totalBytes: 0 });
 }
 
 /* Upload Error Handler */
@@ -263,6 +265,7 @@ const onUploadComplete = async (audio: Audio, index: number, dispatch: Function,
     const uploadTask = uploadTasks[index];
     const uploadedTrack = audio.trackList[index];
     uploadedTrack.downloadUrl = await uploadTask.snapshot.ref.getDownloadURL();
+    uploadedTrack.storagePath = uploadTask.snapshot.ref.fullPath;
     const audioElement: HTMLAudioElement = new Audio(uploadedTrack.downloadUrl);
     audioElement.addEventListener('loadedmetadata', async () => {
         uploadedTrack.duration = audioElement.duration;
@@ -316,7 +319,9 @@ export const uploadAudio = (audio: Audio, files: File[]) => {
 
         let totalBytesUploaded = 0, totalBytesToUpload = 0;
         const uploadTasks = files.map((file: File) => {
-            audio.trackList.push({ fileName: file.name });
+            audio.trackList.push({ 
+                fileName: file.name
+            });
             const uploadTask = storageHelper.getUploadTask(audio.storagePath, file);
             totalBytesUploaded += uploadTask.snapshot.bytesTransferred;
             totalBytesToUpload += uploadTask.snapshot.totalBytes;
