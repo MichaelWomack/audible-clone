@@ -1,4 +1,6 @@
 
+
+/** PUT IN A volume.d.ts */
 export interface VolumeInfo {
     id?: string;
     allowAnonLogging?: boolean;

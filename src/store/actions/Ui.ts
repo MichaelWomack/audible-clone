@@ -1,5 +1,4 @@
 import { ThemeOptions } from "@material-ui/core/styles/createMuiTheme";
-import { Dispatch } from "redux";
 
 export enum UIActionType {
     UI_LOADING_START = 'UI_LOADING_START',

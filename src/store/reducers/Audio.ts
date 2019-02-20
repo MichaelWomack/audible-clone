@@ -107,7 +107,6 @@ export const audio = (state = defaultState, action: AudioAction) => {
             };
         case UploadTaskActionType.UPLOAD_AUDIO_PROGRESS:
             const value = ( action.totalBytesUploaded / action.totalBytesToUpload) * 100;
-            console.log('upload progress => ', value);
             return {
                 ...state,
                 isUploading: true,
