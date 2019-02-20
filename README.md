@@ -23,6 +23,9 @@ npm test
 
 Deploying
 
+
 ```shell
+npm run build
+
 firebase deploy -P <environment> -m "<deployment message>"
 ```
