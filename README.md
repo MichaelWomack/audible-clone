@@ -1,7 +1,28 @@
-# react-typescript-starter
-Quickstart project for React using Typescript
+### AudioBucket 
+###### the best features between Audible and Soundcloud. Upload your own audiobooks and have them bookmarked so you can listen from any device.
 
-- Bundled with Webpack 4
-- CSS & SASS module support
-- Jest & Enzyme configured
+###### 
 
+##### Development
+
+To install dependencies
+
+```shell
+npm install
+```
+
+Development server
+```shell
+npm run dev
+```
+
+Running tests with Jest
+```shell
+npm test
+```
+
+Deploying
+
+```shell
+firebase deploy -P <environment> -m "<deployment message>"
+```
