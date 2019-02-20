@@ -1,9 +1,9 @@
 import { Audio, AudioMap, AudioLibraryFilter, AudioFile } from '../../model/audio';
 import { audioService, storageHelper, authService } from '../../services';
-import { firestore, storage } from 'firebase';
+import { storage } from 'firebase';
 import { Dispatch } from 'redux';
 import { ReduxState } from '../../model/state';
-import { number } from 'prop-types';
+import { AudioUtils } from '../../utils/AudioUtils';
 
 /*********** FETCH AUDIO ACTIONS ***********/
 export enum FetchAudioActionType {
@@ -273,6 +273,11 @@ const onUploadComplete = async (audio: Audio, index: number, dispatch: Function,
         audio.trackList[index] = uploadedTrack;
         dispatch(setUploadsCompleted(newTotalCompleted));
         if (newTotalCompleted === uploadTasks.length) {
+            const { totalProgress, totalDuration } = AudioUtils.getListeningProgress(audio);
+            console.log('totalprogress, ', totalProgress);
+            console.log('totalduration ', totalDuration);
+            audio.totalProgress = 0;
+            audio.totalDuration = totalDuration;
             finalizeUploads(audio, dispatch);
         }
     });

@@ -97,8 +97,8 @@ class AudioCard extends Component<AudioCardProps, AudioCardState> {
 
     render() {
         const { classes, audio, isCurrentlyPlaying, pauseAudio } = this.props;
-        const { currentTime = 0, duration } = audio;
-        const percentDone = (currentTime / duration) * 100;
+        const { totalProgress, totalDuration } = audio;
+        const percentDone = (totalProgress / totalDuration) * 100;
         const chipLabel = `${Math.floor(percentDone)}% complete`;
         return (
             <Fragment>

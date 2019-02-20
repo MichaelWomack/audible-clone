@@ -14,8 +14,12 @@ export default (theme: Theme) =>
         },
         image: {
             display: 'block',
-            margin: '60px auto 60px auto' 
+            margin: '60px auto 40px auto' 
 
+        },
+        trackText: {
+            marginBottom: 20,
+            textAlign: 'center'
         },
         sliderLabel: {
             textAlign: 'center',

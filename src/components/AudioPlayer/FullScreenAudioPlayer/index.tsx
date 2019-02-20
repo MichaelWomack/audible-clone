@@ -73,7 +73,7 @@ class FullScreenAudioPlayer extends Component<Props, {}> {
             play,
             pause,
         } = this.props;
-
+        const track = audio.trackList[audio.currentTrack];
         return (
                 <Dialog
                     fullScreen
@@ -92,14 +92,21 @@ class FullScreenAudioPlayer extends Component<Props, {}> {
                             <Slider
                                 className={classes.slider}
                                 value={audioRef.current.currentTime}
-                                max={audio.duration}
+                                max={track.duration}
                                 onChange={this.handlerSliderChange}
                             />
                         }
-                        <Typography className={classes.sliderLabel}>{`${this.displayTimeRemaining()} remaining`}</Typography>
+                        <Typography 
+                            variant="caption" 
+                            className={classes.sliderLabel}
+                        >{`${this.displayTimeRemaining()} remaining`}
+                        </Typography>
                     </div>
                     
                     <img src={audio.imageUrl} className={classes.image} />
+                    <Typography className={classes.trackText}>
+                        { track.fileName }
+                    </Typography>
 
                     <div className={classes.controls}>
                         <IconButton onClick={replay}>

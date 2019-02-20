@@ -13,10 +13,13 @@ import { withStyles, WithStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
 import { TimeUtils } from '../../utils';
-import { Audio } from '../../model/audio';
+import { Audio, AudioFile } from '../../model/audio';
 import AudioPlayerStyles from './AudioPlayerStyles';
 import { PlayerState } from '../../model/state';
 import FullScreenAudioPlayer from './FullScreenAudioPlayer';
+import { number } from 'prop-types';
+import { AudioUtils } from '../../utils/AudioUtils';
+import { audio } from '../../store/reducers';
 
 export interface AudioPlayerProps extends WithStyles<typeof AudioPlayerStyles> {
     audio: Audio;
@@ -50,7 +53,12 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
 
     componentDidMount() {
         const { audio } = this.props;
-        const audioCurrentTime = audio.currentTime || 0;
+        // const track = trackList[currentTime];
+        console.log('audio', audio);
+        const { trackList, currentTrack } = audio;
+        const track = trackList[currentTrack];
+        console.log('currentTrack: ', track);
+        const audioCurrentTime = track.currentTime || 0;
         this.audioRef.current.currentTime = audioCurrentTime;
         this.setState({ currentPosition: audioCurrentTime });
         this.registerAudioHandlers();
@@ -58,10 +66,21 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
     
     registerAudioHandlers() {
         const { current } = this.audioRef;
+
+        /* this logic could be moved out (redux?) */
         current.onended = (event: Event) => {
-            const { duration } = current;
-            current.currentTime = duration;
-            this.pause();
+            const { audio, updateAudio } = this.props;
+            const currentTrack = audio.trackList[audio.currentTrack];
+            // currentTrack.currentTime = currentTrack.duration; /* janky, */
+            if (audio.currentTrack != audio.trackList.length - 1) {
+                audio.currentTrack++;
+                this.saveAudioMetrics();
+            } else {
+                /* if the last track ==> reset to first when done */
+                // audio.totalProgress = audio.totalDuration; /** janky, i know */
+                audio.currentTrack = 0;
+                this.pause();
+            }
         }
         current.ontimeupdate = (event: Event) => {
             const currentTime = current.currentTime;
@@ -89,9 +108,13 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
         }
     }
 
+    /* This could probably be a redux action */
     saveAudioMetrics = () => {
         const { audio, updateAudio } = this.props;
-        audio.currentTime = this.audioRef.current.currentTime;
+        const currentTrack = audio.trackList[audio.currentTrack];
+        currentTrack.currentTime = this.audioRef.current.currentTime;
+        const { totalProgress, totalDuration } = AudioUtils.getListeningProgress(audio);
+        audio.totalProgress = totalProgress;
         audio.lastPlayed = new Date().getTime();
         updateAudio(audio);
     };
@@ -134,11 +157,10 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
 
     displayAudioTime = () => {
         const { audio } = this.props;
+        const { currentTrack, trackList } = audio;
+        const track = trackList[currentTrack];
         const { currentPosition } = this.state;
-        const { duration } = audio;
-        return `${TimeUtils.secondsToHHMMSS(
-            currentPosition,
-        )} / ${TimeUtils.secondsToHHMMSS(duration)}`;
+        return `${TimeUtils.secondsToHHMMSS(currentPosition)} / ${TimeUtils.secondsToHHMMSS(track.duration)}`;
     };
 
     render() {
@@ -150,7 +172,7 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
             openFullscreen,
             closeFullscreen,
         } = this.props;
-        const { currentPosition } = this.state;
+        const currentTrack = audio.trackList[audio.currentTrack];
         return (
             audio && (
                 <AppBar
@@ -171,6 +193,12 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
                                     {this.displayAudioTime()}
                                 </Typography>
                             }
+                            <Typography 
+                                color="inherit"
+                                variant="caption"
+                            >
+                                { `${currentTrack.fileName}(${audio.currentTrack + 1})` }
+                            </Typography>
                             <IconButton
                                 color="inherit"
                                 onClick={this.decrement30}
@@ -225,7 +253,7 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
                         isPlaying={player.isPlaying}
                         setCurrentTime={this.setCurrentTime}
                     />}
-                    <audio ref={this.audioRef} src={audio.downloadUrl} />
+                    <audio ref={this.audioRef} src={currentTrack.downloadUrl} />
                 </AppBar>
             )
         );

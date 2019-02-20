@@ -1,4 +1,5 @@
 export class TimeUtils {
+    
     static secondsToHHMMSS(numSeconds: number) {
         const { hours, minutes, seconds } = TimeUtils.getHoursMinutesSeconds(
             numSeconds,

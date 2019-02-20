@@ -25,7 +25,7 @@ export interface Audio {
     favorite?: boolean;
     trackList?: AudioFile[];
     storagePath?: string;
-    downloadUrl?: string;
+    // downloadUrl?: string;
     imageUrl?: string;
     currentTime?: number;
     lastPlayed?: number;
