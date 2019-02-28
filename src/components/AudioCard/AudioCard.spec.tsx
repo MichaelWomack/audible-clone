@@ -22,9 +22,9 @@ describe('AudioCard', () => {
     //     );
     // });
 
-    // it('renders sucessfully', () => {
-    //     expect(wrapper.exists()).toBe(true);
-    // });
+    it('renders sucessfully', () => {
+        // expect(wrapper.exists()).toBe(true);
+    });
 
 
 });

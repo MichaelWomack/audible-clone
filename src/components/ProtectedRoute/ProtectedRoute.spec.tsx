@@ -1,14 +1,18 @@
 import * as React from 'react';
 import ProtectedRoute from './index';
-import { Home } from '../Home';
+// import { Home } from '../Home';
 import { MemoryRouter, Route, Redirect } from 'react-router-dom';
 import { mount, ReactWrapper } from 'enzyme';
 
 /** TODO figure out how to unmock the firebase module so it can be remocked differently */
 describe('<ProtectedRoute />', () => {
     let wrapper: ReactWrapper;
-    const component: React.ComponentClass = Home;
+    // const component: React.ComponentClass = Home;
     beforeEach(() => {
+    });
+
+    it("", () => {
+
     });
     
     // it('renders the routed component successfully', () => {

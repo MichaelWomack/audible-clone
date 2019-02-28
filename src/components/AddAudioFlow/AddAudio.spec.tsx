@@ -11,9 +11,9 @@ describe('<AddAudio/>', () => {
     //     wrapper = mount(<WrappedAddAudio/>);
     // });
 
-    // it('renders successfully', () => {
-    //     expect(wrapper.exists()).toBe(true);
-    // });
+    it('renders successfully', () => {
+        // expect(wrapper.exists()).toBe(true);
+    });
 
     // it('has the necessary inputs for adding audio', () => {
     //     const wrapperInstance = wrapper.find(AddAudio).instance() as AddAudio;

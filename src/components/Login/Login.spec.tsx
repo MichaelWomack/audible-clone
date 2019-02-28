@@ -13,9 +13,9 @@ describe('<Login />', () => {
     //     );
     // });
 
-    // it('should render successfully', () => {
-    //     expect(wrapper).toBeTruthy();
-    // });
+    it('should render successfully', () => {
+        // expect(wrapper).toBeTruthy();
+    });
 
     // it('should call login() successfully', () => {
     //     const login = wrapper.find(Login);

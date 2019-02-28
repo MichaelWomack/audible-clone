@@ -1,4 +1,4 @@
-import { TimeUtils } from './time';
+import { TimeUtils } from './Time';
 
 describe('TimeUtils', () => {
 

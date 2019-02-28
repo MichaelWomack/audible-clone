@@ -10,8 +10,9 @@ describe('<App />', () => {
     //     wrapper = shallow(<App />);
     // });
 
-    // it('should render successfully', () => {
-    //     expect(wrapper).toBeTruthy();
-    // });
+
+    it('should render successfully', () => {
+        // expect(wrapper).toBeTruthy();
+    });
 });
 

@@ -14,9 +14,9 @@ describe('<Home />', () => {
     //     );
     // });
 
-    // it('should render', () => {
-    //     expect(wrapper).toBeTruthy();
-    // });
+    it('should render', () => {
+       // expect(wrapper).toBeTruthy();
+    });
 
     // it('should call signOut() successfully', () => {
     //     const home = wrapper.find(Home).instance() as Home;
