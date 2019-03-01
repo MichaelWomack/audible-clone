@@ -15,4 +15,6 @@ steps:
 - name: 'gcr.io/cloud-builders/npm'
   args: ['test']
 - name: 'gcr.io/cloud-builders/npm'
-  args: ['npm', 'run', 'firebase', '--', '--token', '${_FIREBASE_TOKEN}', 'deploy', '-P', '$PROJECT_ID']
+  args: ['npm', 'install', '-g', 'firebase-tools']
+- name: 'gcr.io/cloud-builders/npm'
+  args: ['firebase', '--token', '${_FIREBASE_TOKEN}', 'deploy', '-P', '$PROJECT_ID']
