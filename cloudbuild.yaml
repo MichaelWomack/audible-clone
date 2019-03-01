@@ -12,4 +12,4 @@ steps:
   - 'GOOGLE_BOOKS_API_KEY=$_GOOGLE_BOOKS_API_KEY'
 - name: 'gcr.io/cloud-builders/npm'
   args: ['test']
-
+-
