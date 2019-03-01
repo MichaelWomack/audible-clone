@@ -1,15 +1,18 @@
 steps:
+- name: gcr.io/cloud-builders/gcloud
+  args:
+  - kms
+  - decrypt
+  - --ciphertext-file=firebase-development.enc
+  - --plaintext-file=.development.env
+  - --location=global
+  - --keyring=${_KEYRING_NAME}
+  - --key=${_KEY_NAME}
 - name: 'gcr.io/cloud-builders/npm'
   args: ['install']
 - name: 'gcr.io/cloud-builders/npm'
   args: ['run', 'build']
-  env: 
-  - 'FIREBASE_AUTH_DOMAIN=$FIREBASE_AUTH_DOMAIN'
-  - 'FIREBASE_DATABASE_URL=$FIREBASE_DATABASE_URL'
-  - 'FIREBASE_PROJECT_ID=$FIREBASE_PROJECT_ID'
-  - 'FIREBASE_STORAGE_BUCKET=$FIREBASE_STORAGE_BUCKET'
-  - 'FIREBASE_MESSAGING_SENDER_ID=$FIREBASE_MESSAGING_SENDER_ID'
-  - 'GOOGLE_BOOKS_API_KEY=$GOOGLE_BOOKS_API_KEY'
 - name: 'gcr.io/cloud-builders/npm'
   args: ['test']
--
+- name: 'gcr.io/cloud-builders/npm'
+  args: ['npm', 'run', 'firebase', 'deploy', '--token', '${_FIREBASE_TOKEN}', '-P', '$PROJECT_ID']
