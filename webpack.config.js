@@ -6,7 +6,7 @@ const DotenvWebpack = require('dotenv-webpack');
 const merge = require('webpack-merge');
 const environmentConfig = env => require(`./webpack.${env}.js`);
 
-module.exports = env => {
+module.exports = (env, argv) => {
     const config = {
         entry: {
             app: './src/index.tsx',
@@ -75,12 +75,12 @@ module.exports = env => {
                 chunkFilename: '[id].[hash].css',
             }),
             new DotenvWebpack({
-                path: `.${env.NODE_ENV}.env`,
+                path: `.${env.ENVIRONMENT}.env`,
             }),
         ],
     };
-
-    const envConfig = environmentConfig(env.NODE_ENV);
+    console.log('ENVIRONMENT: ', env.ENVIRONMENT);
+    const envConfig = environmentConfig(argv.mode);
     const merged = merge(config, envConfig);
     return merged;
 };
