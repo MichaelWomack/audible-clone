@@ -19,4 +19,4 @@ steps:
 images:
 - 'gcr.io/${PROJECT_ID}/firebase'
 - name: 'gcr.io/${PROJECT_ID}/firebase'
-  args: [--token', '${_FIREBASE_TOKEN}', 'deploy', '-P', '$PROJECT_ID']
+  args: ['--token', '${_FIREBASE_TOKEN}', 'deploy', '-P', '$PROJECT_ID']
