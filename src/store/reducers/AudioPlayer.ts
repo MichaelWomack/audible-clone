@@ -9,6 +9,7 @@ export const defaultState = {
 };
 
 export const player = (state = defaultState, action: PlayerAction) => {
+    const { audio } = state;
     switch (action.type) {
         case PlayerActionType.AUDIO_TOGGLE_PLAYING:
             return {
@@ -51,6 +52,18 @@ export const player = (state = defaultState, action: PlayerAction) => {
             return {
                 ...state,
                 isPlaying: Boolean(state.audio) // only play if there is already selected audio
+            };
+        case PlayerActionType.NEXT_TRACK:
+            audio.currentTrack = ++audio.currentTrack % audio.trackList.length;
+            return {
+                ...state,
+                audio
+            };
+        case PlayerActionType.PREVIOUS_TRACK:
+            audio.currentTrack = audio.currentTrack - 1 < 0 ? 0 : audio.currentTrack - 1;
+            return {
+                ...state,
+                audio
             };
         default:
             return state;
