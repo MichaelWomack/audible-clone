@@ -1,14 +1,13 @@
 import * as React from 'react';
-import { Component, ChangeEvent, Fragment } from 'react';
+import { Component, ChangeEvent, Fragment, RefObject } from 'react';
 import { storage } from 'firebase';
-import SnackbarContent from '@material-ui/core/SnackbarContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import { VolumeInfo } from '../../model/volume';
-import { Audio, AudioBook } from '../../model/audio';
+import { Audio } from '../../model/audio';
 import UploadAudioStyles from './UploadAudioStyles';
+import UploadPreview from './UploadPreview';
 
 export interface UploadAudioProps extends WithStyles<typeof UploadAudioStyles> {
     volume?: VolumeInfo;
@@ -23,56 +22,66 @@ export interface UploadAudioProps extends WithStyles<typeof UploadAudioStyles> {
 export interface UploadAudioState {
     audio?: Audio;
     open?: boolean;
-    fileList?: File[];
-    snackbarMessage?: string;
+    selectedFiles?: { [name: string]: File };
 }
 
 export class UploadAudio extends Component<UploadAudioProps, UploadAudioState> {
 
+    fileInput: RefObject<HTMLInputElement>;
+
     state: UploadAudioState = {
         audio: {},
         open: false,
-        fileList: null,
-        snackbarMessage: "",
+        selectedFiles: {},
+    };
+
+    constructor(props: UploadAudioProps) {
+        super(props);
+        this.fileInput = React.createRef();
     }
 
     componentDidMount() {
         this.props.setNextStepDisabled(true);
     }
 
+    removeFile = (fileName: string) => {
+        const { selectedFiles } = this.state;
+        delete selectedFiles[fileName];
+        this.setState({ selectedFiles: selectedFiles });
+    };
+
     handleSelectFile = (event: ChangeEvent<HTMLInputElement>) => {
         const { files } = event.target;
-        console.log(files);
-        this.setState({ fileList: Array.from(files) });
+        const { selectedFiles } = this.state;
+        const filesByName = [...Object.values(selectedFiles), ...Array.from(files)].reduce((map: any, file) => {
+            map[file.name] = file;
+            return map;
+        }, {});
+        this.setState({ selectedFiles: filesByName }, () => this.fileInput.current.value = null);
     };
     
     cancelUpload = () => {
         const { uploadTasks } = this.props;
         uploadTasks.forEach((task: storage.UploadTask) => task.cancel());
-    }
+    };
 
-    addAudio = async () => {
-
-        const { fileList, audio } = this.state;
+    addAudio = () => {
+        const { selectedFiles, audio } = this.state;
         const { volume } = this.props;
-        if (fileList && fileList.length) {
+        if (selectedFiles.length) {
             audio.title = volume.title;
             audio.author = volume.authors.join(', ');
             audio.description = volume.description;
             audio.imageUrl = volume.imageLinks.thumbnail || volume.imageLinks.smallThumbnail;
-            this.props.uploadAudio(audio, fileList); /** TODO pass whole array */
+            this.props.uploadAudio(audio, Object.values(selectedFiles)); /** TODO pass whole array */
             this.props.setNextStepDisabled(false);
-        } else {
-            this.setState({ snackbarMessage: 'Please select a file to upload' });
         }
     };
 
     render() {
         const { classes, isUploading } = this.props;
-        const { snackbarMessage } = this.state;
         return (
             <Fragment>
-                {/* {Boolean(snackbarMessage) && <SnackbarContent message={snackbarMessage} action={SnackbarCloser}/>} */}
                 <div className={classes.container}>
                     <Typography
                         variant="h6"
@@ -84,20 +93,9 @@ export class UploadAudio extends Component<UploadAudioProps, UploadAudioState> {
                     </Typography>
                     <form className={classes.formContainer}>
                         <div className={classes.formRow}>
-                            
-                            {/* <TextField 
-                                fullWidth
-                                label="selected file"
-                                value={this.state.selectedFile ? this.state.selectedFile.name : ''}
-                            /> */}
-                            {
-                                this.state.fileList && this.state.fileList.map((file: File) => {
-                                    return <div key={file.name}>{file.name} is {file.size} bytes</div>
-                                })
-                            }
-                        </div>
-                        <div className={classes.formRow}>
                             <input
+                                accept="audio/*"
+                                ref={this.fileInput}
                                 className={classes.input}
                                 id="contained-button-file"
                                 multiple
@@ -133,6 +131,10 @@ export class UploadAudio extends Component<UploadAudioProps, UploadAudioState> {
                             </div>
                         </div>
                     </form>
+                <UploadPreview
+                    files={Object.values(this.state.selectedFiles)}
+                    removeFile={this.removeFile}
+                />
                 </div>
             </Fragment>
         );
