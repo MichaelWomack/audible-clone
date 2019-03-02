@@ -46,12 +46,13 @@ export class UploadAudio extends Component<UploadAudioProps, UploadAudioState> {
 
     removeFile = (fileName: string) => {
         const { selectedFiles } = this.state;
-        delete selectedFiles[fileName];
-        this.setState({ selectedFiles: selectedFiles });
+        const updatedSelection = Object.assign({}, selectedFiles);
+        delete updatedSelection[fileName];
+        console.log('removeFile ', updatedSelection);
+        this.setState({ selectedFiles: updatedSelection });
     };
 
     setFiles = (files: File[]) => {
-        console.log('preparing to setfiles ', files);
         const filesByName = files.reduce((map: any, file) => {
             map[file.name] = file;
             return map;
@@ -73,7 +74,6 @@ export class UploadAudio extends Component<UploadAudioProps, UploadAudioState> {
 
     addAudio = () => {
         const { selectedFiles, audio } = this.state;
-        console.log('addAudio selectedFiles', selectedFiles);
         const { volume } = this.props;
         if (Object.keys(selectedFiles).length > 0) {
             audio.title = volume.title;

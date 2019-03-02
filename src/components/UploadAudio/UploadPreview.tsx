@@ -42,8 +42,8 @@ const SortableListItem = SortableElement((props: any) => {
             <SortableDragHandle />
             <ListItemText primary={`${file.name}`}/>
             <ListItemSecondaryAction>
-                <IconButton>
-                    <CloseIcon onClick={removeFile}/>
+                <IconButton onClick={removeFile}>
+                    <CloseIcon/>
                 </IconButton>
             </ListItemSecondaryAction>
         </ListItem>
@@ -79,7 +79,6 @@ export interface UploadPreviewProps extends SortableContainerProps, WithStyles<t
 class UploadPreview extends Component<UploadPreviewProps, {}> {
 
     onSortEnd = (props: any) => {
-        console.log('onSortEnd!');
         const { files, setFiles } = this.props;
         const newFiles = arrayMove(files, props.oldIndex, props.newIndex);
         setFiles(newFiles);
@@ -87,7 +86,6 @@ class UploadPreview extends Component<UploadPreviewProps, {}> {
 
     render() {
         const { files, removeFile, classes } = this.props;
-        console.log('rendering UploadPreview with ', files);
         return (
             <SortableList
                 helperClass={classes.sortableContainer}
@@ -95,6 +93,7 @@ class UploadPreview extends Component<UploadPreviewProps, {}> {
                 files={files}
                 removeFile={removeFile}
                 onSortEnd={this.onSortEnd}
+                useDragHandle={true}
             />
         );
     }
