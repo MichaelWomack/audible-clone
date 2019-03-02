@@ -7,6 +7,8 @@ import {
     pauseAudio,
     openFullscreen,
     closeFullscreen,
+    nextTrack,
+    previousTrack,
 } from '../store/actions/AudioPlayer';
 import { ReduxState } from '../model/state';
 import { connect } from 'react-redux';
@@ -26,6 +28,8 @@ export const mapDispatchToProps = (dispatch: Function) => ({
     updateAudio: (audio: Audio) => dispatch(updateAudio(audio)),
     playAudio: () => dispatch(playAudio()),
     pauseAudio: () => dispatch(pauseAudio()),
+    nextTrack: () => dispatch(nextTrack()),
+    previousTrack: () => dispatch(previousTrack()),
     showPlayer: () => dispatch(showPlayer()),
     hidePlayer: () => dispatch(hidePlayer()),
     openFullscreen: () => dispatch(openFullscreen()),

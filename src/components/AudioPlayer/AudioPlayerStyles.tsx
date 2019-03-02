@@ -4,12 +4,16 @@ export default (theme: Theme) =>
     createStyles({
         audioPlayerBar: {
             top: 'auto',
-            bottom: 0,
+            bottom: 0
         },
         toolbar: {
             alignItems: 'center',
-            justifyContent: 'space-evenly',
-            // paddingLeft: 0 //for image
+            justifyContent: 'space-between',
+        },
+        playerTextContainer: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            width: '40%'
         },
         toolbarAudioImage: {
             height: 56,

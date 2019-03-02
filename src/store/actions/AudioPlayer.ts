@@ -5,7 +5,8 @@ export enum PlayerActionType {
     PAUSE_AUDIO = 'PAUSE_AUDIO',
     AUDIO_TOGGLE_PLAYING = 'AUDIO_TOGGLE_PLAYING',
     SET_AUDIO = 'SET_AUDIO',
-    SET_TRACK = 'SET_TRACK',
+    NEXT_TRACK = 'NEXT_TRACK',
+    PREVIOUS_TRACK = 'PREVIOUS_TRACK',
     SHOW_PLAYER = 'SHOW_PLAYER',
     HIDE_PLAYER = 'HIDE_PLAYER',
     OPEN_FULLSCREEN = 'OPEN_FULLSCREEN',
@@ -48,6 +49,14 @@ export const closeFullscreen = () => ({
 
 export const togglePlaying = (): PlayerAction => ({
     type: PlayerActionType.AUDIO_TOGGLE_PLAYING
+});
+
+export const nextTrack = (): PlayerAction => ({
+    type: PlayerActionType.NEXT_TRACK,
+});
+
+export const previousTrack = (): PlayerAction => ({
+    type: PlayerActionType.PREVIOUS_TRACK,
 });
 
 

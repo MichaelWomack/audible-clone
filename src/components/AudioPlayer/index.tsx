@@ -1,23 +1,17 @@
 import * as React from 'react';
-import { Component, ChangeEvent } from 'react';
+import { Component } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import PlayArrowSharpIcon from '@material-ui/icons/PlayArrowSharp';
-import PauseSharp from '@material-ui/icons/PauseSharp';
-import Forward30 from '@material-ui/icons/Forward30';
-import Replay30 from '@material-ui/icons/Replay30';
-import KeyboardArrowDownSharp from '@material-ui/icons/KeyboardArrowDownSharp';
-import KeyboardArrowUpSharp from '@material-ui/icons/KeyboardArrowUpSharp';
+import {Forward30, Replay30, KeyboardArrowDownSharp, KeyboardArrowUpSharp, PlayArrowSharp, PauseSharp } from '@material-ui/icons';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
 import { TimeUtils } from '../../utils';
-import { Audio, AudioFile } from '../../model/audio';
+import { Audio } from '../../model/audio';
 import AudioPlayerStyles from './AudioPlayerStyles';
 import { PlayerState } from '../../model/state';
 import FullScreenAudioPlayer from './FullScreenAudioPlayer';
-import { number } from 'prop-types';
 import { AudioUtils } from '../../utils/AudioUtils';
 import { audio } from '../../store/reducers';
 
@@ -28,6 +22,8 @@ export interface AudioPlayerProps extends WithStyles<typeof AudioPlayerStyles> {
     pauseAudio: Function;
     showPlayer: () => void;
     hidePlayer: () => void;
+    nextTrack: () => void;
+    previousTrack: () => void;
     openFullscreen: () => void;
     closeFullscreen: () => void;
     updateAudio: (audio: Audio) => void;
@@ -39,7 +35,6 @@ export interface AudioPlayerState {
 }
 
 export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
-    intervalHandle: NodeJS.Timer;
     audioRef: React.RefObject<HTMLAudioElement>;
 
     readonly state: AudioPlayerState = {
@@ -53,7 +48,6 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
 
     componentDidMount() {
         const { audio } = this.props;
-        // const track = trackList[currentTime];
         console.log('audio', audio);
         const { trackList, currentTrack } = audio;
         const track = trackList[currentTrack];
@@ -69,17 +63,13 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
 
         /* this logic could be moved out (redux?) */
         current.onended = (event: Event) => {
-            const { audio, updateAudio } = this.props;
-            const currentTrack = audio.trackList[audio.currentTrack];
-            // currentTrack.currentTime = currentTrack.duration; /* janky, */
+            const { audio, nextTrack } = this.props;
             if (audio.currentTrack != audio.trackList.length - 1) {
-                audio.currentTrack++;
+                nextTrack();
                 this.saveAudioMetrics();
             } else {
-                /* if the last track ==> reset to first when done */
-                // audio.totalProgress = audio.totalDuration; /** janky, i know */
-                audio.currentTrack = 0;
                 this.pause();
+                /** TODO: dispatch complete audio action */
             }
         }
         current.ontimeupdate = (event: Event) => {
@@ -113,7 +103,7 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
         const { audio, updateAudio } = this.props;
         const currentTrack = audio.trackList[audio.currentTrack];
         currentTrack.currentTime = this.audioRef.current.currentTime;
-        const { totalProgress, totalDuration } = AudioUtils.getListeningProgress(audio);
+        const { totalProgress } = AudioUtils.getListeningProgress(audio);
         audio.totalProgress = totalProgress;
         audio.lastPlayed = new Date().getTime();
         updateAudio(audio);
@@ -171,6 +161,8 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
             hidePlayer,
             openFullscreen,
             closeFullscreen,
+            nextTrack,
+            previousTrack,
         } = this.props;
         const currentTrack = audio.trackList[audio.currentTrack];
         return (
@@ -181,8 +173,7 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
                     className={classes.audioPlayerBar}
                 >
                     <Toolbar className={classes.toolbar}>
-                        {/* <img className={classes.toolbarAudioImage} src={audio.imageUrl} />
-                        <div className={classes.toolbarControls}> */}
+                        <div className={classes.playerTextContainer}>
                             {
                                 <Typography
                                     component="span"
@@ -193,18 +184,19 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
                                     {this.displayAudioTime()}
                                 </Typography>
                             }
-                            <Typography 
+                            <Typography
                                 color="inherit"
                                 variant="caption"
                             >
-                                { `${currentTrack.fileName}(${audio.currentTrack + 1})` }
+                                { `Chapter ${audio.currentTrack + 1}` }
                             </Typography>
-                            <IconButton
-                                color="inherit"
-                                onClick={this.decrement30}
-                            >
-                                <Replay30 />
-                            </IconButton>
+                        </div>
+                            {/*<IconButton*/}
+                                {/*color="inherit"*/}
+                                {/*onClick={this.decrement30}*/}
+                            {/*>*/}
+                                {/*<Replay30 />*/}
+                            {/*</IconButton>*/}
                             <div>
                                 <IconButton
                                     color="inherit"
@@ -213,16 +205,15 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
                                     {player.isPlaying ? (
                                         <PauseSharp />
                                         ) : (
-                                            <PlayArrowSharpIcon />
+                                            <PlayArrowSharp />
                                             )}
                                 </IconButton>
-                            </div>
-                            <IconButton
-                                color="inherit"
-                                onClick={this.increment30}
-                            >
-                                <Forward30 />
-                            </IconButton>
+                            {/*<IconButton*/}
+                                {/*color="inherit"*/}
+                                {/*onClick={this.increment30}*/}
+                            {/*>*/}
+                                {/*<Forward30 />*/}
+                            {/*</IconButton>*/}
                             {player.isPlaying ? (
                                 <IconButton
                                     color="inherit"
@@ -238,11 +229,13 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
                                     <KeyboardArrowDownSharp />
                                 </IconButton>
                             )}
-                            {/* </div> */}
+                            </div>
                     </Toolbar>
                     {this.audioRef.current && <FullScreenAudioPlayer
                         onClose={closeFullscreen}
                         onOpen={openFullscreen}
+                        nextTrack={nextTrack}
+                        previousTrack={previousTrack}
                         isOpen={player.fullscreen}
                         audio={audio}
                         audioRef={this.audioRef}

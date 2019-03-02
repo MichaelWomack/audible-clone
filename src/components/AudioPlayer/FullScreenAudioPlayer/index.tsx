@@ -14,8 +14,8 @@ import FullScreenAudioPlayerStyles from './FullScreenAudioPlayerStyles';
 import { Audio } from '../../../model/audio';
 import Typography from '@material-ui/core/Typography';
 import { TimeUtils } from '../../../utils';
-import { number } from 'prop-types';
 import DialogContent from '@material-ui/core/DialogContent';
+import { SkipNext, SkipPrevious } from "@material-ui/icons";
 
 function Transition(props: any) {
     return <Slide direction="left" unmountOnExit {...props} />;
@@ -24,6 +24,8 @@ function Transition(props: any) {
 interface Props extends WithStyles<typeof FullScreenAudioPlayerStyles> {
     onClose: () => void;
     onOpen: () => void;
+    nextTrack: () => void;
+    previousTrack: () => void;
     setCurrentTime: (value: number) => void;
     isOpen: boolean;
     audio: Audio;
@@ -65,6 +67,8 @@ class FullScreenAudioPlayer extends Component<Props, {}> {
             classes,
             isOpen,
             onClose,
+            nextTrack,
+            previousTrack,
             audio,
             audioRef,
             isPlaying,
@@ -109,6 +113,9 @@ class FullScreenAudioPlayer extends Component<Props, {}> {
                     </Typography>
 
                     <div className={classes.controls}>
+                        <IconButton onClick={previousTrack}>
+                            <SkipPrevious fontSize="large"/>
+                        </IconButton>
                         <IconButton onClick={replay}>
                             <Replay30 fontSize="large"/>
                         </IconButton>
@@ -121,6 +128,9 @@ class FullScreenAudioPlayer extends Component<Props, {}> {
                         </IconButton>
                         <IconButton onClick={forward}>
                             <Forward30 fontSize="large"/>
+                        </IconButton>
+                        <IconButton onClick={nextTrack}>
+                            <SkipNext fontSize="large"/>
                         </IconButton>
                     </div>
                 </DialogContent>
