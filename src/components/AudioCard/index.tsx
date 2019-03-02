@@ -21,6 +21,7 @@ import { withStyles, WithStyles } from '@material-ui/core/styles';
 import AudioInfoDialog from '../AudioInfoDialog';
 import Menu from '@material-ui/core/Menu';
 import ConfirmationDialog from './ConfirmationDialog';
+import { AudioUtils } from "../../utils/AudioUtils";
 
 export interface AudioCardProps extends WithStyles<typeof AudioCardStyles> {
     audio: Audio;
@@ -60,10 +61,13 @@ class AudioCard extends Component<AudioCardProps, AudioCardState> {
 
     replayAudio = () => {
         const { audio, playAudio, updateAudio } = this.props;
+        /** TODO: should this be a redux action? */
+        audio.currentTrack = 0;
         audio.currentTime = 0;
+        audio.totalProgress = 0;
         updateAudio(audio);
         playAudio(audio);
-    }
+    };
 
     openMoreOptionsMenu = (event: SyntheticEvent<HTMLElement>) => {
         this.setState({ moreOptionsAnchorEl: event.currentTarget });
@@ -97,7 +101,7 @@ class AudioCard extends Component<AudioCardProps, AudioCardState> {
 
     render() {
         const { classes, audio, isCurrentlyPlaying, pauseAudio } = this.props;
-        const { totalProgress, totalDuration } = audio;
+        const { totalProgress, totalDuration } = audio;//AudioUtils.getListeningProgress(audio);
         const percentDone = (totalProgress / totalDuration) * 100;
         const chipLabel = `${Math.floor(percentDone)}% complete`;
         return (
