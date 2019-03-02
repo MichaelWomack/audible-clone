@@ -50,14 +50,20 @@ export class UploadAudio extends Component<UploadAudioProps, UploadAudioState> {
         this.setState({ selectedFiles: selectedFiles });
     };
 
-    handleSelectFile = (event: ChangeEvent<HTMLInputElement>) => {
-        const { files } = event.target;
-        const { selectedFiles } = this.state;
-        const filesByName = [...Object.values(selectedFiles), ...Array.from(files)].reduce((map: any, file) => {
+    setFiles = (files: File[]) => {
+        console.log('preparing to setfiles ', files);
+        const filesByName = files.reduce((map: any, file) => {
             map[file.name] = file;
             return map;
         }, {});
         this.setState({ selectedFiles: filesByName }, () => this.fileInput.current.value = null);
+    } ;
+
+    handleSelectFile = (event: ChangeEvent<HTMLInputElement>) => {
+        const { files } = event.target;
+        const { selectedFiles } = this.state;
+        const newFileList = [...Object.values(selectedFiles), ...Array.from(files)];
+        this.setFiles(newFileList);
     };
     
     cancelUpload = () => {
@@ -67,14 +73,17 @@ export class UploadAudio extends Component<UploadAudioProps, UploadAudioState> {
 
     addAudio = () => {
         const { selectedFiles, audio } = this.state;
+        console.log('addAudio selectedFiles', selectedFiles);
         const { volume } = this.props;
-        if (selectedFiles.length) {
+        if (Object.keys(selectedFiles).length > 0) {
             audio.title = volume.title;
             audio.author = volume.authors.join(', ');
             audio.description = volume.description;
             audio.imageUrl = volume.imageLinks.thumbnail || volume.imageLinks.smallThumbnail;
             this.props.uploadAudio(audio, Object.values(selectedFiles)); /** TODO pass whole array */
             this.props.setNextStepDisabled(false);
+        } else {
+            alert('upload some files!');
         }
     };
 
@@ -133,7 +142,9 @@ export class UploadAudio extends Component<UploadAudioProps, UploadAudioState> {
                     </form>
                 <UploadPreview
                     files={Object.values(this.state.selectedFiles)}
+                    setFiles={this.setFiles}
                     removeFile={this.removeFile}
+                    uploadTasks={this.props.uploadTasks}
                 />
                 </div>
             </Fragment>
