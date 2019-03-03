@@ -136,7 +136,7 @@ export class AddAudio extends Component<AddAudioProps, AddAudioState> {
                     ) : (
                         <IconButton
                             onClick={this.previousStep}
-                            disabled={isUploading}
+                            disabled={isUploading || uploadComplete}
                         >
                             <ArrowBackIcon />
                         </IconButton>
