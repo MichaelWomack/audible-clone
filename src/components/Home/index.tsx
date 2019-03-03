@@ -19,6 +19,7 @@ import HomeStyles from './HomeStyles';
 import { PlayerState, UiState, AudioState } from '../../model/state';
 import GitHubButton from '../GitHubButton';
 import { Audio, AudioBook, AudioLibraryFilter } from '../../model/audio';
+import { Routes } from '../../config/constants';
 
 export interface HomeProps extends WithStyles<typeof HomeStyles>, RouteComponentProps {
     playAudio: (audio: AudioBook) => void;
@@ -69,7 +70,7 @@ export class Home extends Component<HomeProps, {}> {
                 />
                 <div className={classes.container}>
                     {!history.location.pathname.endsWith('add-audio') && (
-                        <Link to={`${match.path}/add-audio`}>
+                        <Link to={Routes.ADD_AUDIO}>
                             <Button
                                 variant="fab"
                                 color="secondary"
@@ -98,7 +99,7 @@ export class Home extends Component<HomeProps, {}> {
                         )}
                     />
                     <Route
-                        path={`${match.path}/add-audio`}
+                        path={Routes.ADD_AUDIO}
                         component={AddAudioFlow}
                     />
                 </div>
