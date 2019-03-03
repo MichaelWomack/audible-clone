@@ -3,9 +3,12 @@ import { Component } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import {Forward30, Replay30, KeyboardArrowDownSharp, KeyboardArrowUpSharp, PlayArrowSharp, PauseSharp } from '@material-ui/icons';
-import { withStyles, WithStyles } from '@material-ui/core/styles';
+import KeyboardArrowDownSharp from '@material-ui/icons/KeyboardArrowDownSharp';
+import KeyboardArrowUpSharp from '@material-ui/icons/KeyboardArrowUpSharp';
+import PlayArrowSharp from '@material-ui/icons/PlayArrowSharp';
+import PauseSharp from '@material-ui/icons/PauseSharp';
 import Typography from '@material-ui/core/Typography';
+import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 
 import { TimeUtils } from '../../utils';
 import { Audio } from '../../model/audio';
@@ -48,10 +51,8 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
 
     componentDidMount() {
         const { audio } = this.props;
-        console.log('audio', audio);
         const { trackList, currentTrack } = audio;
         const track = trackList[currentTrack];
-        console.log('currentTrack: ', track);
         const audioCurrentTime = track.currentTime || 0;
         this.audioRef.current.currentTime = audioCurrentTime;
         this.setState({ currentPosition: audioCurrentTime });

@@ -1,26 +1,20 @@
 import * as React from 'react';
 import { Component, Fragment, ChangeEvent } from 'react';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import {
-    withStyles,
-    WithStyles,
-    AppBar,
-    Toolbar,
-    IconButton,
-} from '@material-ui/core';
+import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { TwitterIcon, GoogleIcon, FacebookIcon } from '../Icons';
-import GitHubButton from '../GitHubButton';
 
 import { auth } from 'firebase';
 import LoginStyles from './LoginStyles';
 import { UiState } from '../../model/state';
 
-export interface LoginProps
-    extends WithStyles<typeof LoginStyles>,
-        RouteComponentProps {
+export interface LoginProps extends WithStyles<typeof LoginStyles>, RouteComponentProps {
     user: firebase.User;
     ui: UiState;
     login: (email: string, password: string, callback: Function) => void;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import { configureStore } from '../../store/index';
 import { PersistGate } from 'redux-persist/integration/react';
+import { configureStore } from '../../store/index';
 import App from '../../containers/App';
 
 const { store, persistor } = configureStore();

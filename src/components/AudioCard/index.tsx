@@ -17,11 +17,10 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ShareIcon from '@material-ui/icons/Share'
 import Chip from '@material-ui/core/Chip';
-import { withStyles, WithStyles } from '@material-ui/core/styles';
 import AudioInfoDialog from '../AudioInfoDialog';
 import Menu from '@material-ui/core/Menu';
+import { withStyles, WithStyles } from '@material-ui/core/styles';
 import ConfirmationDialog from './ConfirmationDialog';
-import { AudioUtils } from "../../utils/AudioUtils";
 
 export interface AudioCardProps extends WithStyles<typeof AudioCardStyles> {
     audio: Audio;
