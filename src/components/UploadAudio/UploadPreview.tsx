@@ -113,6 +113,7 @@ class UploadPreview extends Component<UploadPreviewProps, {}> {
                 lockAxis="y"
                 onSortEnd={this.onSortEnd}
                 useDragHandle={true}
+                useWindowAsScrollContainer={true}
             />
         );
     }
