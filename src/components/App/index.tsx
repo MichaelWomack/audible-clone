@@ -33,7 +33,6 @@ class App extends Component<Props, {}> {
                     <Switch>
                         <Route path="/login" component={Login} />
                         <Route path="/signup" component={SignUp} />
-                        {/* <ProtectedRoute path="/settings" user={user} component={} /> */}
                         <ProtectedRoute path="/home" user={user} component={Home} />
                         <ProtectedRoute path="/" user={user} component={Home} />
                     </Switch>

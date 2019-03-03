@@ -9,6 +9,7 @@ export interface AudioState {
     createdDocument: firestore.DocumentReference,
     isLoading: boolean;
     isUploading: boolean;
+    uploadComplete: boolean;
     uploadTasks: storage.UploadTask[];
     uploadProgress: number;
     completedUploads: number;

@@ -167,6 +167,7 @@ export enum UploadTaskActionType {
     UPLOAD_AUDIO_PROGRESS = 'UPLOAD_AUDIO_PROGRESS',
     UPLOAD_AUDIO_SUCCESS = 'UPLOAD_AUDIO_SUCCESS',
     UPLOAD_AUDIO_FAILURE = 'UPLOAD_AUDIO_FAILURE',
+    CLEAR_UPLOAD_STATUS = 'CLEAR_UPLOAD_STATUS'
 }
 
 export interface UploadTaskAction {
@@ -212,6 +213,9 @@ const completeUpload = (audio: Audio) => ({
     audio
 });
 
+export const clearUploadStatus = () => ({
+    type: UploadTaskActionType.CLEAR_UPLOAD_STATUS
+});
 
 /* Upload Progress Handler */
 const onUploadProgress = (snapshot: storage.UploadTaskSnapshot, dispatch: Function, getState: Function) => {
@@ -231,7 +235,7 @@ const calculateTotalProgress = (uploadTasks: storage.UploadTask[]) => {
             totalBytes: totalBytes + task.snapshot.totalBytes
         };
     }, { totalBytesTransferred: 0, totalBytes: 0 });
-}
+};
 
 /* Upload Error Handler */
 const onUploadError = (error: Error&{ code: string }, audio: Audio, dispatch: Function) => {
@@ -257,30 +261,28 @@ const onUploadError = (error: Error&{ code: string }, audio: Audio, dispatch: Fu
 const onUploadComplete = async (audio: Audio, index: number, dispatch: Function, getState: Function) => {
     const state: ReduxState = getState();
     const { uploadTasks } = state.audio;
-
-    const newTotalCompleted = uploadTasks.reduce((totalComplete: number, uploadTask: storage.UploadTask) => {
-        return uploadTask.snapshot.state === storage.TaskState.SUCCESS ? ++totalComplete : totalComplete;
-    }, 0);
-
     const uploadTask = uploadTasks[index];
     const uploadedTrack = audio.trackList[index];
     uploadedTrack.downloadUrl = await uploadTask.snapshot.ref.getDownloadURL();
     uploadedTrack.storagePath = uploadTask.snapshot.ref.fullPath;
     const audioElement: HTMLAudioElement = new Audio(uploadedTrack.downloadUrl);
-    audioElement.addEventListener('loadedmetadata', async () => {
+
+    const onMetaDataLoaded = function () {
         uploadedTrack.duration = audioElement.duration;
         uploadedTrack.currentTime = 0;
         audio.trackList[index] = uploadedTrack;
+        const newTotalCompleted = uploadTasks.reduce((totalComplete: number, uploadTask: storage.UploadTask) => {
+            return uploadTask.snapshot.state === storage.TaskState.SUCCESS ? ++totalComplete : totalComplete;
+        }, 0);
         dispatch(setUploadsCompleted(newTotalCompleted));
         if (newTotalCompleted === uploadTasks.length) {
-            const { totalProgress, totalDuration } = AudioUtils.getListeningProgress(audio);
-            console.log('totalprogress, ', totalProgress);
-            console.log('totalduration ', totalDuration);
+            const { totalDuration } = AudioUtils.getListeningProgress(audio);
             audio.totalProgress = 0;
             audio.totalDuration = totalDuration;
             finalizeUploads(audio, dispatch);
         }
-    });
+    };
+    audioElement.addEventListener('loadedmetadata', onMetaDataLoaded);
 };
 
 const finalizeUploads = async (audio: Audio, dispatch: Function) => {
@@ -301,7 +303,7 @@ const finalizeUploads = async (audio: Audio, dispatch: Function) => {
         dispatch(setUploadError(error));
         dispatch(deleteAudio(audio));
     }
-}
+};
 
 //should this be called something else
 export const uploadAudio = (audio: Audio, files: File[]) => {

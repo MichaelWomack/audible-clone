@@ -13,7 +13,7 @@ import Slide from '@material-ui/core/Slide';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import NavBar from '../NavBar';
 import AudioPlayer from '../../containers/AudioPlayer';
-import AddAudio from '../../containers/AddAudio';
+import AddAudioFlow from '../../containers/AddAudioFlow';
 import AudioList from '../AudioList';
 import HomeStyles from './HomeStyles';
 import { PlayerState, UiState, AudioState } from '../../model/state';
@@ -99,7 +99,7 @@ export class Home extends Component<HomeProps, {}> {
                     />
                     <Route
                         path={`${match.path}/add-audio`}
-                        component={AddAudio}
+                        component={AddAudioFlow}
                     />
                 </div>
 

@@ -8,28 +8,29 @@ import BookSearch from '../../containers/BookSearch';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import Button from '@material-ui/core/Button';
 import UploadAudio from '../../containers/UploadAudio';
 import EditDetails from '../../containers/EditDetails';
 import ArrowBackIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForwardIos';
 import ClearSharpIcon from '@material-ui/icons/ClearSharp';
-import CheckSharpIcon from '@material-ui/icons/CheckSharp';
+import DoneAll from '@material-ui/icons/DoneAllOutlined';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { VolumeInfo } from '../../model/volume';
 import IconButton from '@material-ui/core/IconButton';
 
-export interface AddAudioProps
-    extends WithStyles<typeof AddAudioStyles>,
-        RouteComponentProps {
+export interface AddAudioProps extends WithStyles<typeof AddAudioStyles>, RouteComponentProps {
     clearVolumes: () => void;
     setVolume: (volume: VolumeInfo) => void;
+    clearUploadStatus: () => void;
+    isUploading: boolean;
+    uploadComplete: boolean;
+    uploadProgress: number;
 }
 
 export interface AddAudioState {
     activeStep?: number;
     nextStepDisabled: boolean;
-    complete: false;
+    complete: boolean;
 }
 
 export class AddAudio extends Component<AddAudioProps, AddAudioState> {
@@ -80,8 +81,10 @@ export class AddAudio extends Component<AddAudioProps, AddAudioState> {
     };
 
     complete = () => {
+        const {history, clearUploadStatus} = this.props;
         this.clearSelections();
-        this.props.history.push('/home');
+        clearUploadStatus();
+        history.push('/home');
     };
 
     render() {
@@ -112,7 +115,7 @@ export class AddAudio extends Component<AddAudioProps, AddAudioState> {
                 ),
             },
         ];
-        const { classes } = this.props;
+        const { classes, isUploading, uploadProgress, uploadComplete } = this.props;
         const { activeStep, nextStepDisabled } = this.state;
         return (
             <div className={classes.root}>
@@ -131,7 +134,10 @@ export class AddAudio extends Component<AddAudioProps, AddAudioState> {
                             <ClearSharpIcon />
                         </IconButton>
                     ) : (
-                        <IconButton onClick={this.previousStep}>
+                        <IconButton
+                            onClick={this.previousStep}
+                            disabled={isUploading}
+                        >
                             <ArrowBackIcon />
                         </IconButton>
                     )}
@@ -144,10 +150,10 @@ export class AddAudio extends Component<AddAudioProps, AddAudioState> {
                         </IconButton>
                     ) : (
                         <IconButton
-                            disabled={nextStepDisabled}
+                            disabled={!uploadComplete}
                             onClick={this.complete}
                         >
-                            <CheckSharpIcon />
+                            <DoneAll />
                         </IconButton>
                     )}
                 </div>
