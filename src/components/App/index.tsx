@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import Login from '../../containers/Login';
 import Home from '../../containers/Home';
 import SignUp from '../SignUp';
@@ -34,6 +34,7 @@ class App extends Component<Props, {}> {
                         <Route path="/login" component={Login} />
                         <Route path="/signup" component={SignUp} />
                         <ProtectedRoute path="/home" user={user} component={Home} />
+                        <Redirect from="/" to="/home" />
                     </Switch>
                 </Router>
             </MuiThemeProvider>
