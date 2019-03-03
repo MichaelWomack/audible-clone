@@ -12,8 +12,7 @@
     "test:watch": "jest --coverage --watchAll",
     "dev": "webpack-dev-server --open --mode=development --env.ENVIRONMENT=development",
     "build:development": "npm run lint && webpack --mode=production --env.ENVIRONMENT=development",
-    "build:production": "npm run lint && webpack --mode=production --env.ENVIRONMENT=production",
-    "firebase": "firebase"
+    "build:production": "npm run lint && webpack --mode=production --env.ENVIRONMENT=production"
   },
   "keywords": [],
   "author": "",
@@ -39,7 +38,6 @@
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.6.0",
     "file-loader": "^2.0.0",
-    "firebase-tools": "^6.4.0",
     "html-webpack-plugin": "^3.2.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^23.6.0",
