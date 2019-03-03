@@ -3,7 +3,7 @@ import { Component, ChangeEvent, Fragment, RefObject } from 'react';
 import { storage } from 'firebase';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { withStyles, WithStyles } from '@material-ui/core/styles';
+import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import { VolumeInfo } from '../../model/volume';
 import { Audio } from '../../model/audio';
 import UploadAudioStyles from './UploadAudioStyles';

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Component, Fragment, ChangeEvent } from 'react';
 import TextField from '@material-ui/core/TextField';
-import { withStyles, WithStyles } from '@material-ui/core/styles';
+import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import EditDetailsStyles from './EditDetailsStyles';
 import { VolumeInfo } from '../../model/volume';
 

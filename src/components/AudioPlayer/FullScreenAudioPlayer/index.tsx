@@ -1,21 +1,23 @@
 import * as React from 'react';
 import { Component, RefObject, ChangeEvent } from 'react';
-import { withStyles, WithStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
 import IconButton from '@material-ui/core/IconButton';
 import PlayArrowIcon from '@material-ui/icons/PlayArrowSharp';
 import PauseSharp from '@material-ui/icons/PauseSharp';
 import Forward30 from '@material-ui/icons/Forward30';
 import Replay30 from '@material-ui/icons/Replay30';
 import KeyboardArrowDownSharp from '@material-ui/icons/KeyboardArrowDownSharp';
+import SkipNext from "@material-ui/icons/SkipNext";
+import SkipPrevious from "@material-ui/icons/SkipPrevious";
 import Slide from '@material-ui/core/Slide';
 import Slider from '@material-ui/lab/Slider';
+import Typography from '@material-ui/core/Typography';
+import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
+
 import FullScreenAudioPlayerStyles from './FullScreenAudioPlayerStyles';
 import { Audio } from '../../../model/audio';
-import Typography from '@material-ui/core/Typography';
 import { TimeUtils } from '../../../utils';
-import DialogContent from '@material-ui/core/DialogContent';
-import { SkipNext, SkipPrevious } from "@material-ui/icons";
 
 function Transition(props: any) {
     return <Slide direction="left" unmountOnExit {...props} />;

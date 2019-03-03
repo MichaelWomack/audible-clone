@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { ComponentClass, SFC } from 'react';
+import { ComponentClass, FunctionComponent } from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import firebaseInstance from '../../config/firebase';
 
 interface ProtectedProps {
     component: ComponentClass,
@@ -9,7 +8,7 @@ interface ProtectedProps {
     user: firebase.User
 }
 
-const ProtectedRoute: SFC<ProtectedProps> = ({component, user, ...rest}: ProtectedProps) => {
+const ProtectedRoute: FunctionComponent<ProtectedProps> = ({component, user, ...rest}: ProtectedProps) => {
     if (Boolean(user)) {
         console.log("You logged in!");
         return <Route {...rest} component={component}/>;

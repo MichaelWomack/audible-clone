@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { SFC } from 'react';
+import { FunctionComponent } from 'react';
 import { GitHubIcon } from '../Icons';
 import IconButton from '@material-ui/core/IconButton';
 
-const GitHubButton: SFC<{}> = () => 
+const GitHubButton: FunctionComponent<{}> = () =>
     <IconButton>
         <a 
             href={"https://github.com/MichaelWomack/audible-clone"} 

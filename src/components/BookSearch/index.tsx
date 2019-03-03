@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Fragment, Component, ChangeEvent } from 'react';
 import { AudioType } from '../../model/audio';
-import { withStyles, WithStyles } from '@material-ui/core/styles';
+import withStyles,  { WithStyles } from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import BookSearchStyles from './BookSearchStyles';

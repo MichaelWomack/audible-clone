@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SFC } from 'react';
+import { FunctionComponent } from 'react';
 import { Audio, AudioLibraryFilter } from '../../model/audio';
 import AudioCard from '../AudioCard';
 import AudioListStyles from './AudioListStyles';
@@ -17,7 +17,7 @@ export interface AudioListProps extends WithStyles<typeof AudioListStyles> {
     deleteAudio: (audio: Audio) => void;
 }
 
-const AudioList: SFC<AudioListProps> = (props: AudioListProps) => {
+const AudioList: FunctionComponent<AudioListProps> = (props: AudioListProps) => {
     const { audioList, classes, updateAudio, deleteAudio, playAudio, pauseAudio, selectedAudioId, isPlaying } = props;
     const isCurrentlyPlaying = (audio: Audio): boolean => (audio.id === selectedAudioId) && isPlaying;
     return (

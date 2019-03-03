@@ -1,18 +1,16 @@
 import * as React from 'react';
 import { Component, Fragment, ChangeEvent } from 'react';
-import  SignUpStyles from './SignUpStyles';
-import { WithStyles, withStyles } from '@material-ui/core/styles';
+import { withRouter } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router';
+import  withStyles, { WithStyles} from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import { GoogleIcon } from '../Icons/GoogleIcon';
-import { TwitterIcon } from '../Icons/TwitterIcon';
-import { FacebookIcon } from '../Icons/FacebookIcon';
-import { withRouter } from 'react-router-dom';
-import { RouteComponentProps } from 'react-router';
+import { GoogleIcon, TwitterIcon, FacebookIcon } from '../Icons';
+import  SignUpStyles from './SignUpStyles';
 
 export interface SignUpProps extends WithStyles<typeof SignUpStyles>, RouteComponentProps {}
 
@@ -28,16 +26,16 @@ class SignUp extends Component<SignUpProps, SignUpState> {
         email: '',
         password: '',
         confirmPassword: ''
-    }
+    };
 
     handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { target: { value, id } } = event;
         this.setState({ [id]: value });
-    }
+    };
 
     navigateToLogin = () => {
         this.props.history.push('/login');
-    }
+    };
 
     render() {
         const { classes } = this.props;

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SFC } from 'react';
+import { FunctionComponent } from "react";
 import { Audio } from '../../model/audio';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -13,7 +13,7 @@ export interface AudioInfoDialogProps {
     closeDialog: () => void;
 }
 
-const AudioInfoDialog: SFC<AudioInfoDialogProps> = (props) => {
+const AudioInfoDialog: FunctionComponent<AudioInfoDialogProps> = (props) => {
     const { audio, showInfoDialog, closeDialog } = props;
     return (
         <Dialog 
