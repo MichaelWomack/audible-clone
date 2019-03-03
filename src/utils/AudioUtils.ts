@@ -11,7 +11,7 @@ export class AudioUtils {
                 value.totalProgress += track.currentTime;
             } else if (index < audio.currentTrack) {
                 value.totalProgress += track.duration;
-            };
+            }
             value.totalDuration += track.duration;
             return value;
 

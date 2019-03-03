@@ -66,7 +66,8 @@ export class UploadAudio extends Component<UploadAudioProps, UploadAudioState> {
         const newFileList = [...Object.values(selectedFiles), ...Array.from(files)];
         this.setFiles(newFileList);
     };
-    
+
+    /** TODO: delete this */
     cancelUpload = () => {
         const { uploadTasks } = this.props;
         uploadTasks.forEach((task: storage.UploadTask) => task.cancel());
@@ -144,7 +145,7 @@ export class UploadAudio extends Component<UploadAudioProps, UploadAudioState> {
                     files={Object.values(this.state.selectedFiles)}
                     setFiles={this.setFiles}
                     removeFile={this.removeFile}
-                    uploadTasks={this.props.uploadTasks}
+                    uploadTasks={this.props.uploadTasks || []}
                 />
                 </div>
             </Fragment>

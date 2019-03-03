@@ -11,10 +11,15 @@ import { withStyles, Theme, createStyles, WithStyles } from '@material-ui/core/s
 import List from '@material-ui/core/List';
 import IconButton from "@material-ui/core/IconButton/IconButton";
 import CloseIcon from '@material-ui/icons/Close';
+import CheckIcon from '@material-ui/icons/Done';
+import BackupIcon from '@material-ui/icons/BackupOutlined';
 import DragIndicatorIcon from "@material-ui/icons/DragIndicator";
 import ListItemText from "@material-ui/core/ListItemText/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction/ListItemSecondaryAction";
 import ListItem from "@material-ui/core/ListItem/ListItem";
+import Typography from "@material-ui/core/Typography/Typography";
+import UploadTaskSnapshot = firebase.storage.UploadTaskSnapshot;
+import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress";
 
 const styles = (theme: Theme) => createStyles({
     root: {
@@ -35,23 +40,35 @@ const SortableDragHandle = SortableHandle(() =>
     </IconButton>
 );
 
+const renderUploadStatus = (percentDone: number) => {
+    return percentDone === 100 ? <CheckIcon /> : <BackupIcon />
+};
+
 const SortableListItem = SortableElement((props: any) => {
-    const { file, removeFile } = props;
+    const { file, removeFile, uploadTask } = props;
+    const uploadStarted = Boolean(uploadTask);
+    const percentDone = uploadStarted ? Math.floor((uploadTask.snapshot.bytesTransferred / uploadTask.snapshot.totalBytes) * 100) : 0;
     return (
         <ListItem style={{textAlign: 'center'}} dense>
-            <SortableDragHandle />
+            { uploadStarted ? renderUploadStatus(percentDone) : <SortableDragHandle /> }
             <ListItemText primary={`${file.name}`}/>
             <ListItemSecondaryAction>
-                <IconButton onClick={removeFile}>
-                    <CloseIcon/>
-                </IconButton>
+                {uploadStarted ?
+                    <Typography color="primary">
+                        {`${percentDone}%`}
+                    </Typography>
+                :
+                    <IconButton onClick={removeFile}>
+                        <CloseIcon/>
+                    </IconButton>
+                }
             </ListItemSecondaryAction>
         </ListItem>
     );
 });
 
 const SortableList = SortableContainer((props: any) => {
-    const { files, removeFile } = props;
+    const { files, removeFile, uploadTasks } = props;
     return (
         <List>
             {
@@ -62,6 +79,7 @@ const SortableList = SortableContainer((props: any) => {
                         index={index}
                         file={file}
                         removeFile={remove}
+                        uploadTask={uploadTasks[index]}
                     />
                 })
             }
@@ -85,15 +103,17 @@ class UploadPreview extends Component<UploadPreviewProps, {}> {
     };
 
     render() {
-        const { files, removeFile, classes } = this.props;
+        const { files, removeFile, classes, uploadTasks } = this.props;
         return (
             <SortableList
-                helperClass={classes.sortableContainer}
-                lockAxis="y"
                 files={files}
                 removeFile={removeFile}
+                uploadTasks={uploadTasks}
+                helperClass={classes.sortableContainer}
+                lockAxis="y"
                 onSortEnd={this.onSortEnd}
                 useDragHandle={true}
+                useWindowAsScrollContainer={true}
             />
         );
     }

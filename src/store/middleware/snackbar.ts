@@ -16,7 +16,8 @@ export const snackbarMiddleware: Middleware = (store: MiddlewareAPI) => (next: D
     switch(action.type) {
         case UploadTaskActionType.UPLOAD_AUDIO_SUCCESS:
             const uploadAction = action as UploadTaskAction;
-            toastSnackbar(`Successfully uploaded ${uploadAction.audio.title}!`, 4000);
+            const uploadedFiles = action.audio.trackList.length;
+            toastSnackbar(`Successfully uploaded ${uploadedFiles} files for ${uploadAction.audio.title}!`, 4000);
             break;
         case AudioCrudActionType.DELETE_AUDIO_DOCUMENT_SUCCESS:
             const deleteAction = action as AudioCrudAction;

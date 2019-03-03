@@ -18,7 +18,9 @@ const defaultState = {
     isLoading: false,
     error: null as any,
     filter: AudioLibraryFilter.ALL,
+    uploadTasks: null as storage.UploadTask[],
     completedUploads: 0,
+    uploadComplete: false
 };
 
 export const audio = (state = defaultState, action: AudioAction) => {
@@ -93,7 +95,7 @@ export const audio = (state = defaultState, action: AudioAction) => {
             return {
                 ...state,
                 uploadTasks: action.uploadTasks
-            }
+            };
         case UploadTaskActionType.SET_COMPLETED_UPLOADS:
             return {
                 ...state,
@@ -120,6 +122,7 @@ export const audio = (state = defaultState, action: AudioAction) => {
                 isUploading: false,
                 uploadTask: null as storage.UploadTask,
                 uploadProgress: null as number,
+                uploadComplete: true
             };
         case UploadTaskActionType.UPLOAD_AUDIO_FAILURE:
             return {
@@ -127,7 +130,15 @@ export const audio = (state = defaultState, action: AudioAction) => {
                 isUploading: false,
                 error: action.error,
             };
-
+        case UploadTaskActionType.CLEAR_UPLOAD_STATUS:
+            return {
+                ...state,
+                uploadComplete: false,
+                uploadProgress: null as number,
+                uploadTasks: null as storage.UploadTask[],
+                totalBytesUploaded: 0,
+                totalBytesToUpload: 0,
+            };
         /** LIBRARY FILTER ACTIONS */
         case AudioFilterActionType.SET_AUDIO_LIBRARY_FILTER:
             return {
