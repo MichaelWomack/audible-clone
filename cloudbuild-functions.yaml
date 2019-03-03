@@ -3,7 +3,7 @@ steps:
   args: ['install']
   dir: 'functions/'
 - name: 'gcr.io/cloud-builders/npm'
-  args: ['lint']
+  args: ['run', 'lint']
   dir: 'functions/'
 - name: 'gcr.io/cloud-builders/npm'
   args: ['test']
