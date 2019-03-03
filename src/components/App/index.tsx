@@ -34,7 +34,6 @@ class App extends Component<Props, {}> {
                         <Route path="/login" component={Login} />
                         <Route path="/signup" component={SignUp} />
                         <ProtectedRoute path="/home" user={user} component={Home} />
-                        <ProtectedRoute path="/" user={user} component={Home} />
                     </Switch>
                 </Router>
             </MuiThemeProvider>
