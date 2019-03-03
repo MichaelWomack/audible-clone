@@ -8,7 +8,7 @@
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
-    "test": "jest -- --watch"
+    "test": "jest src/ --coverage"
   },
   "main": "lib/index.js",
   "dependencies": {
@@ -17,6 +17,7 @@
     "googleapis": "^35.0.0"
   },
   "devDependencies": {
+    "jest": "^24.1.0",
     "tslint": "~5.8.0",
     "typescript": "~3.1.0"
   },
