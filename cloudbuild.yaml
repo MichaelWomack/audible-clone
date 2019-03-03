@@ -11,15 +11,12 @@ steps:
 - name: 'gcr.io/cloud-builders/npm'
   args: ['install']
 - name: 'gcr.io/cloud-builders/npm'
-  args: ['install']
-  dir: 'functions/'
-- name: 'gcr.io/cloud-builders/npm'
   args: ['run', 'build:${_ENVIRONMENT}']
 - name: 'gcr.io/cloud-builders/npm'
   args: ['test']
 - name: 'gcr.io/cloud-builders/docker'
   args: [ 'build', '-t', 'gcr.io/${PROJECT_ID}/firebase', '.' ]
 - name: 'gcr.io/${PROJECT_ID}/firebase'
-  args: ['--token', '${_FIREBASE_TOKEN}', 'deploy', '-P', '$PROJECT_ID']
+  args: ['--token', '${_FIREBASE_TOKEN}', 'deploy', '-P', '$PROJECT_ID', '--only', 'hosting']
 images:
 - 'gcr.io/${PROJECT_ID}/firebase'
