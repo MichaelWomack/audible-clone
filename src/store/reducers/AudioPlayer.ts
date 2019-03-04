@@ -65,6 +65,13 @@ export const player = (state = defaultState, action: PlayerAction) => {
                 ...state,
                 audio
             };
+        case PlayerActionType.SET_TRACK:
+            audio.currentTrack = action.track;
+            return {
+                ...state,
+                isPlaying: true,
+                audio
+            };
         default:
             return state;
     }

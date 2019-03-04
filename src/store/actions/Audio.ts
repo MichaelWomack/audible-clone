@@ -346,7 +346,7 @@ export const uploadAudio = (audio: Audio, files: File[]) => {
             );
         });
     }
-}
+};
 
 
 /******** LIBRARY ************/
