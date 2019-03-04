@@ -7,6 +7,7 @@ export enum PlayerActionType {
     SET_AUDIO = 'SET_AUDIO',
     NEXT_TRACK = 'NEXT_TRACK',
     PREVIOUS_TRACK = 'PREVIOUS_TRACK',
+    SET_TRACK = 'SET_TRACK',
     SHOW_PLAYER = 'SHOW_PLAYER',
     HIDE_PLAYER = 'HIDE_PLAYER',
     OPEN_FULLSCREEN = 'OPEN_FULLSCREEN',
@@ -16,6 +17,7 @@ export enum PlayerActionType {
 export interface PlayerAction {
     type: PlayerActionType;
     audio?: AudioBook;
+    track?: number;
 }
 
 export const playAudio = () => ({
@@ -57,6 +59,11 @@ export const nextTrack = (): PlayerAction => ({
 
 export const previousTrack = (): PlayerAction => ({
     type: PlayerActionType.PREVIOUS_TRACK,
+});
+
+export const setTrack = (track: number): PlayerAction => ({
+    type: PlayerActionType.SET_TRACK,
+    track: track
 });
 
 

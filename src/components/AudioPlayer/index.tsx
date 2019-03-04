@@ -27,6 +27,7 @@ export interface AudioPlayerProps extends WithStyles<typeof AudioPlayerStyles> {
     hidePlayer: () => void;
     nextTrack: () => void;
     previousTrack: () => void;
+    setTrack: (track: number) => void;
     openFullscreen: () => void;
     closeFullscreen: () => void;
     updateAudio: (audio: Audio) => void;
@@ -164,6 +165,7 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
             closeFullscreen,
             nextTrack,
             previousTrack,
+            setTrack
         } = this.props;
         const currentTrack = audio.trackList[audio.currentTrack];
         return (
@@ -237,6 +239,7 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
                         onOpen={openFullscreen}
                         nextTrack={nextTrack}
                         previousTrack={previousTrack}
+                        setTrack={setTrack}
                         isOpen={player.fullscreen}
                         audio={audio}
                         audioRef={this.audioRef}

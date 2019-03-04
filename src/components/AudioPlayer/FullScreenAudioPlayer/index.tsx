@@ -14,8 +14,9 @@ import Slide from '@material-ui/core/Slide';
 import Slider from '@material-ui/lab/Slider';
 import Typography from '@material-ui/core/Typography';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
+import FullScreenToolbar from "./FullScreenToolbar";
+import FullScreenAudioPlayerStyles from "./FullScreenAudioPlayerStyles";
 
-import FullScreenAudioPlayerStyles from './FullScreenAudioPlayerStyles';
 import { Audio } from '../../../model/audio';
 import { TimeUtils } from '../../../utils';
 
@@ -28,6 +29,7 @@ interface Props extends WithStyles<typeof FullScreenAudioPlayerStyles> {
     onOpen: () => void;
     nextTrack: () => void;
     previousTrack: () => void;
+    setTrack: (track: number) => void;
     setCurrentTime: (value: number) => void;
     isOpen: boolean;
     audio: Audio;
@@ -71,6 +73,7 @@ class FullScreenAudioPlayer extends Component<Props, {}> {
             onClose,
             nextTrack,
             previousTrack,
+            setTrack,
             audio,
             audioRef,
             isPlaying,
@@ -136,6 +139,7 @@ class FullScreenAudioPlayer extends Component<Props, {}> {
                         </IconButton>
                     </div>
                 </DialogContent>
+                    <FullScreenToolbar audio={audio} setTrack={setTrack}/>
                 </Dialog>
             
         );
