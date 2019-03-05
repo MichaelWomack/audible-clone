@@ -9,7 +9,8 @@ import {
     closeFullscreen,
     nextTrack,
     previousTrack,
-    setTrack
+    setTrack,
+    setPlaybackSpeed
 } from '../store/actions/AudioPlayer';
 import { ReduxState } from '../model/state';
 import { connect } from 'react-redux';
@@ -32,6 +33,7 @@ export const mapDispatchToProps = (dispatch: Function) => ({
     nextTrack: () => dispatch(nextTrack()),
     previousTrack: () => dispatch(previousTrack()),
     setTrack: (track: number) => dispatch(setTrack(track)),
+    setPlaybackSpeed: (speed: number) => dispatch(setPlaybackSpeed(speed)),
     showPlayer: () => dispatch(showPlayer()),
     hidePlayer: () => dispatch(hidePlayer()),
     openFullscreen: () => dispatch(openFullscreen()),

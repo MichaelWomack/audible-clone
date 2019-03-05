@@ -35,6 +35,7 @@ export interface PlayerState {
     isPlaying: boolean,
     isShowing: boolean,
     fullscreen: boolean,
+    speed: number,
     audio: Audio,
 }
 

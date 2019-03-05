@@ -28,6 +28,7 @@ export interface AudioPlayerProps extends WithStyles<typeof AudioPlayerStyles> {
     nextTrack: () => void;
     previousTrack: () => void;
     setTrack: (track: number) => void;
+    setPlaybackSpeed: (speed: number) => void;
     openFullscreen: () => void;
     closeFullscreen: () => void;
     updateAudio: (audio: Audio) => void;
@@ -91,6 +92,10 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
             this.play();
         } else if (!this.audioRef.current.paused && !this.props.player.isPlaying) {
             this.pause();
+        }
+
+        if (this.audioRef.current.playbackRate !== this.props.player.speed) {
+            this.audioRef.current.playbackRate = this.props.player.speed;
         }
 
         /** update the audioRef currentTime if a new audio file has been selected */
@@ -165,7 +170,8 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
             closeFullscreen,
             nextTrack,
             previousTrack,
-            setTrack
+            setTrack,
+            setPlaybackSpeed,
         } = this.props;
         const currentTrack = audio.trackList[audio.currentTrack];
         return (
@@ -240,6 +246,8 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
                         nextTrack={nextTrack}
                         previousTrack={previousTrack}
                         setTrack={setTrack}
+                        setPlaybackSpeed={setPlaybackSpeed}
+                        playbackSpeed={player.speed}
                         isOpen={player.fullscreen}
                         audio={audio}
                         audioRef={this.audioRef}

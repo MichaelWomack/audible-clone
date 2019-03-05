@@ -30,6 +30,8 @@ interface Props extends WithStyles<typeof FullScreenAudioPlayerStyles> {
     nextTrack: () => void;
     previousTrack: () => void;
     setTrack: (track: number) => void;
+    setPlaybackSpeed: (speed: number) => void;
+    playbackSpeed: number;
     setCurrentTime: (value: number) => void;
     isOpen: boolean;
     audio: Audio;
@@ -74,6 +76,8 @@ class FullScreenAudioPlayer extends Component<Props, {}> {
             nextTrack,
             previousTrack,
             setTrack,
+            setPlaybackSpeed,
+            playbackSpeed,
             audio,
             audioRef,
             isPlaying,
@@ -139,7 +143,12 @@ class FullScreenAudioPlayer extends Component<Props, {}> {
                         </IconButton>
                     </div>
                 </DialogContent>
-                    <FullScreenToolbar audio={audio} setTrack={setTrack}/>
+                    <FullScreenToolbar
+                        audio={audio}
+                        setTrack={setTrack}
+                        setPlaybackSpeed={setPlaybackSpeed}
+                        playbackSpeed={playbackSpeed}
+                    />
                 </Dialog>
             
         );

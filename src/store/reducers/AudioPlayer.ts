@@ -5,7 +5,8 @@ export const defaultState = {
     audio: null as Audio,
     isPlaying: false,
     isShowing: false,
-    fullscreen: false
+    fullscreen: false,
+    speed: 1
 };
 
 export const player = (state = defaultState, action: PlayerAction) => {
@@ -71,6 +72,11 @@ export const player = (state = defaultState, action: PlayerAction) => {
                 ...state,
                 isPlaying: true,
                 audio
+            };
+        case PlayerActionType.SET_PLAYBACK_SPEED:
+            return {
+                ...state,
+                speed: action.speed
             };
         default:
             return state;

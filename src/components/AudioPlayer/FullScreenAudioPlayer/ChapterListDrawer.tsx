@@ -9,7 +9,6 @@ import Drawer from "@material-ui/core/Drawer/Drawer";
 import Typography from "@material-ui/core/Typography/Typography";
 import Divider from '@material-ui/core/Divider';
 import { TimeUtils } from "../../../utils";
-import Paper from "@material-ui/core/Paper/Paper";
 
 const styles = (theme: Theme) => createStyles({
     paper: {

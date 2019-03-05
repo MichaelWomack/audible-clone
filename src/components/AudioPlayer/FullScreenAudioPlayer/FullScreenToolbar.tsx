@@ -10,6 +10,7 @@ import createStyles from '@material-ui/core/styles/createStyles';
 import { Theme, WithStyles, withStyles } from '@material-ui/core/styles';
 import ChapterListDrawer from './ChapterListDrawer';
 import { Audio } from "../../../model/audio";
+import PlaybackSpeedModal from "./PlaybackSpeedModal";
 
 const styles = (theme: Theme) => createStyles({
     root: {
@@ -28,33 +29,43 @@ const styles = (theme: Theme) => createStyles({
 export interface FullScreenToolbarProps extends WithStyles<typeof styles> {
     audio: Audio;
     setTrack: (track: number) => void;
+    setPlaybackSpeed: (speed: number) => void;
+    playbackSpeed: number;
 }
 
 export interface FullScreenToolbarState {
     chaptersDrawerOpen: boolean;
+    playbackSpeedModalOpen: boolean;
 }
 
 class FullScreenToolbar extends Component<FullScreenToolbarProps, FullScreenToolbarState> {
 
     readonly state: FullScreenToolbarState = {
-        chaptersDrawerOpen: false
+        chaptersDrawerOpen: false,
+        playbackSpeedModalOpen: false
     };
 
     toggleChaptersDrawer = () => {
         this.setState(prevState => ({
             chaptersDrawerOpen: !prevState.chaptersDrawerOpen
         }));
-    }
+    };
+
+    togglePlaybackSpeedModal = () => {
+        this.setState(prevState => ({
+            playbackSpeedModalOpen: !prevState.playbackSpeedModalOpen
+        }));
+    };
 
     render() {
-        const { classes, audio, setTrack } = this.props;
-        const { chaptersDrawerOpen } = this.state;
+        const { classes, audio, setTrack, playbackSpeed, setPlaybackSpeed } = this.props;
+        const { chaptersDrawerOpen, playbackSpeedModalOpen } = this.state;
         return (
             <Fragment>
                 <AppBar className={classes.root} position="static">
                     <Toolbar className={classes.toolbar}>
                         <div className={classes.iconContainer}>
-                            <IconButton color="inherit">
+                            <IconButton color="inherit" onClick={this.togglePlaybackSpeedModal}>
                                 <SpeedometerIcon fontSize="small"/>
                             </IconButton>
                         </div>
@@ -75,6 +86,12 @@ class FullScreenToolbar extends Component<FullScreenToolbarProps, FullScreenTool
                     isOpen={chaptersDrawerOpen}
                     onClose={this.toggleChaptersDrawer}
                     playChapter={setTrack}
+                />
+                <PlaybackSpeedModal
+                    isOpen={playbackSpeedModalOpen}
+                    onClose={this.togglePlaybackSpeedModal}
+                    playbackSpeed={playbackSpeed}
+                    setPlaybackSpeed={setPlaybackSpeed}
                 />
             </Fragment>
         );
