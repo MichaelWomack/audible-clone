@@ -5,7 +5,17 @@ export default (theme: Theme) =>
     createStyles({
         header: {
             display: 'flex',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            alignItems: 'center'
+        },
+        timerText: {
+            padding: 10
+        },
+        timerContainer: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginRight: 15
         },
         dialogContent: {
             overflow: 'hidden',

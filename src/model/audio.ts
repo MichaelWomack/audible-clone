@@ -36,6 +36,11 @@ export interface Audio {
     currentTrack?: number;
 }
 
+export interface SleepTimer {
+    duration: number;
+    dateSet: Date;
+}
+
 export interface AudioBook extends Audio {
     title?: string;
     subtitle?: string;

@@ -1,4 +1,4 @@
-import { Audio, AudioMap } from "./audio";
+import { Audio, AudioMap, SleepTimer } from "./audio";
 import { firestore, storage } from "firebase";
 import { VolumeInfo } from "./volume";
 import { ThemeOptions } from "@material-ui/core/styles/createMuiTheme";
@@ -37,6 +37,7 @@ export interface PlayerState {
     fullscreen: boolean,
     speed: number,
     audio: Audio,
+    sleepTimer: SleepTimer;
 }
 
 export interface UserState {

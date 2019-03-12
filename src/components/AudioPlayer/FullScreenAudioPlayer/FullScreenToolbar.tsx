@@ -9,8 +9,9 @@ import { SpeedometerIcon } from "../../Icons";
 import createStyles from '@material-ui/core/styles/createStyles';
 import { Theme, WithStyles, withStyles } from '@material-ui/core/styles';
 import ChapterListDrawer from './ChapterListDrawer';
-import { Audio } from "../../../model/audio";
 import PlaybackSpeedModal from "./PlaybackSpeedModal";
+import SleepTimerModal from "./SleepTimerModal";
+import { Audio, SleepTimer } from "../../../model/audio";
 
 const styles = (theme: Theme) => createStyles({
     root: {
@@ -31,18 +32,22 @@ export interface FullScreenToolbarProps extends WithStyles<typeof styles> {
     setTrack: (track: number) => void;
     setPlaybackSpeed: (speed: number) => void;
     playbackSpeed: number;
+    setSleepTimer: (timerDuration: number) => void;
+    sleepTimer: SleepTimer;
 }
 
 export interface FullScreenToolbarState {
     chaptersDrawerOpen: boolean;
     playbackSpeedModalOpen: boolean;
+    sleepTimerModalOpen: boolean;
 }
 
 class FullScreenToolbar extends Component<FullScreenToolbarProps, FullScreenToolbarState> {
 
     readonly state: FullScreenToolbarState = {
         chaptersDrawerOpen: false,
-        playbackSpeedModalOpen: false
+        playbackSpeedModalOpen: false,
+        sleepTimerModalOpen: false
     };
 
     toggleChaptersDrawer = () => {
@@ -57,9 +62,15 @@ class FullScreenToolbar extends Component<FullScreenToolbarProps, FullScreenTool
         }));
     };
 
+    toggleSleepTimerModal = () => {
+        this.setState(prevState => ({
+            sleepTimerModalOpen: !prevState.sleepTimerModalOpen
+        }));
+    };
+
     render() {
-        const { classes, audio, setTrack, playbackSpeed, setPlaybackSpeed } = this.props;
-        const { chaptersDrawerOpen, playbackSpeedModalOpen } = this.state;
+        const { classes, audio, setTrack, playbackSpeed, setPlaybackSpeed, setSleepTimer, sleepTimer } = this.props;
+        const { chaptersDrawerOpen, playbackSpeedModalOpen, sleepTimerModalOpen } = this.state;
         return (
             <Fragment>
                 <AppBar className={classes.root} position="static">
@@ -74,9 +85,9 @@ class FullScreenToolbar extends Component<FullScreenToolbarProps, FullScreenTool
                                 <PlaylistPlayIcon fontSize="small"/>
                             </IconButton>
                         </div>
-                        <div className={classes.iconContainer}>
+                        <div className={classes.iconContainer} onClick={this.toggleSleepTimerModal}>
                             <IconButton color="inherit">
-                                <AccessAlarmIcon fontSize="small"/>
+                                <AccessAlarmIcon fontSize="small" />
                             </IconButton>
                         </div>
                     </Toolbar>
@@ -92,6 +103,12 @@ class FullScreenToolbar extends Component<FullScreenToolbarProps, FullScreenTool
                     onClose={this.togglePlaybackSpeedModal}
                     playbackSpeed={playbackSpeed}
                     setPlaybackSpeed={setPlaybackSpeed}
+                />
+                <SleepTimerModal
+                    isOpen={sleepTimerModalOpen}
+                    onClose={this.toggleSleepTimerModal}
+                    setSleepTimer={setSleepTimer}
+                    sleepTimer={sleepTimer}
                 />
             </Fragment>
         );
