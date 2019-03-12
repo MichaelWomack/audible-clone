@@ -11,9 +11,9 @@ import Typography from '@material-ui/core/Typography';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 
 import { TimeUtils } from '../../utils';
-import { Audio } from '../../model/audio';
-import AudioPlayerStyles from './AudioPlayerStyles';
+import { Audio, SleepTimer } from '../../model/audio';
 import { PlayerState } from '../../model/state';
+import AudioPlayerStyles from './AudioPlayerStyles';
 import FullScreenAudioPlayer from './FullScreenAudioPlayer';
 import { AudioUtils } from '../../utils/AudioUtils';
 import { audio } from '../../store/reducers';
@@ -28,6 +28,9 @@ export interface AudioPlayerProps extends WithStyles<typeof AudioPlayerStyles> {
     nextTrack: () => void;
     previousTrack: () => void;
     setTrack: (track: number) => void;
+    setPlaybackSpeed: (speed: number) => void;
+    setSleepTimer: (duration: number) => void;
+    clearSleepTimer: () => void;
     openFullscreen: () => void;
     closeFullscreen: () => void;
     updateAudio: (audio: Audio) => void;
@@ -36,13 +39,18 @@ export interface AudioPlayerProps extends WithStyles<typeof AudioPlayerStyles> {
 
 export interface AudioPlayerState {
     currentPosition?: number;
+    sleepTimer: SleepTimer;
+    sleepTimerMinutesLeft: string;
 }
 
 export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
     audioRef: React.RefObject<HTMLAudioElement>;
+    minuteIntervalHandler: NodeJS.Timer;
 
     readonly state: AudioPlayerState = {
         currentPosition: 0,
+        sleepTimer: null,
+        sleepTimerMinutesLeft: null,
     };
 
     constructor(props: AudioPlayerProps) {
@@ -51,18 +59,18 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
     }
 
     componentDidMount() {
-        const { audio } = this.props;
+        const { audio, player } = this.props;
         const { trackList, currentTrack } = audio;
         const track = trackList[currentTrack];
         const audioCurrentTime = track.currentTime || 0;
         this.audioRef.current.currentTime = audioCurrentTime;
         this.setState({ currentPosition: audioCurrentTime });
         this.registerAudioHandlers();
+        this.setSleepTimer(player.sleepTimer);
     }
     
     registerAudioHandlers() {
         const { current } = this.audioRef;
-
         /* this logic could be moved out (redux?) */
         current.onended = (event: Event) => {
             const { audio, nextTrack } = this.props;
@@ -73,26 +81,36 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
                 this.pause();
                 /** TODO: dispatch complete audio action */
             }
-        }
+        };
         current.ontimeupdate = (event: Event) => {
             const currentTime = current.currentTime;
             if (!current.ended) { /* fixes async problem on ending audio */
                 this.setState({ currentPosition: Math.floor(currentTime) });
             }
-        }
+        };
     }
 
     componentWillUnmount() {
         this.saveAudioMetrics();
+        if (this.minuteIntervalHandler) {
+            clearInterval(this.minuteIntervalHandler);
+        }
     }
 
-    componentDidUpdate(prevProps: AudioPlayerProps, prevState: AudioPlayerState) {
+    componentDidUpdate(prevProps: AudioPlayerProps) {
         if (this.audioRef.current.paused && this.props.player.isPlaying) {
             this.play();
         } else if (!this.audioRef.current.paused && !this.props.player.isPlaying) {
             this.pause();
         }
-
+        /** PLAYBACK RATE */
+        if (this.audioRef.current.playbackRate !== this.props.player.speed) {
+            this.audioRef.current.playbackRate = this.props.player.speed;
+        }
+        /** SLEEP TIMER UPDATE */
+        if (prevProps.player.sleepTimer !== this.props.player.sleepTimer) {
+            this.setSleepTimer(this.props.player.sleepTimer);
+        }
         /** update the audioRef currentTime if a new audio file has been selected */
         if (prevProps.audio !== this.props.audio) {
             this.audioRef.current.currentTime = this.props.audio.currentTime || 0;
@@ -135,17 +153,17 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
     };
 
     setCurrentTime = (time: number) => {
-        this.audioRef.current.currentTime = time
+        this.audioRef.current.currentTime = time;
         this.setState({currentPosition: time});
-    }
+    };
 
     decrement30 = () => {
         this.addToCurrentTime(-30);
-    }
+    };
 
     increment30 = () => {
         this.addToCurrentTime(30);
-    }
+    };
 
     displayAudioTime = () => {
         const { audio } = this.props;
@@ -153,6 +171,26 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
         const track = trackList[currentTrack];
         const { currentPosition } = this.state;
         return `${TimeUtils.secondsToHHMMSS(currentPosition)} / ${TimeUtils.secondsToHHMMSS(track.duration)}`;
+    };
+
+    setSleepTimer = (sleepTimer: SleepTimer) => {
+        this.setState({ sleepTimer, sleepTimerMinutesLeft: null });
+        if (this.minuteIntervalHandler) clearInterval(this.minuteIntervalHandler);
+        if (sleepTimer && sleepTimer.duration !== null) {
+            this.minuteIntervalHandler = setInterval(() => {
+                const millisElapsed = Date.now() - new Date(sleepTimer.dateSet).getTime();
+                const durationMillis = sleepTimer.duration * TimeUtils.MINUTE_MILLIS;
+                if (millisElapsed >= durationMillis) {
+                    clearInterval(this.minuteIntervalHandler);
+                    this.setState({ sleepTimerMinutesLeft: null });
+                    this.props.clearSleepTimer();
+                } else {
+                    const millisRemaining = durationMillis - millisElapsed;
+                    const sleepTimerMinutesLeft = TimeUtils.secondsToHHMMSS(millisRemaining / 1000);
+                    this.setState({ sleepTimerMinutesLeft });
+                }
+            }, 1000);
+        }
     };
 
     render() {
@@ -165,8 +203,11 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
             closeFullscreen,
             nextTrack,
             previousTrack,
-            setTrack
+            setTrack,
+            setPlaybackSpeed,
+            setSleepTimer,
         } = this.props;
+        const { sleepTimerMinutesLeft } = this.state;
         const currentTrack = audio.trackList[audio.currentTrack];
         return (
             audio && (
@@ -194,12 +235,6 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
                                 { `Chapter ${audio.currentTrack + 1}` }
                             </Typography>
                         </div>
-                            {/*<IconButton*/}
-                                {/*color="inherit"*/}
-                                {/*onClick={this.decrement30}*/}
-                            {/*>*/}
-                                {/*<Replay30 />*/}
-                            {/*</IconButton>*/}
                             <div>
                                 <IconButton
                                     color="inherit"
@@ -211,12 +246,6 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
                                             <PlayArrowSharp />
                                             )}
                                 </IconButton>
-                            {/*<IconButton*/}
-                                {/*color="inherit"*/}
-                                {/*onClick={this.increment30}*/}
-                            {/*>*/}
-                                {/*<Forward30 />*/}
-                            {/*</IconButton>*/}
                             {player.isPlaying ? (
                                 <IconButton
                                     color="inherit"
@@ -240,6 +269,11 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
                         nextTrack={nextTrack}
                         previousTrack={previousTrack}
                         setTrack={setTrack}
+                        setPlaybackSpeed={setPlaybackSpeed}
+                        playbackSpeed={player.speed}
+                        setSleepTimer={setSleepTimer}
+                        sleepTimer={player.sleepTimer}
+                        sleepTimerMinutesLeft={sleepTimerMinutesLeft}
                         isOpen={player.fullscreen}
                         audio={audio}
                         audioRef={this.audioRef}

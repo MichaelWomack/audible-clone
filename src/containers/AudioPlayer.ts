@@ -9,7 +9,10 @@ import {
     closeFullscreen,
     nextTrack,
     previousTrack,
-    setTrack
+    setTrack,
+    setPlaybackSpeed,
+    setSleepTimer,
+    clearSleepTimer
 } from '../store/actions/AudioPlayer';
 import { ReduxState } from '../model/state';
 import { connect } from 'react-redux';
@@ -32,10 +35,13 @@ export const mapDispatchToProps = (dispatch: Function) => ({
     nextTrack: () => dispatch(nextTrack()),
     previousTrack: () => dispatch(previousTrack()),
     setTrack: (track: number) => dispatch(setTrack(track)),
+    setPlaybackSpeed: (speed: number) => dispatch(setPlaybackSpeed(speed)),
     showPlayer: () => dispatch(showPlayer()),
     hidePlayer: () => dispatch(hidePlayer()),
     openFullscreen: () => dispatch(openFullscreen()),
     closeFullscreen: () => dispatch(closeFullscreen()),
+    setSleepTimer: (duration: number) => dispatch(setSleepTimer(duration)),
+    clearSleepTimer: () => dispatch(clearSleepTimer())
 });
 
 export default connect(

@@ -113,7 +113,6 @@ export class Home extends Component<HomeProps, {}> {
                     <AudioPlayer />
                 </Slide>
 
-
                 <Snackbar
                     anchorOrigin={{
                         vertical: 'bottom',

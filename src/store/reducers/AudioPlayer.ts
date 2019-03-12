@@ -1,11 +1,13 @@
-import { Audio } from "../../model/audio";
+import { Audio, SleepTimer } from "../../model/audio";
 import { PlayerAction, PlayerActionType } from '../actions/AudioPlayer';
 
 export const defaultState = {
     audio: null as Audio,
     isPlaying: false,
     isShowing: false,
-    fullscreen: false
+    fullscreen: false,
+    speed: 1,
+    sleepTimer: null as SleepTimer
 };
 
 export const player = (state = defaultState, action: PlayerAction) => {
@@ -71,6 +73,21 @@ export const player = (state = defaultState, action: PlayerAction) => {
                 ...state,
                 isPlaying: true,
                 audio
+            };
+        case PlayerActionType.SET_PLAYBACK_SPEED:
+            return {
+                ...state,
+                speed: action.speed
+            };
+        case PlayerActionType.SET_SLEEP_TIMER:
+            return {
+                ...state,
+                sleepTimer: action.sleepTimer
+            };
+        case PlayerActionType.CLEAR_SLEEP_TIMER:
+            return {
+                ...state,
+                sleepTimer: null,
             };
         default:
             return state;

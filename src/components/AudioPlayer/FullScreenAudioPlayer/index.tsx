@@ -10,6 +10,7 @@ import Replay30 from '@material-ui/icons/Replay30';
 import KeyboardArrowDownSharp from '@material-ui/icons/KeyboardArrowDownSharp';
 import SkipNext from "@material-ui/icons/SkipNext";
 import SkipPrevious from "@material-ui/icons/SkipPrevious";
+import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 import Slide from '@material-ui/core/Slide';
 import Slider from '@material-ui/lab/Slider';
 import Typography from '@material-ui/core/Typography';
@@ -17,20 +18,25 @@ import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import FullScreenToolbar from "./FullScreenToolbar";
 import FullScreenAudioPlayerStyles from "./FullScreenAudioPlayerStyles";
 
-import { Audio } from '../../../model/audio';
+import { Audio, SleepTimer } from '../../../model/audio';
 import { TimeUtils } from '../../../utils';
 
 function Transition(props: any) {
     return <Slide direction="left" unmountOnExit {...props} />;
 }
 
-interface Props extends WithStyles<typeof FullScreenAudioPlayerStyles> {
+interface FullScreenAudioPlayerProps extends WithStyles<typeof FullScreenAudioPlayerStyles> {
     onClose: () => void;
     onOpen: () => void;
     nextTrack: () => void;
     previousTrack: () => void;
     setTrack: (track: number) => void;
+    setPlaybackSpeed: (speed: number) => void;
+    playbackSpeed: number;
     setCurrentTime: (value: number) => void;
+    setSleepTimer: (timerDuration: number) => void;
+    sleepTimer: SleepTimer;
+    sleepTimerMinutesLeft: string;
     isOpen: boolean;
     audio: Audio;
     forward: () => void;
@@ -41,7 +47,7 @@ interface Props extends WithStyles<typeof FullScreenAudioPlayerStyles> {
     audioRef: RefObject<HTMLAudioElement>;
 }
 
-class FullScreenAudioPlayer extends Component<Props, {}> {
+class FullScreenAudioPlayer extends Component<FullScreenAudioPlayerProps, {}> {
 
     displayTimeRemaining() {
         const { current: { currentTime, duration } } = this.props.audioRef;
@@ -64,7 +70,7 @@ class FullScreenAudioPlayer extends Component<Props, {}> {
         console.log(event);
         console.log(value);
         this.props.setCurrentTime(value);
-    }
+    };
 
     render() {
         const {
@@ -74,6 +80,11 @@ class FullScreenAudioPlayer extends Component<Props, {}> {
             nextTrack,
             previousTrack,
             setTrack,
+            setPlaybackSpeed,
+            playbackSpeed,
+            setSleepTimer,
+            sleepTimer,
+            sleepTimerMinutesLeft,
             audio,
             audioRef,
             isPlaying,
@@ -95,6 +106,14 @@ class FullScreenAudioPlayer extends Component<Props, {}> {
                         <IconButton onClick={onClose}>
                             <KeyboardArrowDownSharp fontSize="large"/>
                         </IconButton>
+                        {sleepTimerMinutesLeft &&
+                            <div className={classes.timerContainer}>
+                                <AccessAlarmIcon fontSize="small"/>
+                                <Typography className={classes.timerText} variant="subtitle1">
+                                    {sleepTimerMinutesLeft}
+                                </Typography>
+                            </div>
+                        }
                     </div>
                     <div>
                         {audioRef && audioRef.current && 
@@ -139,7 +158,14 @@ class FullScreenAudioPlayer extends Component<Props, {}> {
                         </IconButton>
                     </div>
                 </DialogContent>
-                    <FullScreenToolbar audio={audio} setTrack={setTrack}/>
+                    <FullScreenToolbar
+                        audio={audio}
+                        setTrack={setTrack}
+                        setPlaybackSpeed={setPlaybackSpeed}
+                        playbackSpeed={playbackSpeed}
+                        setSleepTimer={setSleepTimer}
+                        sleepTimer={sleepTimer}
+                    />
                 </Dialog>
             
         );
