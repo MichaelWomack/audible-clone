@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Component, SyntheticEvent } from 'react';
 import AppBar from '@material-ui/core/AppBar';
+import Avatar from "@material-ui/core/Avatar";
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -17,6 +18,7 @@ export interface NavBarProps extends WithStyles<typeof NavBarStyles> {
     isLoading: boolean;
     isUploading: boolean;
     uploadProgress: number;
+    user: firebase.User;
 }
 
 export interface NavBarState {
@@ -42,7 +44,7 @@ export class NavBar extends Component<NavBarProps, NavBarState> {
     }
 
     render() {
-        const { classes, isLoading, isUploading, uploadProgress } = this.props;
+        const { classes, isLoading, isUploading, uploadProgress, user } = this.props;
         const { accountMenuAnchorEl } = this.state;
         return (
             <AppBar position="fixed" color="inherit">
@@ -50,9 +52,12 @@ export class NavBar extends Component<NavBarProps, NavBarState> {
                     <IconButton color="inherit" className={classes.menuButton}>
                         <MenuIcon />
                     </IconButton>
-                    <IconButton color="inherit" onClick={this.openAccountMenu}>
-                        <AccountCircle />
-                    </IconButton>
+                        {user.photoURL ?
+                            <Avatar src={`${user.photoURL}`}  onClick={this.openAccountMenu} className={classes.avatar}/> :
+                             <IconButton color="inherit" onClick={this.openAccountMenu}>
+                                <AccountCircle />
+                             </IconButton>
+                        }
                     <Menu
                         id="menu-appbar"
                         anchorEl={accountMenuAnchorEl}

@@ -58,6 +58,7 @@ export class Home extends Component<HomeProps, {}> {
             playAudio,
             pauseAudio,
             logout,
+            user
         } = this.props;
         const selectedAudioId = player.audio ? player.audio.id : null;
         return (
@@ -67,6 +68,7 @@ export class Home extends Component<HomeProps, {}> {
                     isLoading={ui.isLoading}
                     isUploading={audio.isUploading}
                     uploadProgress={audio.uploadProgress}
+                    user={user}
                 />
                 <div className={classes.container}>
                     {!history.location.pathname.endsWith('add-audio') && (
