@@ -2,6 +2,9 @@ import {createStyles, Theme} from '@material-ui/core';
 
 export default (theme: Theme) =>
     createStyles({
+        avatar: {
+            cursor: 'pointer'
+        },
         menuButton: {
             marginLeft: -12,
             marginRight: 20,
