@@ -11,6 +11,8 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import { GoogleIcon, TwitterIcon, FacebookIcon } from '../Icons';
 import  SignUpStyles from './SignUpStyles';
+import { authService } from "../../services";
+import { FormUtils } from "../../utils/FormUtils";
 
 export interface SignUpProps extends WithStyles<typeof SignUpStyles>, RouteComponentProps {}
 
@@ -18,6 +20,9 @@ export interface SignUpState {
     email?: string;
     password?: string;
     confirmPassword?: string;
+    emailError?: string;
+    passwordError?: string;
+    confirmPasswordError?: string;
 }
 
 class SignUp extends Component<SignUpProps, SignUpState> {
@@ -25,12 +30,37 @@ class SignUp extends Component<SignUpProps, SignUpState> {
     readonly state: SignUpState = {
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        emailError: '',
+        passwordError: '',
+        confirmPasswordError: ''
     };
 
     handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { target: { value, id } } = event;
         this.setState({ [id]: value });
+    };
+
+    validateEmail = (event: ChangeEvent<HTMLInputElement>) => {
+        let emailError = '';
+        const email = event.target.value;
+        const isValid = FormUtils.isValidEmail(email);
+        if (email && !isValid) emailError = 'enter a valid email';
+        this.setState({ emailError });
+    };
+
+    validateConfirmPassword = (event: ChangeEvent<HTMLInputElement>) => {
+        let confirmPasswordError = '';
+        if (event.target.value && event.target.value !== this.state.password) {
+            confirmPasswordError = "passwords don't match";
+        }
+        this.setState({ confirmPasswordError });
+    };
+
+    signUp = async () => {
+        const { email, password } = this.state;
+        const userCredential = await authService.createUserWithEmailAndPassword(email, password);
+        await userCredential.user.sendEmailVerification();
     };
 
     navigateToLogin = () => {
@@ -39,6 +69,7 @@ class SignUp extends Component<SignUpProps, SignUpState> {
 
     render() {
         const { classes } = this.props;
+        const { confirmPasswordError, emailError } = this.state;
         return (
             <Fragment>
                 <AppBar position="static" color="inherit">
@@ -56,11 +87,13 @@ class SignUp extends Component<SignUpProps, SignUpState> {
                     </div>
                     <form className={classes.formContainer}>
                         <TextField
+                            error={Boolean(emailError)}
                             className={classes.textField}
                             id="email"
-                            label="email"
+                            label={Boolean(emailError) ? emailError : "email"}
                             value={this.state.email}
                             onChange={this.handleChange}
+                            onBlur={this.validateEmail}
                             fullWidth={true}
                         />
                         <TextField
@@ -73,11 +106,13 @@ class SignUp extends Component<SignUpProps, SignUpState> {
                             fullWidth={true}
                         />
                         <TextField
+                            error={Boolean(confirmPasswordError)}
                             className={classes.textField}
                             id="confirmPassword"
-                            label="confirm password"
+                            label={Boolean(confirmPasswordError) ? confirmPasswordError : "confirm password" }
                             value={this.state.confirmPassword}
                             onChange={this.handleChange}
+                            onBlur={this.validateConfirmPassword}
                             type="password"
                             fullWidth={true}
                         />
@@ -86,7 +121,7 @@ class SignUp extends Component<SignUpProps, SignUpState> {
                                 variant="contained"
                                 color="primary"
                                 size="large"
-                                onClick={() => {}}
+                                onClick={this.signUp}
                                 fullWidth={true}
                             >
                                 sign up
