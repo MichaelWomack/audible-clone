@@ -13,6 +13,7 @@ import { GoogleIcon, TwitterIcon, FacebookIcon } from '../Icons';
 import  SignUpStyles from './SignUpStyles';
 import { authService } from "../../services";
 import { FormUtils } from "../../utils/FormUtils";
+import ValidationTextField from "../ValidationTextField";
 
 export interface SignUpProps extends WithStyles<typeof SignUpStyles>, RouteComponentProps {}
 
@@ -69,7 +70,6 @@ class SignUp extends Component<SignUpProps, SignUpState> {
 
     render() {
         const { classes } = this.props;
-        const { confirmPasswordError, emailError } = this.state;
         return (
             <Fragment>
                 <AppBar position="static" color="inherit">
@@ -86,34 +86,36 @@ class SignUp extends Component<SignUpProps, SignUpState> {
                         <Typography variant="h5">Sign Up</Typography>
                     </div>
                     <form className={classes.formContainer}>
-                        <TextField
-                            error={Boolean(emailError)}
-                            className={classes.textField}
+                        <ValidationTextField
                             id="email"
-                            label={Boolean(emailError) ? emailError : "email"}
+                            className={classes.textField}
                             value={this.state.email}
                             onChange={this.handleChange}
-                            onBlur={this.validateEmail}
+                            defaultLabel="email"
+                            errorLabel="enter a valid email"
+                            isValidInput={FormUtils.isValidEmail}
                             fullWidth={true}
                         />
-                        <TextField
-                            className={classes.textField}
+                        <ValidationTextField
                             id="password"
-                            label="password"
+                            className={classes.textField}
                             value={this.state.password}
                             onChange={this.handleChange}
+                            defaultLabel="password"
+                            errorLabel={FormUtils.INVALID_PASSWORD_MESSAGE}
+                            isValidInput={FormUtils.isValidPassword}
                             type="password"
                             fullWidth={true}
                         />
-                        <TextField
-                            error={Boolean(confirmPasswordError)}
-                            className={classes.textField}
+                        <ValidationTextField
                             id="confirmPassword"
-                            label={Boolean(confirmPasswordError) ? confirmPasswordError : "confirm password" }
+                            className={classes.textField}
                             value={this.state.confirmPassword}
-                            onChange={this.handleChange}
-                            onBlur={this.validateConfirmPassword}
                             type="password"
+                            onChange={this.handleChange}
+                            defaultLabel="confirm password"
+                            errorLabel="passwords don't match"
+                            isValidInput={this.validateConfirmPassword}
                             fullWidth={true}
                         />
                         <div className={classes.buttonRow}>
