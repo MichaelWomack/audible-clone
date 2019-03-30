@@ -5,6 +5,10 @@ export default (theme: Theme) =>
         avatar: {
             cursor: 'pointer'
         },
+        logo: {
+            letterSpacing: -1,
+            fontSize: 'x-large'
+        },
         menuButton: {
             marginLeft: -12,
             marginRight: 20,

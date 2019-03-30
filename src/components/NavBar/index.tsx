@@ -109,7 +109,7 @@ class NavBar extends Component<NavBarProps, NavBarState> {
         return (
             <AppBar position="fixed" color="inherit">
                 <Toolbar className={classes.toolbar}>
-                    <Typography variant="subtitle1">Audiobucket</Typography>
+                    <Typography variant="subtitle1" className={classes.logo}>audiobucket</Typography>
                     {this.renderNavbarAction()}
                 </Toolbar>
 
