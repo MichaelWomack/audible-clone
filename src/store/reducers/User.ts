@@ -1,5 +1,4 @@
-import * as firebase from 'firebase';
-import { UserActionType, UserAction } from '../actions/User';
+import { UserAction, UserActionType } from '../actions/User';
 import { UserState } from '../../model/state';
 
 const defaultState: UserState = {
@@ -13,9 +12,6 @@ export const user = (state = defaultState, action: UserAction) => {
             
         case UserActionType.USER_LOGIN_SUCCESS:
             return { user: action.user };
-
-        case UserActionType.USER_LOGIN_FAILURE:
-            return { error: action.error };
             
         case UserActionType.USER_LOGOUT_REQUEST:
             return state;
@@ -26,6 +22,10 @@ export const user = (state = defaultState, action: UserAction) => {
         case UserActionType.USER_LOGOUT_FAILURE:
             return { error: action.error };
 
+        case UserActionType.USER_EMAIL_UNVERIFIED:
+            return {
+                unverifiedUser: action.user
+            };
         default:
             return state;
     }

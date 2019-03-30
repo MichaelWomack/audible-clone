@@ -11,10 +11,6 @@ export class AuthService {
     getAuth() {
         return this.auth;
     }
-    
-    isLoggedIn(): boolean {
-        return Boolean(this.auth.currentUser);
-    }
 
     async createUserWithEmailAndPassword(email: string, password: string): Promise<auth.UserCredential> {
         return await this.auth.createUserWithEmailAndPassword(email, password);

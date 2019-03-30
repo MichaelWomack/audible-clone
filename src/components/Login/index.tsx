@@ -1,7 +1,5 @@
 import * as React from 'react';
 import { Component, Fragment, ChangeEvent } from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -13,6 +11,8 @@ import { TwitterIcon, GoogleIcon, FacebookIcon } from '../Icons';
 import { auth } from 'firebase';
 import LoginStyles from './LoginStyles';
 import { UiState } from '../../model/state';
+import { FormUtils } from "../../utils/FormUtils";
+import ValidationTextField from "../ValidationTextField";
 
 export interface LoginProps extends WithStyles<typeof LoginStyles>, RouteComponentProps {
     user: firebase.User;
@@ -42,55 +42,44 @@ export class Login extends Component<LoginProps, LoginState> {
         const { email, password } = this.state;
         const { login, history } = this.props;
         if (email && password) {
-            login(email, password, () => history.push('/home'));
-            history.push('/home');
+            login(email, password, () => history.push('/home'), );
         }
     };
 
     loginWithGoogle = () => {
         this.loginWithAuthProvider(new auth.GoogleAuthProvider());
-    }
+    };
 
     loginWithFacebook = () => {
         this.loginWithAuthProvider(new auth.FacebookAuthProvider());
-    }
-    
-    loginWithTwitter = () => {
-        this.loginWithAuthProvider(new auth.TwitterAuthProvider());
-    }
-
-    private loginWithAuthProvider = (authProvider: auth.AuthProvider) => {
-        const {loginWithAuthProvider, history} = this.props;
-        loginWithAuthProvider(authProvider, () => history.push('/home'));
     };
 
-    navigateToSignUp = () => {
-        this.props.history.push('/signup');
-    }
+    loginWithTwitter = () => {
+        this.loginWithAuthProvider(new auth.TwitterAuthProvider());
+    };
+
+    loginWithAuthProvider = (authProvider: auth.AuthProvider) => {
+        const { loginWithAuthProvider, history } = this.props;
+        loginWithAuthProvider(authProvider, () => history.push('/home'));
+    };
 
     render() {
         const { classes } = this.props;
         return (
             <Fragment>
-                <AppBar position="static" color="inherit">
-                    <Toolbar className={classes.toolbar}>
-                        <Typography variant="headline">Audiobucket</Typography>
-                        <Typography variant="subheading">
-                            <Button onClick={this.navigateToSignUp}>sign up</Button>
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
                 <div className={classes.container}>
                     <div className={classes.header}>
                         <Typography variant="h5">Login</Typography>
                     </div>
                     <form className={classes.formContainer}>
-                        <TextField
-                            className={classes.textField}
+                        <ValidationTextField
                             id="email"
-                            label="email"
+                            className={classes.textField}
+                            defaultLabel="email"
+                            errorLabel="enter a valid email"
                             value={this.state.email}
                             onChange={this.handleChange}
+                            isValid={FormUtils.isValidEmail}
                             fullWidth={true}
                         />
                         <TextField
@@ -115,13 +104,13 @@ export class Login extends Component<LoginProps, LoginState> {
                         </div>
                         <div className={classes.buttonRow}>
                             <IconButton onClick={this.loginWithGoogle}>
-                                <GoogleIcon />
+                                <GoogleIcon/>
                             </IconButton>
                             <IconButton onClick={this.loginWithTwitter}>
-                                <TwitterIcon />
+                                <TwitterIcon/>
                             </IconButton>
                             <IconButton onClick={this.loginWithFacebook}>
-                                <FacebookIcon />
+                                <FacebookIcon/>
                             </IconButton>
                         </div>
                     </form>

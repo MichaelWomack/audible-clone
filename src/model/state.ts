@@ -2,6 +2,7 @@ import { Audio, AudioMap, SleepTimer } from "./audio";
 import { firestore, storage } from "firebase";
 import { VolumeInfo } from "./volume";
 import { ThemeOptions } from "@material-ui/core/styles/createMuiTheme";
+import { BannerType } from "../config/constants";
 
 
 export interface AudioState {
@@ -29,6 +30,9 @@ export interface UiState {
     snackbarOpen: boolean,
     themeOptions: ThemeOptions,
     error: Error
+    bannerOpen: boolean;
+    bannerType: BannerType;
+    bannerMessage: string;
 }
 
 export interface PlayerState {

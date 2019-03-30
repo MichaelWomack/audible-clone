@@ -1,6 +1,7 @@
 import { authService } from '../../services/AuthService';
 import { Dispatch } from 'redux';
-import { auth } from 'firebase';
+import { auth, User } from 'firebase';
+import UserCredential = firebase.auth.UserCredential;
 
 export enum UserActionType {
     SET_USER = 'SET_USER',
@@ -15,6 +16,11 @@ export enum UserActionType {
     USER_SIGNUP_REQUEST = 'USER_SIGNUP_REQUEST',
     USER_SIGNUP_SUCCESS = 'USER_SIGNUP_SUCCESS',
     USER_SIGNUP_FAILURE = 'USER_SIGNUP_FAILURE',
+
+    USER_EMAIL_UNVERIFIED = 'USER_EMAIL_UNVERIFIED',
+    USER_VERIFICATION_EMAIL_REQUEST = 'USER_VERIFICATION_EMAIL_REQUEST',
+    USER_VERIFICATION_EMAIL_SUCCESS = 'USER_VERIFICATION_EMAIL_SUCCESS',
+    USER_VERIFICATION_EMAIL_FAILURE = 'USER_VERIFICATION_EMAIL_FAILURE',
 }
 
 export interface UserAction {
@@ -58,15 +64,77 @@ export const setUser = (user: firebase.User): UserAction => ({
 });
 
 
-/** ASYNC ACTIONS */
+/* USER SIGN UP */
+const signUpRequest = () => ({
+    type: UserActionType.USER_SIGNUP_REQUEST,
+});
+
+const signUpSuccess = () => ({
+    type: UserActionType.USER_SIGNUP_SUCCESS
+});
+
+const signUpFailure = (error: Error) => ({
+    type: UserActionType.USER_SIGNUP_FAILURE,
+    error
+});
+
+/** USER EMAIL VERIFICATION */
+const userEmailUnverified = (user: firebase.User): UserAction => ({
+    type: UserActionType.USER_EMAIL_UNVERIFIED,
+    user
+});
+
+const userVerificationEmailRequest = (): UserAction => ({
+    type: UserActionType.USER_VERIFICATION_EMAIL_REQUEST
+});
+
+const userVerificationEmailSuccess = (user: firebase.User): UserAction => ({
+    type: UserActionType.USER_VERIFICATION_EMAIL_SUCCESS,
+    user
+});
+
+const userVerificationEmailFailure = (error: Error): UserAction => ({
+    type: UserActionType.USER_VERIFICATION_EMAIL_FAILURE,
+    error
+});
+
+export const requestEmailVerification = (user: firebase.User) => requestEmailVerificationThunk(user);
+
+const requestEmailVerificationThunk = (user: firebase.User) => async (dispatch: Dispatch) => {
+    try {
+        dispatch(userVerificationEmailRequest());
+        await user.sendEmailVerification();
+        dispatch(userVerificationEmailSuccess(user));
+    } catch (error) {
+        dispatch(userVerificationEmailFailure(error));
+    }
+};
+
+export const signUp = (email: string, password: string, callback: Function) => {
+    return async (dispatch: Dispatch) => {
+        try {
+            dispatch(signUpRequest());
+            const { user } = await authService.createUserWithEmailAndPassword(email, password);
+            callback();
+            await requestEmailVerificationThunk(user)(dispatch);
+            dispatch(signUpSuccess());
+        } catch (error) {
+            dispatch(signUpFailure(error));
+        }
+    }
+};
+
 export const login = (email: string, password: string, callback: Function) => {
     return async (dispatch: Dispatch) => {
         try {
             dispatch(loginRequest());
-            const userCred: firebase.auth.UserCredential = await authService.login(email, password);
-            const { user } = userCred;
-            dispatch(loginSuccess(user));
-            callback();
+            const { user } = await authService.login(email, password);
+            if (user.emailVerified) {
+                dispatch(loginSuccess(user));
+                callback();
+            } else {
+                dispatch(userEmailUnverified(user));
+            }
         } catch (error) {
             dispatch(loginFailure(error));
         }
@@ -85,7 +153,8 @@ export const loginWithAuthProvider = (authProvider: auth.AuthProvider, callback:
             dispatch(loginFailure(error));
         }
     }
-}
+};
+
 
 export const logout = () => {
     return async (dispatch: Dispatch) => {
@@ -93,9 +162,8 @@ export const logout = () => {
             dispatch(logOutRequest());
             await authService.logOut();
             dispatch(logOutSuccess());
-            //clear all state after logout
         } catch (error) {
             dispatch(logOutFailure(error));
         }
     };
-}
+};

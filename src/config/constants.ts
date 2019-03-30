@@ -7,3 +7,10 @@ export enum Routes {
     ADD_AUDIO = '/home/add-audio',
     SETTINGS = '/settings'
 }
+
+export enum BannerType {
+    INFO = 'info',
+    SUCCESS = 'success',
+    ERROR = 'error',
+    WARNING = 'warning'
+}

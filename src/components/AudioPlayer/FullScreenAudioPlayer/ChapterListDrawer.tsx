@@ -32,7 +32,7 @@ const ChapterListDrawer: FunctionComponent<ChapterListDrawerProps> = (props) => 
     return (
         <Drawer open={isOpen} onClose={onClose} classes={{ paper: classes.paper }}>
             <div className={classes.drawerHeader}>
-                <Typography variant="subheading">
+                <Typography variant="subtitle1">
                     {audio.title}
                 </Typography>
             </div>

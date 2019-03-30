@@ -1,6 +1,7 @@
 import { Middleware, MiddlewareAPI, Dispatch } from 'redux';
 import { uiLoadingStart, uiLoadingEnd, uiSetError } from '../actions/Ui';
 import { AudioCrudActionType, UploadTaskActionType } from '../actions/Audio';
+import { UserActionType } from "../actions/User";
 
 const actionBlacklist: any[] = [
     AudioCrudActionType.CREATE_AUDIO_DOCUMENT_REQUEST,
@@ -23,8 +24,10 @@ export const loaderMiddleware: Middleware = (store: MiddlewareAPI) => (next: Dis
             store.dispatch(uiLoadingEnd(actionType))
         } else if (actionType.endsWith('FAILURE')) {
             store.dispatch(uiSetError(actionType))
+        } else if (action.type === UserActionType.USER_EMAIL_UNVERIFIED) {
+            store.dispatch(uiLoadingEnd(actionType));
         }
     }
     return next(action);
-}
+};
 

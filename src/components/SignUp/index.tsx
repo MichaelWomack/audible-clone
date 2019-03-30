@@ -4,20 +4,24 @@ import { withRouter } from 'react-router-dom';
 import { RouteComponentProps } from 'react-router';
 import  withStyles, { WithStyles} from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import { GoogleIcon, TwitterIcon, FacebookIcon } from '../Icons';
 import  SignUpStyles from './SignUpStyles';
+import { FormUtils } from "../../utils/FormUtils";
+import ValidationTextField from "../ValidationTextField";
 
-export interface SignUpProps extends WithStyles<typeof SignUpStyles>, RouteComponentProps {}
+export interface SignUpProps extends WithStyles<typeof SignUpStyles>, RouteComponentProps {
+    signUp: (email: string, password: string, callback: Function) => void;
+}
 
 export interface SignUpState {
     email?: string;
     password?: string;
     confirmPassword?: string;
+    emailError?: string;
+    passwordError?: string;
+    confirmPasswordError?: string;
 }
 
 class SignUp extends Component<SignUpProps, SignUpState> {
@@ -25,7 +29,10 @@ class SignUp extends Component<SignUpProps, SignUpState> {
     readonly state: SignUpState = {
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        emailError: '',
+        passwordError: '',
+        confirmPasswordError: ''
     };
 
     handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -33,52 +40,56 @@ class SignUp extends Component<SignUpProps, SignUpState> {
         this.setState({ [id]: value });
     };
 
-    navigateToLogin = () => {
-        this.props.history.push('/login');
+    validateConfirmPassword = (value: string): boolean => {
+        const { password } = this.state;
+        return value === password;
+    };
+
+    signUp = () => {
+        const { email, password } = this.state;
+        const { history, signUp } = this.props;
+        signUp(email, password, () => history.push('/login'));
     };
 
     render() {
         const { classes } = this.props;
         return (
             <Fragment>
-                <AppBar position="static" color="inherit">
-                    <Toolbar className={classes.toolbar}>
-                        <Typography variant="headline">Audiobucket</Typography>
-                        <Typography variant="subheading">
-                            <Button onClick={this.navigateToLogin}>login</Button>
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
-
                 <div className={classes.container}>
                     <div className={classes.header}>
                         <Typography variant="h5">Sign Up</Typography>
                     </div>
                     <form className={classes.formContainer}>
-                        <TextField
-                            className={classes.textField}
+                        <ValidationTextField
                             id="email"
-                            label="email"
+                            className={classes.textField}
                             value={this.state.email}
                             onChange={this.handleChange}
+                            defaultLabel="email"
+                            errorLabel="enter a valid email"
+                            isValid={FormUtils.isValidEmail}
                             fullWidth={true}
                         />
-                        <TextField
-                            className={classes.textField}
+                        <ValidationTextField
                             id="password"
-                            label="password"
+                            className={classes.textField}
                             value={this.state.password}
                             onChange={this.handleChange}
+                            defaultLabel="password"
+                            errorLabel={FormUtils.INVALID_PASSWORD_MESSAGE}
+                            isValid={FormUtils.isValidPassword}
                             type="password"
                             fullWidth={true}
                         />
-                        <TextField
-                            className={classes.textField}
+                        <ValidationTextField
                             id="confirmPassword"
-                            label="confirm password"
+                            className={classes.textField}
                             value={this.state.confirmPassword}
-                            onChange={this.handleChange}
                             type="password"
+                            onChange={this.handleChange}
+                            defaultLabel="confirm password"
+                            errorLabel="passwords don't match"
+                            isValid={this.validateConfirmPassword}
                             fullWidth={true}
                         />
                         <div className={classes.buttonRow}>
@@ -86,7 +97,7 @@ class SignUp extends Component<SignUpProps, SignUpState> {
                                 variant="contained"
                                 color="primary"
                                 size="large"
-                                onClick={() => {}}
+                                onClick={this.signUp}
                                 fullWidth={true}
                             >
                                 sign up
