@@ -4,7 +4,7 @@ export default (theme: Theme) =>
     createStyles({
         container: {
             position: "relative",
-            top: 100
+            top: 140
         },
         header: {
             textAlign: "center",

@@ -5,6 +5,7 @@ import { fetchUserAudio, updateAudio, deleteAudio } from '../store/actions/Audio
 import { connect } from 'react-redux';
 import { ReduxState } from '../model/state';
 import { logout } from '../store/actions/User';
+import { uiHideBanner } from "../store/actions/Ui";
 
 export const mapStateToProps = (state: ReduxState) => {
     return {
@@ -13,7 +14,7 @@ export const mapStateToProps = (state: ReduxState) => {
         player: state.player,
         user: state.user.user
     };
-}
+};
 
 export const mapDispatchToProps = (dispatch: Function) => {
     return {
@@ -23,8 +24,9 @@ export const mapDispatchToProps = (dispatch: Function) => {
         getUserAudio: (userId: string) => dispatch(fetchUserAudio(userId)),
         updateAudio: (audio: AudioBook) => dispatch(updateAudio(audio)),
         deleteAudio: (audio: Audio) => dispatch(deleteAudio(audio)),
-        logout: () => dispatch(logout())
+        logout: () => dispatch(logout()),
+        closeBanner: () => dispatch(uiHideBanner(null))
     }
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

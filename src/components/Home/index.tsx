@@ -1,11 +1,6 @@
 import * as React from 'react';
 import { Component, Fragment } from 'react';
-import {
-    withRouter,
-    RouteComponentProps,
-    Route,
-    Link,
-} from 'react-router-dom';
+import { Link, Route, RouteComponentProps, withRouter, } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -16,10 +11,11 @@ import AudioPlayer from '../../containers/AudioPlayer';
 import AddAudioFlow from '../../containers/AddAudioFlow';
 import AudioList from '../AudioList';
 import HomeStyles from './HomeStyles';
-import { PlayerState, UiState, AudioState } from '../../model/state';
+import { AudioState, PlayerState, UiState } from '../../model/state';
 import GitHubButton from '../GitHubButton';
 import { Audio, AudioBook, AudioLibraryFilter } from '../../model/audio';
 import { Routes } from '../../config/constants';
+import Banner from "../Banner";
 
 export interface HomeProps extends WithStyles<typeof HomeStyles>, RouteComponentProps {
     playAudio: (audio: AudioBook) => void;
@@ -33,6 +29,7 @@ export interface HomeProps extends WithStyles<typeof HomeStyles>, RouteComponent
     player: PlayerState;
     ui: UiState;
     audio: AudioState;
+    closeBanner: () => void;
 }
 
 export class Home extends Component<HomeProps, {}> {
@@ -56,20 +53,11 @@ export class Home extends Component<HomeProps, {}> {
             updateAudio,
             deleteAudio,
             playAudio,
-            pauseAudio,
-            logout,
-            user
+            pauseAudio
         } = this.props;
         const selectedAudioId = player.audio ? player.audio.id : null;
         return (
             <Fragment>
-                <NavBar
-                    logout={logout}
-                    isLoading={ui.isLoading}
-                    isUploading={audio.isUploading}
-                    uploadProgress={audio.uploadProgress}
-                    user={user}
-                />
                 <div className={classes.container}>
                     {!history.location.pathname.endsWith('add-audio') && (
                         <Link to={Routes.ADD_AUDIO}>

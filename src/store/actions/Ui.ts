@@ -1,4 +1,5 @@
 import { ThemeOptions } from "@material-ui/core/styles/createMuiTheme";
+import { BannerType } from "../../config/constants";
 
 export enum UIActionType {
     UI_LOADING_START = 'UI_LOADING_START',
@@ -7,7 +8,8 @@ export enum UIActionType {
     UI_SET_MESSAGE = 'UI_SET_MESSAGE',
     UI_OPEN_SNACKBAR = 'UI_OPEN_SNACKBAR',
     UI_CLOSE_SNACKBAR = 'UI_CLOSE_SNACKBAR',
-    UI_SHOW_AUDIO_INFO_MODAL = 'UI_SHOW_AUDIO_INFO_MODAL',
+    UI_SHOW_BANNER = 'UI_SHOW_BANNER',
+    UI_HIDE_BANNER = 'UI_HIDE_BANNER',
     UI_SET_THEME = 'UI_SET_THEME'
 }
 
@@ -17,6 +19,7 @@ export interface UIAction {
     themeOptions: ThemeOptions,
     error: Error,
     message: string,
+    bannerType: BannerType
 }
 
 export const uiLoadingStart = (triggeringActionName: string) => ({
@@ -48,4 +51,15 @@ export const uiCloseSnackbar = (triggeringActionName: string) => ({
 export const uiSetTheme = (themeOptions: ThemeOptions) => ({
     type: UIActionType.UI_SET_THEME,
     themeOptions
+});
+
+export const uiShowBanner = (triggeringActionName: string, bannerType: string, message: string) => ({
+    type: UIActionType.UI_SHOW_BANNER,
+    bannerType,
+    message
+});
+
+export const uiHideBanner = (triggeringActionName: string) => ({
+    type: UIActionType.UI_HIDE_BANNER,
+    triggeringActionName
 });

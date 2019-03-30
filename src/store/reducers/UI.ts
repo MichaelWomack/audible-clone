@@ -5,7 +5,8 @@ const initialState = {
     isLoading: false,
     themeOptions: defaultThemeOptions, 
     error: null as Error,
-}
+    bannerOpen: false
+};
 
 export const ui = (state = initialState, action: UIAction) => {
     switch (action.type) {
@@ -41,6 +42,18 @@ export const ui = (state = initialState, action: UIAction) => {
                 ...state,
                 snackbarMessage: null,
                 snackbarOpen: false
+            };
+        case UIActionType.UI_SHOW_BANNER:
+            return {
+                ...state,
+                bannerOpen: true,
+                bannerType: action.bannerType,
+                bannerMessage: action.message
+            };
+        case UIActionType.UI_HIDE_BANNER:
+            return {
+                ...state,
+                bannerOpen: false
             };
         case UIActionType.UI_SET_THEME:
             return {

@@ -6,11 +6,12 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import { createBlacklistFilter } from 'redux-persist-transform-filter';
 import { loaderMiddleware } from './middleware/loader';
 import { snackbarMiddleware } from './middleware/snackbar';
+import { notificationMiddleware } from "./middleware/notification";
 import * as reducers from './reducers';
 
 
 export const configureStore = (preloadedState: any = {}) => {
-    const middlewares = [ thunk, loaderMiddleware, snackbarMiddleware ];
+    const middlewares = [ thunk, loaderMiddleware, snackbarMiddleware, notificationMiddleware ];
     const rootReducer: Reducer = combineReducers(reducers);
 
     const audioPlayerFilter = createBlacklistFilter('player', ['isPlaying']);
