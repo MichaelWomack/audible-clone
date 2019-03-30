@@ -4,7 +4,7 @@ import TextField, { TextFieldProps } from '@material-ui/core/TextField';
 
 export interface ValidationTextFieldProps {
     onChange: (event: ChangeEvent<HTMLInputElement>) => void;
-    isValidInput: (value: string) => boolean;
+    isValid: (value: string) => boolean;
     value: string;
     defaultLabel: string;
     errorLabel: string;
@@ -21,9 +21,9 @@ class ValidationTextField extends Component<ValidationTextFieldProps & TextField
     };
 
     onBlur = (event: ChangeEvent<HTMLInputElement>) => {
-        const { isValidInput } = this.props;
+        const { isValid } = this.props;
         const input = event.target.value;
-        const error = input && !isValidInput(input);
+        const error = input && !isValid(input);
         this.setState({ error });
     };
 
