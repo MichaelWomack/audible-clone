@@ -2,7 +2,7 @@ import { applyMiddleware, createStore, combineReducers, Reducer } from 'redux';
 import { persistStore, persistReducer, PersistConfig, Persistor } from 'redux-persist';
 import thunk from 'redux-thunk';
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web and AsyncStorage for react-native
-import { composeWithDevTools } from 'redux-devtools-extension'
+import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 import { createBlacklistFilter } from 'redux-persist-transform-filter';
 import { loaderMiddleware } from './middleware/loader';
 import { snackbarMiddleware } from './middleware/snackbar';
