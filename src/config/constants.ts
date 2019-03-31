@@ -3,9 +3,11 @@ export enum Collection {
 }
 
 export enum Routes {
+    LOGIN='/login',
+    SIGNUP='/signup',
     HOME = '/home',
     ADD_AUDIO = '/home/add-audio',
-    SETTINGS = '/settings'
+    SETTINGS = '/home/settings'
 }
 
 export enum BannerType {
@@ -13,4 +15,9 @@ export enum BannerType {
     SUCCESS = 'success',
     ERROR = 'error',
     WARNING = 'warning'
+}
+
+export enum ThemeType {
+    LIGHT = 'light',
+    DARK = 'dark'
 }

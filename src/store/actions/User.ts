@@ -21,6 +21,10 @@ export enum UserActionType {
     USER_VERIFICATION_EMAIL_REQUEST = 'USER_VERIFICATION_EMAIL_REQUEST',
     USER_VERIFICATION_EMAIL_SUCCESS = 'USER_VERIFICATION_EMAIL_SUCCESS',
     USER_VERIFICATION_EMAIL_FAILURE = 'USER_VERIFICATION_EMAIL_FAILURE',
+
+    USER_CHANGE_PASSWORD_REQUEST = 'USER_CHANGE_PASSWORD_REQUEST',
+    USER_CHANGE_PASSWORD_SUCCESS = 'USER_CHANGE_PASSWORD_SUCCESS',
+    USER_CHANGE_PASSWORD_FAILURE = 'USER_CHANGE_PASSWORD_FAILURE'
 }
 
 export interface UserAction {
@@ -97,6 +101,30 @@ const userVerificationEmailFailure = (error: Error): UserAction => ({
     type: UserActionType.USER_VERIFICATION_EMAIL_FAILURE,
     error
 });
+
+const userChangePasswordRequest = () => ({
+    type: UserActionType.USER_CHANGE_PASSWORD_REQUEST
+});
+const userChangePasswordSuccess = () => ({
+    type: UserActionType.USER_CHANGE_PASSWORD_SUCCESS
+});
+
+const userChangePasswordFailure = (error: Error) => ({
+    type: UserActionType.USER_CHANGE_PASSWORD_FAILURE,
+    error
+});
+
+export const changePassword = (password: string) => async (dispatch: Dispatch) => {
+    dispatch(userChangePasswordRequest());
+    try {
+        const user = authService.getAuth().currentUser;
+        await user.updatePassword(password);
+        dispatch(userChangePasswordSuccess());
+    } catch (error) {
+        dispatch(userChangePasswordFailure(error));
+    }
+};
+
 
 export const requestEmailVerification = (user: firebase.User) => requestEmailVerificationThunk(user);
 

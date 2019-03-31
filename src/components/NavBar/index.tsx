@@ -8,6 +8,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import Tooltip from '@material-ui/core/Tooltip';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 
 import NavBarStyles from './NavBarStyles';
@@ -15,6 +16,7 @@ import Typography from "@material-ui/core/Typography/Typography";
 import Button from "@material-ui/core/Button/Button";
 import { History } from "history";
 import { RouteComponentProps, withRouter } from "react-router";
+import { Routes } from "../../config/constants";
 
 export interface NavBarProps extends WithStyles<typeof NavBarStyles>, RouteComponentProps {
     logout: () => void;
@@ -47,6 +49,11 @@ class NavBar extends Component<NavBarProps, NavBarState> {
         this.closeAccountMenu();
     };
 
+    goToSettings = () => {
+        this.closeAccountMenu();
+        this.props.history.push(Routes.SETTINGS);
+    };
+
     getLoginOrSignupAction = (action: "login" | "signup") => {
         const { history } = this.props;
         return (
@@ -61,22 +68,26 @@ class NavBar extends Component<NavBarProps, NavBarState> {
         const { accountMenuAnchorEl } = this.state;
 
         switch (history.location.pathname) {
-            case '/login':
+            case Routes.LOGIN:
                 return this.getLoginOrSignupAction('signup');
-            case '/signup':
+            case Routes.SIGNUP:
                 return this.getLoginOrSignupAction('login');
             default:
                 return (
                     <Fragment>
-                        {user && user.photoURL ?
-                            <Avatar
-                                src={`${user.photoURL}`}
-                                onClick={this.openAccountMenu}
-                                className={classes.avatar}
-                            /> :
-                            <IconButton color="inherit" onClick={this.openAccountMenu}>
-                                <AccountCircle/>
-                            </IconButton>
+                        {user &&
+                            <Tooltip title={user.email}>
+                                {user.photoURL ?
+                                    <Avatar
+                                        src={`${user.photoURL}`}
+                                        onClick={this.openAccountMenu}
+                                        className={classes.avatar}
+                                    /> :
+                                    <IconButton color="inherit" onClick={this.openAccountMenu}>
+                                        <AccountCircle/>
+                                    </IconButton>
+                                }
+                            </Tooltip>
                         }
                         <Menu
                             id="menu-appbar"
@@ -92,7 +103,7 @@ class NavBar extends Component<NavBarProps, NavBarState> {
                             open={Boolean(accountMenuAnchorEl)}
                             onClose={this.closeAccountMenu}
                         >
-                            <MenuItem onClick={this.closeAccountMenu}>
+                            <MenuItem onClick={this.goToSettings}>
                                 settings
                             </MenuItem>
                             <MenuItem onClick={this.logout}>
@@ -109,7 +120,7 @@ class NavBar extends Component<NavBarProps, NavBarState> {
         return (
             <AppBar position="fixed" color="inherit">
                 <Toolbar className={classes.toolbar}>
-                    <Typography variant="subtitle1">Audiobucket</Typography>
+                    <Typography variant="subtitle1" className={classes.logo}>audiobucket</Typography>
                     {this.renderNavbarAction()}
                 </Toolbar>
 

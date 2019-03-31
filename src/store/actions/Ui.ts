@@ -10,7 +10,7 @@ export enum UIActionType {
     UI_CLOSE_SNACKBAR = 'UI_CLOSE_SNACKBAR',
     UI_SHOW_BANNER = 'UI_SHOW_BANNER',
     UI_HIDE_BANNER = 'UI_HIDE_BANNER',
-    UI_SET_THEME = 'UI_SET_THEME'
+    UI_TOGGLE_THEME = 'UI_TOGGLE_THEME'
 }
 
 export interface UIAction {
@@ -48,9 +48,8 @@ export const uiCloseSnackbar = (triggeringActionName: string) => ({
     triggeringActionName
 });
 
-export const uiSetTheme = (themeOptions: ThemeOptions) => ({
-    type: UIActionType.UI_SET_THEME,
-    themeOptions
+export const uiToggleTheme = () => ({
+    type: UIActionType.UI_TOGGLE_THEME
 });
 
 export const uiShowBanner = (triggeringActionName: string, bannerType: string, message: string) => ({

@@ -1,5 +1,6 @@
 import { UIAction, UIActionType } from '../actions/Ui';
 import { defaultThemeOptions } from '../../theme';
+import { ThemeType } from "../../config/constants";
 
 const initialState = {
     isLoading: false,
@@ -55,10 +56,13 @@ export const ui = (state = initialState, action: UIAction) => {
                 ...state,
                 bannerOpen: false
             };
-        case UIActionType.UI_SET_THEME:
+        case UIActionType.UI_TOGGLE_THEME:
+            const themeType = state.themeOptions.palette.type === ThemeType.DARK ? ThemeType.LIGHT : ThemeType.DARK;
+            const themeOptions = {...defaultThemeOptions };
+            themeOptions.palette.type = themeType;
             return {
                 ...state,
-                theme: action.themeOptions
+                themeOptions
             }
     }
     return state;

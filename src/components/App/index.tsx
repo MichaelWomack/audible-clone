@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Component, Fragment } from 'react';
+import { Component, ComponentClass, Fragment } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import Login from '../../containers/Login';
 import Home from '../../containers/Home';
@@ -11,6 +11,9 @@ import { authService } from '../../services';
 import Banner from "../Banner";
 import { AudioState, UiState } from "../../model/state";
 import NavBar from "../NavBar";
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { Routes } from "../../config/constants";
+
 
 interface Props {
     user: firebase.User,// could probably remove?
@@ -26,7 +29,6 @@ class App extends Component<Props, {}> {
 
     componentDidMount() {
         authService.getAuth().onAuthStateChanged((user: firebase.User) => {
-            console.log('AUTH STATE CHANGE user: => ', user);
             const partialUser = { ...user };
             delete partialUser.providerData;
             this.props.setUser(user);
@@ -39,27 +41,29 @@ class App extends Component<Props, {}> {
         return (
             <MuiThemeProvider theme={theme}>
                 <Router>
-                    <Fragment>
-                        <NavBar
-                            logout={logout}
-                            isLoading={ui.isLoading}
-                            isUploading={audio.isUploading}
-                            uploadProgress={audio.uploadProgress}
-                            user={user}
-                        />
-                        <Banner
-                            variant={ui.bannerType}
-                            open={ui.bannerOpen}
-                            message={ui.bannerMessage}
-                            onClose={closeBanner}
-                        />
-                        <Switch>
-                            <Route path="/login" component={Login}/>
-                            <Route path="/signup" component={SignUp}/>
-                            <ProtectedRoute path="/home" user={user} component={Home}/>
-                            <Redirect from="/" to="/home"/>
-                        </Switch>
-                    </Fragment>
+                    <CssBaseline>
+                        <Fragment>
+                            <NavBar
+                                logout={logout}
+                                isLoading={ui.isLoading}
+                                isUploading={audio.isUploading}
+                                uploadProgress={audio.uploadProgress}
+                                user={user}
+                            />
+                            <Banner
+                                variant={ui.bannerType}
+                                open={ui.bannerOpen}
+                                message={ui.bannerMessage}
+                                onClose={closeBanner}
+                            />
+                            <Switch>
+                                <Route path={Routes.LOGIN} component={Login}/>
+                                <Route path={Routes.SIGNUP} component={SignUp}/>
+                                <ProtectedRoute path={Routes.HOME} user={user} component={Home}/>
+                                <Redirect from="/" to={Routes.HOME}/>
+                            </Switch>
+                        </Fragment>
+                    </CssBaseline>
                 </Router>
             </MuiThemeProvider>
         );
