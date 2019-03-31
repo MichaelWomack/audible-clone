@@ -22,6 +22,12 @@ export const notificationMiddleware: Middleware = (store: MiddlewareAPI) => (nex
         case UserActionType.USER_LOGIN_FAILURE:
             store.dispatch(uiShowBanner(actionType, BannerType.ERROR, (action as UserAction).error.message));
             break;
+        case UserActionType.USER_CHANGE_PASSWORD_FAILURE:
+            store.dispatch(uiShowBanner(actionType, BannerType.ERROR, (action as UserAction).error.message));
+            break;
+        case UserActionType.USER_CHANGE_PASSWORD_SUCCESS:
+            store.dispatch(uiShowBanner(actionType, BannerType.INFO, 'Successfully updated password'));
+            break;
     }
 
     next(action);

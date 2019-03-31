@@ -6,16 +6,15 @@ import AddIcon from '@material-ui/icons/Add';
 import Snackbar from '@material-ui/core/Snackbar';
 import Slide from '@material-ui/core/Slide';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
-import NavBar from '../NavBar';
 import AudioPlayer from '../../containers/AudioPlayer';
 import AddAudioFlow from '../../containers/AddAudioFlow';
+import Settings from "../Settings";
 import AudioList from '../AudioList';
 import HomeStyles from './HomeStyles';
-import { AudioState, PlayerState, UiState } from '../../model/state';
 import GitHubButton from '../GitHubButton';
+import { AudioState, PlayerState, UiState } from '../../model/state';
 import { Audio, AudioBook, AudioLibraryFilter } from '../../model/audio';
 import { Routes } from '../../config/constants';
-import Banner from "../Banner";
 
 export interface HomeProps extends WithStyles<typeof HomeStyles>, RouteComponentProps {
     playAudio: (audio: AudioBook) => void;
@@ -25,6 +24,8 @@ export interface HomeProps extends WithStyles<typeof HomeStyles>, RouteComponent
     toggleFavorite: (audio: Audio) => void;
     logout: () => void;
     user: firebase.User;
+    changePassword: (password: string) => void;
+    toggleTheme: () => void;
     getUserAudio: Function;
     player: PlayerState;
     ui: UiState;
@@ -53,13 +54,15 @@ export class Home extends Component<HomeProps, {}> {
             updateAudio,
             deleteAudio,
             playAudio,
-            pauseAudio
+            pauseAudio,
+            changePassword,
+            toggleTheme
         } = this.props;
         const selectedAudioId = player.audio ? player.audio.id : null;
         return (
             <Fragment>
                 <div className={classes.container}>
-                    {!history.location.pathname.endsWith('add-audio') && (
+                    {history.location.pathname.endsWith('home') && (
                         <Link to={Routes.ADD_AUDIO}>
                             <Button
                                 variant="fab"
@@ -92,8 +95,11 @@ export class Home extends Component<HomeProps, {}> {
                         path={Routes.ADD_AUDIO}
                         component={AddAudioFlow}
                     />
+                    <Route
+                        path={Routes.SETTINGS}
+                        render={props => <Settings toggleTheme={toggleTheme} changePassword={changePassword}/>}
+                    />
                 </div>
-
                 <Slide
                     direction="up"
                     in={player.isShowing}

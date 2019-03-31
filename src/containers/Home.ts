@@ -4,8 +4,8 @@ import { togglePlaying, setAudio, pauseAudio } from '../store/actions/AudioPlaye
 import { fetchUserAudio, updateAudio, deleteAudio } from '../store/actions/Audio';
 import { connect } from 'react-redux';
 import { ReduxState } from '../model/state';
-import { logout } from '../store/actions/User';
-import { uiHideBanner } from "../store/actions/Ui";
+import { changePassword, logout } from '../store/actions/User';
+import { uiHideBanner, uiToggleTheme } from "../store/actions/Ui";
 
 export const mapStateToProps = (state: ReduxState) => {
     return {
@@ -25,6 +25,8 @@ export const mapDispatchToProps = (dispatch: Function) => {
         updateAudio: (audio: AudioBook) => dispatch(updateAudio(audio)),
         deleteAudio: (audio: Audio) => dispatch(deleteAudio(audio)),
         logout: () => dispatch(logout()),
+        changePassword: (password: string) => dispatch(changePassword(password)),
+        toggleTheme: () => dispatch(uiToggleTheme()),
         closeBanner: () => dispatch(uiHideBanner(null))
     }
 };
