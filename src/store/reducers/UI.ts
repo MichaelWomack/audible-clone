@@ -4,7 +4,7 @@ import { ThemeType } from "../../config/constants";
 
 const initialState = {
     isLoading: false,
-    themeOptions: defaultThemeOptions, 
+    themeOptions: defaultThemeOptions,
     error: null as Error,
     bannerOpen: false
 };
@@ -14,51 +14,64 @@ export const ui = (state = initialState, action: UIAction) => {
         case UIActionType.UI_LOADING_START:
             return {
                 ...state,
-                isLoading: true
+                isLoading: true,
+                triggeringAction: action.triggeringActionName
             };
         case UIActionType.UI_LOADING_END:
             return {
                 ...state,
-                isLoading: false
+                isLoading: false,
+                triggeringAction: action.triggeringActionName
             };
         case UIActionType.UI_SET_ERROR:
             return {
                 ...state,
                 isLoading: false,
-                error: action.error
+                error: action.error,
+                triggeringAction: action.triggeringActionName
             };
         case UIActionType.UI_SET_MESSAGE:
             return {
                 ...state,
-                snackbarMessage: action.message
+                snackbarMessage: action.message,
+                triggeringAction: action.triggeringActionName
             };
         case UIActionType.UI_OPEN_SNACKBAR:
             return {
                 ...state,
                 snackbarMessage: action.message,
-                snackbarOpen: true
+                snackbarOpen: true,
+                triggeringAction: action.triggeringActionName
             };
         case UIActionType.UI_CLOSE_SNACKBAR:
             return {
                 ...state,
                 snackbarMessage: null,
-                snackbarOpen: false
+                snackbarOpen: false,
+                triggeringAction: action.triggeringActionName
             };
         case UIActionType.UI_SHOW_BANNER:
             return {
                 ...state,
                 bannerOpen: true,
                 bannerType: action.bannerType,
-                bannerMessage: action.message
+                bannerMessage: action.message,
+                triggeringAction: action.triggeringActionName
             };
         case UIActionType.UI_HIDE_BANNER:
             return {
                 ...state,
-                bannerOpen: false
+                bannerOpen: false,
+                triggeringAction: action.triggeringActionName
+            };
+        case UIActionType.UI_SET_THEME_OPTIONS:
+            return {
+                ...state,
+                themeOptions: action.themeOptions,
             };
         case UIActionType.UI_TOGGLE_THEME:
             const themeType = state.themeOptions.palette.type === ThemeType.DARK ? ThemeType.LIGHT : ThemeType.DARK;
-            const themeOptions = {...defaultThemeOptions };
+            const themeOptions = { ...defaultThemeOptions };
             themeOptions.palette.type = themeType;
             return {
                 ...state,

@@ -1,5 +1,6 @@
 export enum Collection {
-    AUDIO = 'audio'
+    AUDIO = 'audio',
+    USERS = 'users'
 }
 
 export enum Routes {

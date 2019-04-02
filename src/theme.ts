@@ -1,4 +1,5 @@
 import { ThemeOptions } from '@material-ui/core/styles/createMuiTheme';
+import { ThemeType } from "./config/constants";
 
 const requiredOptions = {
     typography: {
@@ -9,7 +10,7 @@ const requiredOptions = {
 export const defaultThemeOptions: ThemeOptions = {
    ...requiredOptions,
     palette: {
-       type: 'light'
+       type: ThemeType.LIGHT
     }
 };
 

@@ -7,6 +7,7 @@ import Switch from "@material-ui/core/Switch/Switch";
 import { Theme, createStyles, WithStyles, withStyles } from "@material-ui/core/styles";
 import ValidationTextField from "../ValidationTextField";
 import { FormUtils } from "../../utils/FormUtils";
+import { ThemeType } from "../../config/constants";
 
 export const styles = (theme: Theme) => createStyles({
     container: {
@@ -23,6 +24,11 @@ export const styles = (theme: Theme) => createStyles({
         maxWidth: 400,
         marginTop: 40,
     },
+    themeControlsContainer: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
     formElement: {
         margin: `${theme.spacing.unit * 2}px 0px`
     }
@@ -30,13 +36,14 @@ export const styles = (theme: Theme) => createStyles({
 
 export interface SettingsProps extends WithStyles<typeof styles> {
     changePassword: (newPassword: string) => void;
+    themeType: ThemeType;
     toggleTheme: () => void;
+    applyTheme: () => void;
 }
 
 export interface SettingsState {
     newPassword?: string;
     confirmNewPassword?: string;
-    defaultTheme?: boolean;
 }
 
 class Settings extends Component<SettingsProps, SettingsState> {
@@ -44,7 +51,6 @@ class Settings extends Component<SettingsProps, SettingsState> {
     state: SettingsState = {
         newPassword: '',
         confirmNewPassword: '',
-        defaultTheme: false
     };
 
     handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -66,11 +72,14 @@ class Settings extends Component<SettingsProps, SettingsState> {
 
     toggleTheme = () => {
         this.props.toggleTheme();
-        this.setState(prevState => ({ defaultTheme: !prevState.defaultTheme }) );
+    };
+
+    applyTheme = () => {
+        this.props.applyTheme();
     };
 
     render() {
-        const { classes } = this.props;
+        const { classes, themeType } = this.props;
         return (
             <Fragment>
                 <div className={classes.container}>
@@ -110,15 +119,24 @@ class Settings extends Component<SettingsProps, SettingsState> {
                     </div>
                     <div className={classes.sectionContainer}>
                         <Typography variant="h6">theme</Typography>
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={this.state.defaultTheme}
-                                    onChange={this.toggleTheme}
-                                />
-                            }
-                            label="dark"
-                        />
+                        <div className={classes.themeControlsContainer}>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={ThemeType.DARK === themeType}
+                                        onChange={this.toggleTheme}
+                                    />
+                                }
+                                label="dark"
+                            />
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                onClick={this.applyTheme}
+                            >
+                                apply
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </Fragment>

@@ -12,26 +12,32 @@ import Settings from "../Settings";
 import AudioList from '../AudioList';
 import HomeStyles from './HomeStyles';
 import GitHubButton from '../GitHubButton';
-import { AudioState, PlayerState, UiState } from '../../model/state';
-import { Audio, AudioBook, AudioLibraryFilter } from '../../model/audio';
-import { Routes } from '../../config/constants';
+import { AudioState, PlayerState, UiState, UserState } from '../../model/state';
+import { Audio, AudioLibraryFilter } from '../../model/audio';
+import { Routes, ThemeType } from '../../config/constants';
 
-export interface HomeProps extends WithStyles<typeof HomeStyles>, RouteComponentProps {
-    playAudio: (audio: AudioBook) => void;
+export interface StateProps {
+    ui: UiState
+    audio: AudioState,
+    player: PlayerState,
+    userState: UserState
+}
+
+export interface DispatchProps {
+    togglePlaying: () => void;
+    playAudio: (audio: Audio) => void;
     pauseAudio: () => void;
+    getUserAudio: (userId: string) => void;
     updateAudio: (audio: Audio) => void;
     deleteAudio: (audio: Audio) => void;
-    toggleFavorite: (audio: Audio) => void;
     logout: () => void;
-    user: firebase.User;
     changePassword: (password: string) => void;
     toggleTheme: () => void;
-    getUserAudio: Function;
-    player: PlayerState;
-    ui: UiState;
-    audio: AudioState;
     closeBanner: () => void;
+    applyTheme: () => void;
 }
+
+export interface HomeProps extends WithStyles<typeof HomeStyles>, RouteComponentProps, StateProps, DispatchProps {}
 
 export class Home extends Component<HomeProps, {}> {
     componentDidMount() {
@@ -39,8 +45,8 @@ export class Home extends Component<HomeProps, {}> {
     }
 
     getAudio = () => {
-        const userId = this.props.user.uid;
-        this.props.getUserAudio(userId);
+        const { user: { uid } } = this.props.userState;
+        this.props.getUserAudio(uid);
     };
 
     render() {
@@ -51,12 +57,14 @@ export class Home extends Component<HomeProps, {}> {
             audio,
             player,
             ui,
+            userState,
             updateAudio,
             deleteAudio,
             playAudio,
             pauseAudio,
             changePassword,
-            toggleTheme
+            toggleTheme,
+            applyTheme
         } = this.props;
         const selectedAudioId = player.audio ? player.audio.id : null;
         return (
@@ -70,7 +78,7 @@ export class Home extends Component<HomeProps, {}> {
                                 aria-label="Add"
                                 className={classes.addButton}
                             >
-                                <AddIcon />
+                                <AddIcon/>
                             </Button>
                         </Link>
                     )}
@@ -78,17 +86,17 @@ export class Home extends Component<HomeProps, {}> {
                         exact
                         path={`${match.path}`}
                         render={props => (
-                            !ui.isLoading ? 
-                            <AudioList
-                                audioList={Object.values(audio.library)}
-                                updateAudio={updateAudio}
-                                deleteAudio={deleteAudio}
-                                playAudio={playAudio}
-                                pauseAudio={pauseAudio}
-                                isPlaying={player.isPlaying}
-                                selectedAudioId={selectedAudioId}
-                                filter={AudioLibraryFilter.ALL}
-                            /> : null
+                            !ui.isLoading ?
+                                <AudioList
+                                    audioList={Object.values(audio.library)}
+                                    updateAudio={updateAudio}
+                                    deleteAudio={deleteAudio}
+                                    playAudio={playAudio}
+                                    pauseAudio={pauseAudio}
+                                    isPlaying={player.isPlaying}
+                                    selectedAudioId={selectedAudioId}
+                                    filter={AudioLibraryFilter.ALL}
+                                /> : null
                         )}
                     />
                     <Route
@@ -97,7 +105,12 @@ export class Home extends Component<HomeProps, {}> {
                     />
                     <Route
                         path={Routes.SETTINGS}
-                        render={props => <Settings toggleTheme={toggleTheme} changePassword={changePassword}/>}
+                        render={props => <Settings
+                            themeType={ui.themeOptions.palette.type as ThemeType}
+                            applyTheme={applyTheme}
+                            toggleTheme={toggleTheme}
+                            changePassword={changePassword}
+                        />}
                     />
                 </div>
                 <Slide
@@ -106,7 +119,7 @@ export class Home extends Component<HomeProps, {}> {
                     mountOnEnter
                     unmountOnExit
                 >
-                    <AudioPlayer />
+                    <AudioPlayer/>
                 </Slide>
 
                 <Snackbar
