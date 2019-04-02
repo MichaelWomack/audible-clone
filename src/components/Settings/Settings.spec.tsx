@@ -35,7 +35,7 @@ describe("Settings", () => {
         const passwordFields = wrapper.find(ValidationTextField);
         expect(passwordFields.length).toBe(2);
 
-        const changePasswordButton = wrapper.find(Button);
+        const changePasswordButton = wrapper.find(Button).at(0);
         expect(changePasswordButton.exists()).toBe(true);
         expect(changePasswordButton.text()).toBe('change password');
     });
