@@ -1,6 +1,6 @@
-import { Middleware, MiddlewareAPI, Dispatch } from "redux";
+import { Dispatch, Middleware, MiddlewareAPI } from "redux";
 import { UserAction, UserActionType } from "../actions/User";
-import { uiLoadingEnd, uiShowBanner } from "../actions/Ui";
+import { uiShowBanner } from "../actions/Ui";
 import { BannerType } from "../../config/constants";
 
 export const notificationMiddleware: Middleware = (store: MiddlewareAPI) => (next: Dispatch) => (action: any) => {
@@ -27,6 +27,9 @@ export const notificationMiddleware: Middleware = (store: MiddlewareAPI) => (nex
             break;
         case UserActionType.USER_CHANGE_PASSWORD_SUCCESS:
             store.dispatch(uiShowBanner(actionType, BannerType.INFO, 'Successfully updated password'));
+            break;
+        case UserActionType.USER_SAVE_THEME_PREFERENCES_SUCCESS:
+            store.dispatch(uiShowBanner(actionType, BannerType.INFO, 'Theme preferences successfully updated'));
             break;
     }
 

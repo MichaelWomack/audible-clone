@@ -1,33 +1,31 @@
 import { UserAction, UserActionType } from '../actions/User';
 import { UserState } from '../../model/state';
+import { UserSettings } from "../../model/user";
+import { defaultThemeOptions } from "../../theme";
+
+/** try to only keep 'document' actions here. Example: SET_USER, SET_USER_SETTINGS...
+ *  Event actions like **_REQUEST, **_SUCCESS, **_FAILURE can be handled in the user middleware for side effects
+ */
 
 const defaultState: UserState = {
     user: null,
+    settings: { themeOptions: defaultThemeOptions } as UserSettings
 };
 
 export const user = (state = defaultState, action: UserAction) => {
     switch (action.type) {
-        case UserActionType.USER_LOGIN_REQUEST:
-            return state;
-            
-        case UserActionType.USER_LOGIN_SUCCESS:
-            return { user: action.user };
-            
-        case UserActionType.USER_LOGOUT_REQUEST:
-            return state;
-            
-        case UserActionType.USER_LOGOUT_SUCCESS:
-            return { user: null };
-
-        case UserActionType.USER_LOGOUT_FAILURE:
-            return { error: action.error };
-
-        case UserActionType.USER_EMAIL_UNVERIFIED:
+        case UserActionType.SET_USER:
             return {
-                unverifiedUser: action.user
+                ...state,
+                user: action.user
+            };
+        case UserActionType.SET_USER_SETTINGS:
+            return {
+                ...state,
+                settings: action.settings
             };
         default:
             return state;
     }
-}
+};
 

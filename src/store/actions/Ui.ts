@@ -10,55 +10,61 @@ export enum UIActionType {
     UI_CLOSE_SNACKBAR = 'UI_CLOSE_SNACKBAR',
     UI_SHOW_BANNER = 'UI_SHOW_BANNER',
     UI_HIDE_BANNER = 'UI_HIDE_BANNER',
-    UI_TOGGLE_THEME = 'UI_TOGGLE_THEME'
+    UI_TOGGLE_THEME = 'UI_TOGGLE_THEME',
+    UI_SET_THEME_OPTIONS = 'UI_SET_THEME_OPTIONS'
 }
 
 export interface UIAction {
     type: UIActionType,
-    triggerActionName: string,
-    themeOptions: ThemeOptions,
-    error: Error,
-    message: string,
-    bannerType: BannerType
+    triggeringActionName?: string,
+    themeOptions?: ThemeOptions,
+    error?: Error,
+    message?: string,
+    bannerType?: BannerType
 }
 
-export const uiLoadingStart = (triggeringActionName: string) => ({
+export const uiLoadingStart = (triggeringActionName: string): UIAction => ({
     type: UIActionType.UI_LOADING_START,
     triggeringActionName
 });
 
-export const uiLoadingEnd = (triggeringActionName: string) => ({
+export const uiLoadingEnd = (triggeringActionName: string): UIAction => ({
     type: UIActionType.UI_LOADING_END,
     triggeringActionName
 });
 
-export const uiSetError = (triggeringActionName: string) => ({
+export const uiSetError = (triggeringActionName: string): UIAction => ({
     type: UIActionType.UI_SET_ERROR,
     triggeringActionName
 });
 
-export const uiOpenSnackbar = (triggeringActionName: string, message: string) => ({
+export const uiOpenSnackbar = (triggeringActionName: string, message: string): UIAction => ({
     type: UIActionType.UI_OPEN_SNACKBAR,
     triggeringActionName,
     message
 });
 
-export const uiCloseSnackbar = (triggeringActionName: string) => ({
+export const uiCloseSnackbar = (triggeringActionName: string): UIAction => ({
     type: UIActionType.UI_CLOSE_SNACKBAR,
     triggeringActionName
 });
 
-export const uiToggleTheme = () => ({
+export const uiToggleTheme = (): UIAction => ({
     type: UIActionType.UI_TOGGLE_THEME
 });
 
-export const uiShowBanner = (triggeringActionName: string, bannerType: string, message: string) => ({
+export const uiSetThemeOptions = (themeOptions: ThemeOptions): UIAction => ({
+    type: UIActionType.UI_SET_THEME_OPTIONS,
+    themeOptions
+});
+
+export const uiShowBanner = (triggeringActionName: string, bannerType: BannerType, message: string): UIAction => ({
     type: UIActionType.UI_SHOW_BANNER,
     bannerType,
     message
 });
 
-export const uiHideBanner = (triggeringActionName: string) => ({
+export const uiHideBanner = (triggeringActionName: string): UIAction => ({
     type: UIActionType.UI_HIDE_BANNER,
     triggeringActionName
 });
