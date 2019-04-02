@@ -1,15 +1,18 @@
-import { Middleware, MiddlewareAPI, Dispatch } from 'redux';
-import { uiLoadingStart, uiLoadingEnd, uiSetError } from '../actions/Ui';
+import { Dispatch, Middleware, MiddlewareAPI } from 'redux';
+import { uiLoadingEnd, uiLoadingStart, uiSetError } from '../actions/Ui';
 import { AudioCrudActionType, UploadTaskActionType } from '../actions/Audio';
 import { UserActionType } from "../actions/User";
 
 const actionBlacklist: any[] = [
     AudioCrudActionType.CREATE_AUDIO_DOCUMENT_REQUEST,
-    AudioCrudActionType.CREATE_AUDIO_DOCUMENT_FAILURE,
-    AudioCrudActionType.CREATE_AUDIO_DOCUMENT_SUCCESS,
+    // AudioCrudActionType.CREATE_AUDIO_DOCUMENT_FAILURE,
+    // AudioCrudActionType.CREATE_AUDIO_DOCUMENT_SUCCESS,
     AudioCrudActionType.UPDATE_AUDIO_DOCUMENT_REQUEST,
-    AudioCrudActionType.UPDATE_AUDIO_DOCUMENT_SUCCESS,
-    AudioCrudActionType.UPDATE_AUDIO_DOCUMENT_FAILURE,
+    // AudioCrudActionType.UPDATE_AUDIO_DOCUMENT_SUCCESS,
+    // AudioCrudActionType.UPDATE_AUDIO_DOCUMENT_FAILURE,
+
+    UserActionType.USER_SAVE_THEME_PREFERENCES_REQUEST,
+    UserActionType.USER_UPDATE_DOCUMENT_REQUEST,
                                                          /* don't show loading everytime something is updated */
     ...Object.keys(UploadTaskActionType), /* uploading handled separately */
 ];
