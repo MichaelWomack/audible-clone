@@ -25,7 +25,6 @@ export interface Audio {
     favorite?: boolean;
     trackList?: AudioFile[];
     storagePath?: string;
-    // downloadUrl?: string;
     imageUrl?: string;
     currentTime?: number;
     lastPlayed?: number;
@@ -51,6 +50,7 @@ export interface AudioBook extends Audio {
 export enum AudioLibraryFilter {
     ALL,
     FAVORITE,
+    COMPLETE,
     RECENT
 }
 

@@ -1,4 +1,4 @@
-import { Audio, AudioMap, SleepTimer } from "./audio";
+import { Audio, AudioLibraryFilter, AudioMap, SleepTimer } from "./audio";
 import { firestore, storage } from "firebase";
 import { VolumeInfo } from "./volume";
 import { ThemeOptions } from "@material-ui/core/styles/createMuiTheme";
@@ -8,7 +8,8 @@ import { SerializableUser, UserSettings } from "./user";
 
 export interface AudioState {
     library: AudioMap;
-    createdDocument: firestore.DocumentReference,
+    filter: AudioLibraryFilter;
+    createdDocument: firestore.DocumentReference;
     isLoading: boolean;
     isUploading: boolean;
     uploadComplete: boolean;
