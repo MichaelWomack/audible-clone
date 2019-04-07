@@ -15,14 +15,15 @@ export const configureStore = (preloadedState: any = {}) => {
     const middlewares = [ thunk, loaderMiddleware, snackbarMiddleware, notificationMiddleware, userMiddleware ];
     const rootReducer: Reducer = combineReducers(reducers);
 
-    const audioPlayerFilter = createBlacklistFilter('player', ['isPlaying']);
+    const audioFilter = createWhitelistFilter('audio', ['library']);
+    const playerFilter = createBlacklistFilter('player', ['isPlaying']);
     const uiFilter = createWhitelistFilter('ui', ['themeOptions']);
 
     const persistConfig: PersistConfig = {
         key: 'root',
         whitelist: ['user', 'audio', 'player', 'ui'],
         storage,
-        transforms: [ audioPlayerFilter, uiFilter ]
+        transforms: [  audioFilter, playerFilter, uiFilter ]
     };
 
     const persistedReducer = persistReducer(persistConfig, rootReducer);
