@@ -5,7 +5,7 @@ import { SerializableUser } from "../model/user";
 
 export class UserService {
 
-    constructor(private readonly collection: firestore.CollectionReference | any) {
+    constructor(private readonly collection: Partial<firestore.CollectionReference>) {
         this.collection = collection;
     }
 
@@ -15,13 +15,15 @@ export class UserService {
     }
 
     async getUser(email: string): Promise<SerializableUser> {
-        console.log(`getting ${email}`);
         const document = await this.collection.doc(email).get();
-        return document.data();
+        return document.data() as SerializableUser;
     }
 
     async addUser(user: SerializableUser): Promise<firestore.DocumentReference> {
-        return await this.collection.add(user);
+        if (await this.userExists(user.email)) throw new Error(`User ${user.email} already exists!`);
+        const document = this.collection.doc(user.email);
+        await document.set(user);
+        return document;
     }
 
     async updateUser(user: SerializableUser): Promise<void> {

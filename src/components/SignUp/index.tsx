@@ -10,9 +10,11 @@ import { GoogleIcon, TwitterIcon, FacebookIcon } from '../Icons';
 import  SignUpStyles from './SignUpStyles';
 import { FormUtils } from "../../utils/FormUtils";
 import ValidationTextField from "../ValidationTextField";
+import { auth } from "firebase";
 
 export interface SignUpProps extends WithStyles<typeof SignUpStyles>, RouteComponentProps {
     signUp: (email: string, password: string, callback: Function) => void;
+    signUpWithAuthProvider: (authProvider: firebase.auth.AuthProvider, callback: Function) => void;
 }
 
 export interface SignUpState {
@@ -49,6 +51,23 @@ class SignUp extends Component<SignUpProps, SignUpState> {
         const { email, password } = this.state;
         const { history, signUp } = this.props;
         signUp(email, password, () => history.push('/login'));
+    };
+
+    signUpWithGoogle = () => {
+        this.signUpWithAuthProvider(new auth.GoogleAuthProvider());
+    };
+
+    signUpWithFacebook = () => {
+        this.signUpWithAuthProvider(new auth.FacebookAuthProvider());
+    };
+
+    signUpWithTwitter = () => {
+        this.signUpWithAuthProvider(new auth.TwitterAuthProvider());
+    };
+
+    signUpWithAuthProvider = (provider: auth.AuthProvider) => {
+        const { history, signUpWithAuthProvider } = this.props;
+        signUpWithAuthProvider(provider, () => history.push('/home'));
     };
 
     render() {
@@ -103,14 +122,15 @@ class SignUp extends Component<SignUpProps, SignUpState> {
                                 sign up
                             </Button>
                         </div>
+                        <Typography variant="subtitle2">sign up with provider</Typography>
                         <div className={classes.buttonRow}>
-                            <IconButton onClick={() =>{}}>
+                            <IconButton onClick={this.signUpWithGoogle}>
                                 <GoogleIcon />
                             </IconButton>
-                            <IconButton onClick={() =>{}}>
+                            <IconButton onClick={this.signUpWithTwitter}>
                                 <TwitterIcon />
                             </IconButton>
-                            <IconButton onClick={() =>{}}>
+                            <IconButton onClick={this.signUpWithFacebook}>
                                 <FacebookIcon />
                             </IconButton>
                         </div>

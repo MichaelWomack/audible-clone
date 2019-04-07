@@ -308,10 +308,13 @@ const finalizeUploads = async (audio: Audio, dispatch: Function) => {
 //should this be called something else
 export const uploadAudio = (audio: Audio, files: File[]) => {
     return async (dispatch: Function, getState: Function) => {
+        const state: ReduxState = getState();
         dispatch(uploadAudioRequest());
         let createdDocument;
         try {
             dispatch(createAudioDocumentRequest());
+            /** needs to be on all documents for firebase security rules */
+            audio.userId = state.user.user.uid;
             createdDocument = await audioService.addAudio(audio);
             dispatch(createAudioDocumentSuccess(audio));
         } catch(error) {
@@ -319,7 +322,6 @@ export const uploadAudio = (audio: Audio, files: File[]) => {
             return;
         }
         audio.id = createdDocument.id;
-        audio.userId = await authService.getAuth().currentUser.uid;
         audio.storagePath = storageHelper.getAudioStoragePath(audio.userId, createdDocument.id);
         audio.currentTrack = 0;
         audio.trackList = [];

@@ -3,11 +3,11 @@ import { createStyles, Theme } from '@material-ui/core';
 export default (theme: Theme) =>
     createStyles({
         container: {
+            textAlign: 'center',
             position: "relative",
             top: 140
         },
         header: {
-            textAlign: "center",
             marginBottom: 30
         },
         toolbar: {
@@ -26,7 +26,8 @@ export default (theme: Theme) =>
             display: "flex",
             flexGrow: 1,
             marginTop: theme.spacing.unit * 2,
-            justifyContent: 'space-evenly'
+            marginBottom: 30,
+            justifyContent: 'space-evenly',
         },
         githubContainer: {
             
