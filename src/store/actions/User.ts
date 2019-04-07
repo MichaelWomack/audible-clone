@@ -79,8 +79,8 @@ export const login = (email: string, password: string, callback: Function) => {
             dispatch(loginRequest());
             const { user } = await authService.login(email, password);
             if (user.emailVerified) {
-                // await getUserDocument(user.email, true)(dispatch);
                 const userDocument = await userService.getUser(user.email);
+                if (!userDocument) throw new Error(`Please sign up with ${user.email} before login.`);
                 dispatch(loginSuccess(user, userDocument.settings));
                 callback();
             } else {
@@ -98,8 +98,8 @@ export const loginWithAuthProvider = (authProvider: auth.AuthProvider, callback:
             dispatch(loginRequest());
             const userCred: firebase.auth.UserCredential = await authService.loginWithProvider(authProvider);
             const { user } = userCred;
-            // await getUserDocument(user.email, true)(dispatch);
             const userDocument = await userService.getUser(user.email);
+            if (!userDocument) throw new Error(`Please sign up with ${user.email} before login.`);
             callback();
             dispatch(loginSuccess(user, userDocument.settings));
         } catch (error) {
