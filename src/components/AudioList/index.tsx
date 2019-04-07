@@ -45,20 +45,23 @@ const AudioList: FunctionComponent<AudioListProps> = (props: AudioListProps) => 
 
     return (
         <div className={classes.container}>
-            <div className={classes.headerContainer}>
-                <ToggleButtonGroup className={classes.toggleGroup} value={filter} exclusive onChange={handleSelection}>
-                    <ToggleButton value={AudioLibraryFilter.FAVORITE}>
-                        <Tooltip title="favorites">
-                            <FavoriteIcon/>
-                        </Tooltip>
-                    </ToggleButton>
-                    <ToggleButton value={AudioLibraryFilter.COMPLETE}>
-                        <Tooltip title="completed" placement="top-start">
-                            <CheckIcon/>
-                        </Tooltip>
-                    </ToggleButton>
-                </ToggleButtonGroup>
-            </div>
+            {
+                audioList.length > 0 &&
+                <div className={classes.headerContainer}>
+                    <ToggleButtonGroup className={classes.toggleGroup} value={filter} exclusive onChange={handleSelection}>
+                        <ToggleButton value={AudioLibraryFilter.FAVORITE}>
+                            <Tooltip title="favorites">
+                                <FavoriteIcon/>
+                            </Tooltip>
+                        </ToggleButton>
+                        <ToggleButton value={AudioLibraryFilter.COMPLETE}>
+                            <Tooltip title="completed" placement="top-start">
+                                <CheckIcon/>
+                            </Tooltip>
+                        </ToggleButton>
+                    </ToggleButtonGroup>
+                </div>
+            }
             <div className={classes.audioList}>
                 {
                     audioList.length ? audioList
