@@ -24,6 +24,7 @@ export enum UserActionType {
     USER_SIGNUP_REQUEST = 'USER_SIGNUP_REQUEST',
     USER_SIGNUP_SUCCESS = 'USER_SIGNUP_SUCCESS',
     USER_SIGNUP_FAILURE = 'USER_SIGNUP_FAILURE',
+    USER_SIGNUP_WITH_PROVIDER_SUCCESS = 'USER_SIGNUP_WITH_PROVIDER_SUCCESS',
 
     USER_EMAIL_UNVERIFIED = 'USER_EMAIL_UNVERIFIED',
 
@@ -79,8 +80,8 @@ export const login = (email: string, password: string, callback: Function) => {
             dispatch(loginRequest());
             const { user } = await authService.login(email, password);
             if (user.emailVerified) {
-                // await getUserDocument(user.email, true)(dispatch);
                 const userDocument = await userService.getUser(user.email);
+                if (!userDocument) throw new Error(`Please sign up with ${user.email} before to login.`);
                 dispatch(loginSuccess(user, userDocument.settings));
                 callback();
             } else {
@@ -98,8 +99,8 @@ export const loginWithAuthProvider = (authProvider: auth.AuthProvider, callback:
             dispatch(loginRequest());
             const userCred: firebase.auth.UserCredential = await authService.loginWithProvider(authProvider);
             const { user } = userCred;
-            // await getUserDocument(user.email, true)(dispatch);
             const userDocument = await userService.getUser(user.email);
+            if (!userDocument) throw new Error(`Please sign up with ${user.email} before login.`);
             callback();
             dispatch(loginSuccess(user, userDocument.settings));
         } catch (error) {
@@ -179,7 +180,12 @@ const signUpRequest = (): UserAction => ({
 });
 
 const signUpSuccess = (): UserAction => ({
-    type: UserActionType.USER_SIGNUP_SUCCESS
+    type: UserActionType.USER_SIGNUP_SUCCESS,
+});
+
+const signUpWithAuthProviderSuccess = (user: firebase.User): UserAction => ({
+    type: UserActionType.USER_SIGNUP_REQUEST,
+    user
 });
 
 const signUpFailure = (error: Error): UserAction => ({
@@ -195,11 +201,26 @@ export const signUp = (email: string, password: string, callback: Function) => {
             await createUserDocument(user, true)(dispatch);
             callback();
             await requestEmailVerification(user)(dispatch);
-            dispatch(signUpSuccess());
+            dispatch(signUpWithAuthProviderSuccess(user));
         } catch (error) {
             dispatch(signUpFailure(error));
         }
     }
+};
+
+export const signUpWithAuthProvider = (authProvider: firebase.auth.AuthProvider, callback: Function) => {
+    return async (dispatch: Dispatch) => {
+        try {
+            dispatch(signUpRequest());
+            const { user } = await authService.loginWithProvider(authProvider);
+            await createUserDocument(user, true)(dispatch);
+            callback();
+            dispatch(signUpSuccess());
+            // dispatch(signUpWithAuthProviderSuccess(user));
+        } catch (error) {
+            dispatch(signUpFailure(error));
+        }
+    };
 };
 
 /** CHANGE USER PASSWORD */

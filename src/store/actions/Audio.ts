@@ -78,7 +78,7 @@ export interface AudioCrudAction {
 
 const createAudioDocumentRequest = (): AudioCrudAction => ({
     type: AudioCrudActionType.CREATE_AUDIO_DOCUMENT_REQUEST,
-})
+});
 
 const createAudioDocumentSuccess = (audio: Audio): AudioCrudAction => ({
     type: AudioCrudActionType.CREATE_AUDIO_DOCUMENT_SUCCESS,
@@ -100,7 +100,7 @@ export const insertAudioDocument = (audio: Audio) => {
             dispatch(createAudioDocumentFailure(error));
         }
     }
-}
+};
 
 const updateAudioRequest = (): AudioCrudAction => ({
     type: AudioCrudActionType.UPDATE_AUDIO_DOCUMENT_REQUEST,
@@ -126,7 +126,7 @@ export const updateAudio = (audio: Audio) => {
             dispatch(updateAudioFailure(error));
         }
     };
-}
+};
 
 const deleteAudioRequest = (audio: Audio): AudioCrudAction => ({
     type: AudioCrudActionType.DELETE_AUDIO_DOCUMENT_REQUEST,
@@ -226,7 +226,7 @@ const onUploadProgress = (snapshot: storage.UploadTaskSnapshot, dispatch: Functi
             dispatch(setUploadProgress(totalBytesTransferred, totalBytes));
             break;
     }
-}
+};
 
 const calculateTotalProgress = (uploadTasks: storage.UploadTask[]) => {
     return uploadTasks.reduce(({ totalBytesTransferred, totalBytes }, task: storage.UploadTask) => {
@@ -308,10 +308,13 @@ const finalizeUploads = async (audio: Audio, dispatch: Function) => {
 //should this be called something else
 export const uploadAudio = (audio: Audio, files: File[]) => {
     return async (dispatch: Function, getState: Function) => {
+        const state: ReduxState = getState();
         dispatch(uploadAudioRequest());
         let createdDocument;
         try {
             dispatch(createAudioDocumentRequest());
+            /** needs to be on all documents for firebase security rules */
+            audio.userId = state.user.user.uid;
             createdDocument = await audioService.addAudio(audio);
             dispatch(createAudioDocumentSuccess(audio));
         } catch(error) {
@@ -319,7 +322,6 @@ export const uploadAudio = (audio: Audio, files: File[]) => {
             return;
         }
         audio.id = createdDocument.id;
-        audio.userId = await authService.getAuth().currentUser.uid;
         audio.storagePath = storageHelper.getAudioStoragePath(audio.userId, createdDocument.id);
         audio.currentTrack = 0;
         audio.trackList = [];

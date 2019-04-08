@@ -10,9 +10,11 @@ export const userMiddleware: Middleware = (store: MiddlewareAPI) => (next: Dispa
     const userAction = action as UserAction;
     switch (action.type) {
         case UserActionType.USER_LOGIN_SUCCESS:
+        case UserActionType.USER_SIGNUP_WITH_PROVIDER_SUCCESS:
             store.dispatch(uiSetThemeOptions(userAction.settings.themeOptions));
             store.dispatch(setUserSettings(userAction.settings));
             break;
+
     }
     next(action);
 };

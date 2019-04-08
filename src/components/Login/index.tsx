@@ -102,6 +102,7 @@ export class Login extends Component<LoginProps, LoginState> {
                                 login
                             </Button>
                         </div>
+                        <Typography variant="subtitle2">login with provider</Typography>
                         <div className={classes.buttonRow}>
                             <IconButton onClick={this.loginWithGoogle}>
                                 <GoogleIcon/>

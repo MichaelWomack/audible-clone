@@ -3,7 +3,6 @@ import { FunctionComponent, MouseEvent } from 'react';
 import { Audio, AudioLibraryFilter } from '../../model/audio';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import CheckIcon from '@material-ui/icons/Done';
-import UpdateIcon from '@material-ui/icons/Update';
 import Typography from '@material-ui/core/Typography';
 import ToggleButton from "@material-ui/lab/ToggleButton/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup/ToggleButtonGroup";
@@ -11,7 +10,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import AudioCard from '../AudioCard';
 import AudioListStyles from './AudioListStyles';
-import { audio } from "../../store/reducers";
 
 export interface AudioListProps extends WithStyles<typeof AudioListStyles> {
     audioList: Array<Audio>;
