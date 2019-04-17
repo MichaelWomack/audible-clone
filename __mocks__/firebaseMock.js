@@ -1,20 +1,6 @@
 
 module.exports = {
-    auth: () => console.log('auth()'),//{
-
-        // return {
-        //     currentUser: {email: 'test@test.com'},
-        //     signOut: jest.fn(() => {
-        //         return Promise.resolve('signOut() complete');
-        //     }),
-        //     onAuthStateChanged: jest.fn(() => {
-        //         return Promise.resolve({email: 'test@test.com'})
-        //     }),
-        //     signInWithEmailAndPassword: jest.fn((email, password) => {
-        //         return Promise.resolve('signInWithEmailAndPassword() complete');
-        //     })
-        // }
-   // },
+    auth: () =>  console.log('auth()'),
     firestore: () => ({
         collection: () => console.log('firestore().collection()')
     }),

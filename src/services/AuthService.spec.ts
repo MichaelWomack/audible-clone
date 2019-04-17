@@ -1,7 +1,0 @@
-
-describe('AuthService', () => {
-
-    it('stub', () => {
-        
-    });
-});
