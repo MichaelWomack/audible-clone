@@ -5,7 +5,7 @@ describe('AudioService', () => {
     let audioService: AudioService;
     let audioCollection: any;
     beforeEach(() => {
-        audioCollection = {}
+        audioCollection = {};
         audioService = new AudioService(audioCollection);
     });
 
@@ -16,8 +16,8 @@ describe('AudioService', () => {
     describe('#addAudio', () => {
         beforeEach(() => {
             audioCollection = {
-                add: jest.fn((audio:Audio) => audio)
-            }
+                add: jest.fn((audio: Audio) => audio)
+            };
             audioService = new AudioService(audioCollection);
         });
 
@@ -38,7 +38,7 @@ describe('AudioService', () => {
                         update: updateMock
                     }
                 })
-            }
+            };
             audioService = new AudioService(audioCollection);
         });
 
@@ -58,7 +58,7 @@ describe('AudioService', () => {
         beforeEach(() => {
             audioCollection = {
                 doc: jest.fn((id: string) => audio)
-            }
+            };
             audioService = new AudioService(audioCollection);
         });
 

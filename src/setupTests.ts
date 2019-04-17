@@ -8,5 +8,5 @@ jest.mock('./config/firebase', () => {
     return { //default is needed because typescript handles default exports differently than es6
         default: firebaseMock
      };
-})
+});
 Enzyme.configure({ adapter: new Adapter() });

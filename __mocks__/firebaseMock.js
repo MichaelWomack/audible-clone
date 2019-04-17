@@ -21,5 +21,8 @@ module.exports = {
     
     storage: () => ({
         ref: () => console.log('storage().ref()')
+    }),
+    functions: () => ({
+        httpsCallable: console.log('functions().httpsCallable()')
     })
 };

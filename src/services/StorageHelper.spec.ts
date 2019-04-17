@@ -29,7 +29,6 @@ describe('StorageHelper', () => {
             const storagePath: string = 'storage/path.txt';
             const uploadTask = storageHelper.getUploadTask(storagePath, file);
             expect(storageReference.child).toHaveBeenCalledWith(storagePath);
-            // expect(storageReference.child().child().put).toHaveBeenCalledWith(file);
             expect(uploadTask).toEqual({});
         });
     });

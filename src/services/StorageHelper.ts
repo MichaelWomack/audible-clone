@@ -31,5 +31,5 @@ export class StorageHelper {
     }
 }
 
-const reference: storage.Reference = firebaseInstance.storage().ref();
-export const storageHelper: StorageHelper = new StorageHelper(reference);
+const reference = firebaseInstance.storage().ref();
+export const storageHelper = new StorageHelper(reference);
