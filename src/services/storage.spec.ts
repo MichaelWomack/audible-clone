@@ -1,4 +1,4 @@
-import { StorageHelper } from './StorageHelper';
+import { StorageHelper } from './storage';
 
 describe('StorageHelper', () => {
 
@@ -6,6 +6,31 @@ describe('StorageHelper', () => {
         const storageReference = {};
         const storageHelper = new StorageHelper(storageReference);
         expect(storageHelper).toBeTruthy();
+    });
+
+    describe('#getAudioStoragePath', () => {
+        it( 'builds the correct storage path', () => {
+            const helper = new StorageHelper({});
+            const userId = 'abc123';
+            const audioId = 'xyz456';
+            expect(helper.getAudioStoragePath(userId, audioId)).toBe(`users/${userId}/uploads/${audioId}`);
+        });
+    });
+
+    describe("#deleteBlob", () => {
+        it('calls delete() on the blob object with the specified path', async () => {
+            const deleteFn = jest.fn();
+            const storageReference = {
+                child: jest.fn(() => ({
+                    delete: deleteFn
+                }))
+            };
+            const helper = new StorageHelper(storageReference);
+            const path = "/blob/here";
+            await helper.deleteBlob(path);
+            expect(storageReference.child).toHaveBeenCalledWith(path);
+            expect(deleteFn).toHaveBeenCalled();
+        });
     });
 
     describe('#getUploadTask', () => {

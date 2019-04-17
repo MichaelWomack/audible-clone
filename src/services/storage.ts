@@ -3,9 +3,7 @@ import { storage } from 'firebase';
 
 export class StorageHelper {
 
-    private reference: storage.Reference;
-
-    constructor(reference: storage.Reference | any) {
+    constructor(private readonly reference: Partial<storage.Reference>) {
         this.reference = reference;
     }
 
@@ -18,10 +16,6 @@ export class StorageHelper {
 
     getAudioStoragePath(userId: string, audioId: string): string {
         return `users/${userId}/uploads/${audioId}`;
-    }
-
-    blobExists(path: string): boolean {
-        return this.reference.child(path) !== null;
     }
 
     deleteBlob(path: string): Promise<void> {
