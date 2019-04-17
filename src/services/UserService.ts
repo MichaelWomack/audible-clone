@@ -33,7 +33,7 @@ export class UserService {
             .update(user);
     }
 
-    getSerializableUser(user: firebase.User): SerializableUser {
+    getSerializableUser(user: Partial<firebase.User>): SerializableUser {
         return {
             emailVerified: user.emailVerified,
             isAnonymous: user.isAnonymous,

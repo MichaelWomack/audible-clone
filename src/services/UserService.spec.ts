@@ -99,4 +99,36 @@ describe("UserService", () => {
             expect(getFn).toHaveBeenCalled();
         });
     });
+
+    describe('#getSerializableUser', () => {
+        it('returns a user object with a subset of the serializable fields from the firebase.User', () => {
+            const fbUser: Partial<firebase.User> = {
+                emailVerified: false,
+                isAnonymous: false,
+                metadata: {
+                    creationTime: new Date().getTime().toString(),
+                    lastSignInTime: new Date().getTime().toString(),
+                },
+                phoneNumber: '555-555-5555',
+                email: 'test@test.com',
+                photoURL: 'https://photo.hub',
+                displayName: 'name',
+                providerId: 'firebase',
+                uid: '123jsdf',
+                delete: jest.fn()
+            };
+            const service = new UserService({});
+            const user = service.getSerializableUser(fbUser);
+            expect(user.emailVerified).toEqual(fbUser.emailVerified);
+            expect(user.isAnonymous).toEqual(fbUser.isAnonymous);
+            expect(user.creationTime).toEqual(fbUser.metadata.creationTime);
+            expect(user.lastSignInTime).toEqual(fbUser.metadata.lastSignInTime);
+            expect(user.phoneNumber).toEqual(fbUser.phoneNumber);
+            expect(user.email).toEqual(fbUser.email);
+            expect(user.photoURL).toEqual(fbUser.photoURL);
+            expect(user.displayName).toEqual(fbUser.displayName);
+            expect(user.providerId).toEqual(fbUser.providerId);
+            expect(user.uid).toEqual(fbUser.uid);
+        });
+    });
 });
