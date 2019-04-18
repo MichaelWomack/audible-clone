@@ -1,4 +1,4 @@
-import { BookSearchService } from "./BookSearchService";
+import { BookSearchService } from "./book-search";
 
 describe('BookSearchService', () => {
 
