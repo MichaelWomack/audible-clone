@@ -38,29 +38,28 @@ export interface AudioCardState {
     moreOptionsAnchorEl: HTMLElement;
 }
 
-class AudioCard extends Component<AudioCardProps, AudioCardState> {
+export class AudioCard extends Component<AudioCardProps, AudioCardState> {
 
     readonly state: AudioCardState = {
         isFavorite: this.props.audio.favorite,
         showInfoDialog: false,
         moreOptionsAnchorEl: null,
         showDeleteDialog: false,
-    }
+    };
 
     toggleFavorite = () => {
         const { audio, updateAudio } = this.props;
         audio.favorite = !audio.favorite;
         this.setState({ isFavorite: audio.favorite }, () => updateAudio(audio));
-    }
+    };
 
     playAudio = () => {
         const { audio, playAudio } = this.props;
         playAudio(audio); // also sets the currently playing audio object in redux
-    }
+    };
 
     replayAudio = () => {
         const { audio, playAudio, updateAudio } = this.props;
-        /** TODO: should this be a redux action? */
         audio.currentTrack = 0;
         audio.currentTime = 0;
         audio.totalProgress = 0;
@@ -70,33 +69,33 @@ class AudioCard extends Component<AudioCardProps, AudioCardState> {
 
     openMoreOptionsMenu = (event: SyntheticEvent<HTMLElement>) => {
         this.setState({ moreOptionsAnchorEl: event.currentTarget });
-    }
+    };
 
     closeMoreOptionsMenu = () => {
         this.setState({ moreOptionsAnchorEl:  null });
-    }
+    };
 
     openDialog = () => {
         this.setState({ showInfoDialog: true })
-    }
+    };
 
     closeInfoDialog = () => {
         this.setState({ showInfoDialog: false })
-    }
+    };
 
     openDeleteDialog = () => {
         this.setState({ showDeleteDialog: true });
-    }
+    };
 
     closeDeleteDialog = () => {
         this.setState({ showDeleteDialog: false })
-    }
+    };
 
     deleteAudio = () => {
         const { audio, deleteAudio } = this.props;
         deleteAudio(audio);
         this.closeDeleteDialog();
-    }
+    };
 
     render() {
         const { classes, audio, isCurrentlyPlaying, pauseAudio } = this.props;
@@ -126,7 +125,7 @@ class AudioCard extends Component<AudioCardProps, AudioCardState> {
                             color="secondary"
                         />
                             <div className={classes.controls}>
-                                <IconButton aria-label="Play/pause">
+                                <IconButton aria-label="Play/pause" >
                                 {   isCurrentlyPlaying && (percentDone !== 100) && <PauseIcon fontSize="large" onClick={pauseAudio} /> }
                                 {   !isCurrentlyPlaying && (percentDone !== 100) && <PlayArrowIcon fontSize="large" onClick={this.playAudio}/> }
                                 {   percentDone === 100 && <ReplayIcon fontSize="large" onClick={this.replayAudio} /> }
@@ -143,9 +142,6 @@ class AudioCard extends Component<AudioCardProps, AudioCardState> {
                                 <IconButton onClick={this.openDeleteDialog}>
                                     <DeleteIcon />
                                 </IconButton>
-                                {/* <IconButton onClick={this.openMoreOptionsMenu}>
-                                    <MoreVertIcon />
-                                </IconButton> */}
                             </div>
                     </div>
                 </Card>
@@ -162,7 +158,6 @@ class AudioCard extends Component<AudioCardProps, AudioCardState> {
                         <IconButton onClick={this.closeMoreOptionsMenu}>
                             <MoreVertIcon />
                         </IconButton>
-                    {/* </MenuItem> */}
                 </Menu>
                 <ConfirmationDialog 
                     open={this.state.showDeleteDialog}
