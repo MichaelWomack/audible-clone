@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { mount, ReactWrapper } from 'enzyme';
-import AudioCard, { AudioCardProps } from './index';
+import AudioCard, { AudioCardProps, AudioCardState } from './index';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
-import { Audio } from "../../model/audio";
 import Favorite from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
+import { Audio } from "../../model/audio";
 
 
 describe('AudioCard', () => {
 
-    let wrapper: ReactWrapper;
+    let wrapper: ReactWrapper<AudioCardProps, AudioCardState>;
 
     const audio: Audio = {
         favorite: false
@@ -47,11 +47,11 @@ describe('AudioCard', () => {
     });
 
     it('toggles favorite icon', () => {
-        expect((wrapper.props() as AudioCardProps).audio.favorite).toBe(false);
+        expect(wrapper.props().audio.favorite).toBe(false);
         expect(wrapper.find(FavoriteBorder).length).toBe(1);
 
         wrapper.setProps({ audio: { favorite: true } });
-        expect((wrapper.props() as AudioCardProps).audio.favorite).toBe(true);
+        expect(wrapper.props().audio.favorite).toBe(true);
         expect(wrapper.find(Favorite).length).toBe(1);
     });
 
