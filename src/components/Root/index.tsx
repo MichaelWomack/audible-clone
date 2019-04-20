@@ -2,17 +2,31 @@ import * as React from 'react';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { configureStore } from '../../store/index';
-import App from '../../containers/App';
+import { FunctionComponent } from "react";
+import { ReduxState } from "../../model/state";
+import { DeepPartial } from "redux";
 
-const { store, persistor } = configureStore();
+export interface RootProps {
+    initialState?: DeepPartial<ReduxState>
+    persist?: boolean;
+}
 
-export default () => {
+const Root: FunctionComponent<RootProps> = ({ initialState, persist, children }) => {
+    const { store, persistor } = configureStore(initialState);
     const loadingElement = <h1>Loading!!!</h1>;
     return (
         <Provider store={store}>
-            <PersistGate loading={loadingElement} persistor={persistor}>
-                <App />
-            </PersistGate>
+            {persist ?
+                <PersistGate loading={loadingElement} persistor={persistor}>
+                    {children}
+                </PersistGate> : children
+            }
         </Provider>
     );
-}
+};
+
+Root.defaultProps = {
+    persist: false
+};
+
+export default Root;

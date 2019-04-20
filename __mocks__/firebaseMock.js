@@ -1,6 +1,8 @@
 
 module.exports = {
-    auth: () =>  console.log('auth()'),
+    auth: () =>  ({
+        onAuthStateChanged: jest.fn()
+    }),
     firestore: () => ({
         collection: () => console.log('firestore().collection()')
     }),

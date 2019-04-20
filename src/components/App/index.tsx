@@ -1,17 +1,20 @@
 import * as React from 'react';
 import { Component, Fragment } from 'react';
+import { connect } from "react-redux";
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { MuiThemeProvider, createMuiTheme, Theme } from '@material-ui/core/styles';
 import Login from '../../containers/Login';
 import Home from '../../containers/Home';
 import SignUp from '../../containers/SignUp';
 import ProtectedRoute from '../ProtectedRoute';
-import { MuiThemeProvider, createMuiTheme, Theme } from '@material-ui/core/styles';
 import { authService } from '../../services';
 import Banner from "../Banner";
-import { AudioState, UiState, UserState } from "../../model/state";
+import { AudioState, ReduxState, UiState, UserState } from "../../model/state";
 import NavBar from "../NavBar";
-import CssBaseline from '@material-ui/core/CssBaseline';
 import { Routes } from "../../config/constants";
+import { logout, setUser } from "../../store/actions/User";
+import { uiHideBanner } from "../../store/actions/Ui";
 
 export interface StateProps {
     userState: UserState;
@@ -27,7 +30,6 @@ export interface DispatchProps {
 
 export interface AppProps extends StateProps, DispatchProps {}
 
-/* TODO: FunctionalComponent */
 class App extends Component<AppProps, {}> {
 
     componentDidMount() {
@@ -73,4 +75,16 @@ class App extends Component<AppProps, {}> {
     }
 }
 
-export default App;
+const mapStateToProps = (state: ReduxState): StateProps => ({
+    userState: state.user,
+    ui: state.ui,
+    audio: state.audio,
+});
+
+const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
+    setUser: (user: firebase.User) => dispatch(setUser(user)),
+    logout: () => dispatch(logout()),
+    closeBanner: () => dispatch(uiHideBanner(null))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
