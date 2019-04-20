@@ -23,7 +23,6 @@ describe('<App />', () => {
     });
 
     it('renders successfully', () => {
-        console.log(wrapper.debug());
         expect(wrapper.exists()).toBe(true);
         expect(wrapper.find(NavBar).length).toBe(1);
         expect(wrapper.find(Banner).length).toBe(1);
