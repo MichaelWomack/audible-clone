@@ -11,6 +11,8 @@ import { Audio } from "../../model/audio";
 describe('AudioCard', () => {
 
     let wrapper: ReactWrapper<AudioCardProps, AudioCardState>;
+    let component: ReactWrapper<AudioCardProps, AudioCardState>;
+
     const audio: Audio = {
         favorite: false
     };
@@ -35,6 +37,7 @@ describe('AudioCard', () => {
                 audio={audio}
             />
         );
+        component = wrapper.find(AudioCard);
     });
 
     afterEach(() => {
@@ -46,7 +49,6 @@ describe('AudioCard', () => {
     });
 
     it('toggles favorite icon and updates the audio', () => {
-        const component = wrapper.find(AudioCard);
         expect(wrapper.props().audio.favorite).toBe(false);
         expect(component.state().isFavorite).toBe(false);
         expect(wrapper.find(FavoriteBorder).length).toBe(1);
@@ -86,9 +88,14 @@ describe('AudioCard', () => {
     });
 
     it('opens the info dialog on icon click', () => {
-        const component = wrapper.find(AudioCard);
         expect(component.state().showInfoDialog).toBe(false);
-        wrapper.find('IconButton[data-test="open-info-dialog"]').simulate('click');
+        component.find('IconButton[data-test="open-info-dialog"]').simulate('click');
         expect(component.state().showInfoDialog).toBe(true);
+    });
+
+    it('opens the delete audio dialog on icon click', () => {
+        expect(component.state().showDeleteDialog).toBe(false);
+        component.find('IconButton[data-test="open-delete-dialog"]').simulate('click');
+        expect(component.state().showDeleteDialog).toBe(true);
     });
 });
