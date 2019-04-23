@@ -4,7 +4,7 @@ import firebaseInstance from '../config/firebase';
 
 export class AuthService {
 
-    constructor(private readonly auth: auth.Auth) {
+    constructor(private readonly auth: Partial<auth.Auth>) {
         this.auth = auth;
     }
 

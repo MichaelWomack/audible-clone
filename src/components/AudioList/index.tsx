@@ -23,7 +23,7 @@ export interface AudioListProps extends WithStyles<typeof AudioListStyles> {
     setAudioFilter: (filter: AudioLibraryFilter) => void;
 }
 
-const AudioList: FunctionComponent<AudioListProps> = (props: AudioListProps) => {
+export const AudioList: FunctionComponent<AudioListProps> = (props: AudioListProps) => {
     const { audioList, classes, updateAudio, deleteAudio, playAudio, pauseAudio, selectedAudioId, isPlaying, filter, setAudioFilter } = props;
     audioList.sort((a, b) => b.lastPlayed - a.lastPlayed);
     const isCurrentlyPlaying = (audio: Audio): boolean => (audio.id === selectedAudioId) && isPlaying;
@@ -53,7 +53,7 @@ const AudioList: FunctionComponent<AudioListProps> = (props: AudioListProps) => 
                             </Tooltip>
                         </ToggleButton>
                         <ToggleButton value={AudioLibraryFilter.COMPLETE}>
-                            <Tooltip title="completed" placement="top-start">
+                            <Tooltip title="complete" placement="top-start">
                                 <CheckIcon/>
                             </Tooltip>
                         </ToggleButton>
@@ -74,7 +74,7 @@ const AudioList: FunctionComponent<AudioListProps> = (props: AudioListProps) => 
                                 playAudio={playAudio}
                                 pauseAudio={pauseAudio}
                             />
-                        ) : <Typography>Looks like you need to upload some audiobooks!</Typography>
+                        ) : <Typography data-test="no-audio-title">Looks like you need to upload some audiobooks!</Typography>
                 }
             </div>
         </div>

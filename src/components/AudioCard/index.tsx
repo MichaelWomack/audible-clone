@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Component, Fragment, SyntheticEvent } from 'react';
+import { Component, Fragment } from 'react';
 import { Audio } from '../../model/audio';
 import AudioCardStyles from './AudioCardStyles';
 import Card from '@material-ui/core/Card';
@@ -13,14 +13,11 @@ import ReplayIcon from '@material-ui/icons/Replay';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import Favorite from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DeleteIcon from '@material-ui/icons/Delete';
-import ShareIcon from '@material-ui/icons/Share'
 import Chip from '@material-ui/core/Chip';
-import AudioInfoDialog from '../AudioInfoDialog';
-import Menu from '@material-ui/core/Menu';
-import { withStyles, WithStyles } from '@material-ui/core/styles';
+import AudioInfoDialog from './AudioInfoDialog';
 import ConfirmationDialog from './ConfirmationDialog';
+import { withStyles, WithStyles } from '@material-ui/core/styles';
 
 export interface AudioCardProps extends WithStyles<typeof AudioCardStyles> {
     audio: Audio;
@@ -38,29 +35,28 @@ export interface AudioCardState {
     moreOptionsAnchorEl: HTMLElement;
 }
 
-class AudioCard extends Component<AudioCardProps, AudioCardState> {
+export class AudioCard extends Component<AudioCardProps, AudioCardState> {
 
-    readonly state: AudioCardState = {
+    state: AudioCardState = {
         isFavorite: this.props.audio.favorite,
         showInfoDialog: false,
         moreOptionsAnchorEl: null,
         showDeleteDialog: false,
-    }
+    };
 
     toggleFavorite = () => {
         const { audio, updateAudio } = this.props;
         audio.favorite = !audio.favorite;
         this.setState({ isFavorite: audio.favorite }, () => updateAudio(audio));
-    }
+    };
 
     playAudio = () => {
         const { audio, playAudio } = this.props;
         playAudio(audio); // also sets the currently playing audio object in redux
-    }
+    };
 
     replayAudio = () => {
         const { audio, playAudio, updateAudio } = this.props;
-        /** TODO: should this be a redux action? */
         audio.currentTrack = 0;
         audio.currentTime = 0;
         audio.totalProgress = 0;
@@ -68,39 +64,23 @@ class AudioCard extends Component<AudioCardProps, AudioCardState> {
         playAudio(audio);
     };
 
-    openMoreOptionsMenu = (event: SyntheticEvent<HTMLElement>) => {
-        this.setState({ moreOptionsAnchorEl: event.currentTarget });
-    }
+    toggleInfoDialog = () => {
+        this.setState(prevState => ({ showInfoDialog: !prevState.showInfoDialog }));
+    };
 
-    closeMoreOptionsMenu = () => {
-        this.setState({ moreOptionsAnchorEl:  null });
-    }
-
-    openDialog = () => {
-        this.setState({ showInfoDialog: true })
-    }
-
-    closeInfoDialog = () => {
-        this.setState({ showInfoDialog: false })
-    }
-
-    openDeleteDialog = () => {
-        this.setState({ showDeleteDialog: true });
-    }
-
-    closeDeleteDialog = () => {
-        this.setState({ showDeleteDialog: false })
-    }
+    toggleDeleteDialog = () => {
+        this.setState(prevState => ({ showDeleteDialog: !prevState.showDeleteDialog }));
+    };
 
     deleteAudio = () => {
         const { audio, deleteAudio } = this.props;
         deleteAudio(audio);
-        this.closeDeleteDialog();
-    }
+        this.setState({ showDeleteDialog: false });
+    };
 
     render() {
         const { classes, audio, isCurrentlyPlaying, pauseAudio } = this.props;
-        const { totalProgress, totalDuration } = audio;//AudioUtils.getListeningProgress(audio);
+        const { totalProgress, totalDuration } = audio;
         const percentDone = (totalProgress / totalDuration) * 100;
         const chipLabel = `${Math.floor(percentDone)}% complete`;
         return (
@@ -125,54 +105,45 @@ class AudioCard extends Component<AudioCardProps, AudioCardState> {
                             className={classes.chip}
                             color="secondary"
                         />
-                            <div className={classes.controls}>
-                                <IconButton aria-label="Play/pause">
-                                {   isCurrentlyPlaying && (percentDone !== 100) && <PauseIcon fontSize="large" onClick={pauseAudio} /> }
-                                {   !isCurrentlyPlaying && (percentDone !== 100) && <PlayArrowIcon fontSize="large" onClick={this.playAudio}/> }
-                                {   percentDone === 100 && <ReplayIcon fontSize="large" onClick={this.replayAudio} /> }
-                                </IconButton>
-                                <IconButton
-                                    aria-label="Play/pause"
-                                    onClick={this.toggleFavorite}
-                                >
-                                {audio.favorite ? <Favorite color="secondary" /> : <FavoriteBorder /> }
-                                </IconButton>
-                                <IconButton>
-                                    <InfoOutlinedIcon onClick={this.openDialog}/>
-                                </IconButton>
-                                <IconButton onClick={this.openDeleteDialog}>
-                                    <DeleteIcon />
-                                </IconButton>
-                                {/* <IconButton onClick={this.openMoreOptionsMenu}>
-                                    <MoreVertIcon />
-                                </IconButton> */}
-                            </div>
+                        <div className={classes.controls}>
+                            <IconButton aria-label="Play/pause">
+                                {isCurrentlyPlaying && (percentDone !== 100) &&
+                                <PauseIcon fontSize="large" onClick={pauseAudio}/>}
+                                {!isCurrentlyPlaying && (percentDone !== 100) &&
+                                <PlayArrowIcon fontSize="large" onClick={this.playAudio}/>}
+                                {percentDone === 100 && <ReplayIcon fontSize="large" onClick={this.replayAudio}/>}
+                            </IconButton>
+                            <IconButton
+                                aria-label="favorite"
+                                onClick={this.toggleFavorite}
+                                data-test="toggle-favorite"
+                            >
+                                {audio.favorite ? <Favorite color="secondary"/> : <FavoriteBorder/>}
+                            </IconButton>
+                            <IconButton
+                                onClick={this.toggleInfoDialog}
+                                data-test="open-info-dialog"
+                            >
+                                <InfoOutlinedIcon />
+                            </IconButton>
+                            <IconButton
+                                onClick={this.toggleDeleteDialog}
+                                data-test="open-delete-dialog"
+                            >
+                                <DeleteIcon/>
+                            </IconButton>
+                        </div>
                     </div>
                 </Card>
-                <Menu
-                    id="simple-menu"
-                    anchorEl={this.state.moreOptionsAnchorEl}
-                    open={Boolean(this.state.moreOptionsAnchorEl)}
-                    onClose={this.closeMoreOptionsMenu}
-                >
-                    {/* <MenuItem onClick={this.closeMoreOptionsMenu}> */}
-                        <IconButton onClick={this.closeMoreOptionsMenu}>
-                            <ShareIcon />
-                        </IconButton>
-                        <IconButton onClick={this.closeMoreOptionsMenu}>
-                            <MoreVertIcon />
-                        </IconButton>
-                    {/* </MenuItem> */}
-                </Menu>
-                <ConfirmationDialog 
+                <ConfirmationDialog
                     open={this.state.showDeleteDialog}
                     audio={this.props.audio}
                     confirm={this.deleteAudio}
-                    cancel={this.closeDeleteDialog}
+                    cancel={this.toggleDeleteDialog}
                 />
-                <AudioInfoDialog 
+                <AudioInfoDialog
                     audio={this.props.audio}
-                    closeDialog={this.closeInfoDialog}
+                    closeDialog={this.toggleInfoDialog}
                     showInfoDialog={this.state.showInfoDialog}
                 />
             </Fragment>

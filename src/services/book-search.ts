@@ -1,9 +1,9 @@
-import { functions } from 'firebase';
 import firebaseInstance from '../config/firebase';
+import { functions } from 'firebase';
 
 export class BookSearchService {
 
-    constructor(private readonly functions: functions.Functions) {
+    constructor(private readonly functions: Partial<functions.Functions>) {
         this.functions = functions;
     }
 
@@ -15,4 +15,4 @@ export class BookSearchService {
 }
 
 const funcs = firebaseInstance.functions();
-export const booksSearch: BookSearchService = new BookSearchService(funcs);
+export const booksSearch = new BookSearchService(funcs);

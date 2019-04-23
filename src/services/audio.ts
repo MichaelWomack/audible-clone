@@ -5,16 +5,8 @@ import { Collection } from '../config/constants';
 
 export class AudioService {
 
-    constructor(private readonly collection: firestore.CollectionReference) {
+    constructor(private readonly collection: Partial<firestore.CollectionReference>) {
         this.collection = collection;
-    }
-
-    async audioExists(title: string, userId: string): Promise<boolean> {
-        const query: firestore.Query = this.collection
-            .where("title", "==", title)
-            .where("userId", "==", userId);
-        const snap: firestore.QuerySnapshot = await query.get();
-        return !snap.empty;
     }
     
     async getAll(userId: string): Promise<firestore.QuerySnapshot> {

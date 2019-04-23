@@ -1,23 +1,37 @@
-import { AudioService } from './AudioService';
+import { AudioService } from './audio';
 import { Audio } from '../model/audio';
+import { firestore } from "firebase";
 
 describe('AudioService', () => {
     let audioService: AudioService;
-    let audioCollection: any;
-    beforeEach(() => {
-        audioCollection = {}
-        audioService = new AudioService(audioCollection);
-    });
+    let audioCollection: Partial<firestore.CollectionReference>;
 
     it('is created successfully', () => {
+        audioService = new AudioService({});
         expect(audioService).toBeTruthy();
+    });
+
+    describe('#getAll', () => {
+        it('queries the firestore and filters by userId', async () => {
+            const getFn = jest.fn();
+            const collection = {
+                where: jest.fn(() => ({
+                    get: getFn
+                }))
+            };
+            const service = new AudioService(collection);
+            const userId = '123';
+            await service.getAll(userId);
+            expect(collection.where).toHaveBeenCalledWith('userId', '==', userId);
+            expect(getFn).toHaveBeenCalled();
+        });
     });
 
     describe('#addAudio', () => {
         beforeEach(() => {
             audioCollection = {
-                add: jest.fn((audio:Audio) => audio)
-            }
+                add: jest.fn((audio: Audio) => audio)
+            };
             audioService = new AudioService(audioCollection);
         });
 
@@ -38,7 +52,7 @@ describe('AudioService', () => {
                         update: updateMock
                     }
                 })
-            }
+            };
             audioService = new AudioService(audioCollection);
         });
 
@@ -58,7 +72,7 @@ describe('AudioService', () => {
         beforeEach(() => {
             audioCollection = {
                 doc: jest.fn((id: string) => audio)
-            }
+            };
             audioService = new AudioService(audioCollection);
         });
 
@@ -67,6 +81,24 @@ describe('AudioService', () => {
             const audioDoc = await audioService.getAudio(id);
             expect(audioDoc).toEqual(audio);
             expect(audioCollection.doc).toHaveBeenCalledWith(id);
+        });
+    });
+
+    describe("#deleteAudio", () => {
+        it('calls delete() on the firestore document', async () => {
+            const deleteFn = jest.fn();
+            const collection = {
+                doc: jest.fn((id) => ({
+                    delete: deleteFn
+                }))
+            };
+            const audio = {
+                id: '1'
+            };
+            const service = new AudioService(collection);
+            await service.deleteAudio(audio);
+            expect(collection.doc).toHaveBeenCalledWith(audio.id);
+            expect(deleteFn).toHaveBeenCalled();
         });
     });
 });

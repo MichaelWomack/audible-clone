@@ -3,9 +3,7 @@ import { storage } from 'firebase';
 
 export class StorageHelper {
 
-    private reference: storage.Reference;
-
-    constructor(reference: storage.Reference | any) {
+    constructor(private readonly reference: Partial<storage.Reference>) {
         this.reference = reference;
     }
 
@@ -20,10 +18,6 @@ export class StorageHelper {
         return `users/${userId}/uploads/${audioId}`;
     }
 
-    blobExists(path: string): boolean {
-        return this.reference.child(path) !== null;
-    }
-
     deleteBlob(path: string): Promise<void> {
         return this.reference
             .child(path)
@@ -31,5 +25,5 @@ export class StorageHelper {
     }
 }
 
-const reference: storage.Reference = firebaseInstance.storage().ref();
-export const storageHelper: StorageHelper = new StorageHelper(reference);
+const reference = firebaseInstance.storage().ref();
+export const storageHelper = new StorageHelper(reference);

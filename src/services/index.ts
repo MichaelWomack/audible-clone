@@ -1,5 +1,5 @@
-export { audioService } from './AudioService';
-export { authService } from './AuthService';
-export { booksSearch } from './BookSearchService';
-export { storageHelper } from './StorageHelper';
-export { userService } from './UserService';
+export { audioService } from './audio';
+export { authService } from './auth';
+export { booksSearch } from './book-search';
+export { storageHelper } from './storage';
+export { userService } from './user';
