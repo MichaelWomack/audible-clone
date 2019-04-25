@@ -84,6 +84,7 @@ describe('<AudioPlayer/>', () => {
         wrapper = mount(getComponent());
         component = wrapper.find(AudioPlayer);
         HTMLMediaElement.prototype.play = jest.fn();
+        HTMLMediaElement.prototype.pause = jest.fn();
     });
 
     afterEach(() => {
