@@ -86,12 +86,11 @@ export class BookSearch extends Component<BookSearchProps, BookSearchState> {
                 <div className={classes.bookListing}>
                     {volumes &&
                         volumes.map((volume: VolumeInfo) => {
-                            const select = () => this.selectVolume(volume);
                             return (
                                 <BookDetail
                                     key={volume.id}
                                     volumeInfo={volume}
-                                    selectVolume={select}
+                                    selectVolume={this.selectVolume}
                                 />
                             );
                         })}

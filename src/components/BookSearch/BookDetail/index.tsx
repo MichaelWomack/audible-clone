@@ -10,20 +10,16 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { VolumeInfo } from '../../../model/volume';
 
-export interface AudioBookDetailProps
-    extends WithStyles<typeof AudioBookDetailStyles> {
+export interface AudioBookDetailProps extends WithStyles<typeof AudioBookDetailStyles> {
     volumeInfo: VolumeInfo;
-    selectVolume: Function;
+    selectVolume: (volume: VolumeInfo) => void;
 }
 
 export interface AudioBookDetailState {
     showingDescription: boolean;
 }
 
-export class AudioBookDetail extends Component<
-    AudioBookDetailProps,
-    AudioBookDetailState
-> {
+export class AudioBookDetail extends Component<AudioBookDetailProps, AudioBookDetailState> {
     state: AudioBookDetailState = {
         showingDescription: false,
     };
@@ -35,7 +31,6 @@ export class AudioBookDetail extends Component<
     };
 
     selectVolumeInfo = () => {
-        console.log('selecting volume: ', this.props.volumeInfo);
         this.props.selectVolume(this.props.volumeInfo);
     };
 
@@ -72,7 +67,7 @@ export class AudioBookDetail extends Component<
                             ? volumeInfo.authors.join(', ')
                             : 'No author information'}
                     </Typography>
-                    {showingDescription && (
+                    { showingDescription && (
                         <Typography component="p">
                             {volumeInfo.description}
                         </Typography>
@@ -83,6 +78,7 @@ export class AudioBookDetail extends Component<
                         onClick={this.selectVolumeInfo}
                         size="small"
                         color="primary"
+                        data-test="select-volume-button"
                     >
                         select
                     </Button>

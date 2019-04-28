@@ -13,6 +13,7 @@ describe("<BookSearch />", () => {
     let setNextStepDisabled: () => void;
     let goToNextStep: () => void;
     let searchBooks: (query: string) => void;
+    let selectVolume: (volume: VolumeInfo) => void;
 
     let volumes: VolumeInfo[] = [
         { id: '1' }
@@ -21,10 +22,13 @@ describe("<BookSearch />", () => {
     beforeEach(() => {
         setNextStepDisabled = jest.fn();
         searchBooks = jest.fn();
+        selectVolume = jest.fn();
+        goToNextStep = jest.fn();
 
         wrapper = mount(
             <BookSearchWrapped
                 volumes={volumes}
+                selectVolume={selectVolume}
                 setNextStepDisabled={setNextStepDisabled}
                 goToNextStep={goToNextStep}
                 searchBooks={searchBooks}
@@ -65,5 +69,11 @@ describe("<BookSearch />", () => {
         component.find(`IconButton[data-test="search-button"]`).at(0).simulate('click');
         expect(spy).toHaveBeenCalled();
         expect(searchBooks).not.toHaveBeenCalled();
+    });
+
+    it("successfully selects the appropriate volume when BookDetail is selected", () => {
+        expect(wrapper.find(BookDetail).length).toBe(1);
+        wrapper.find(`Button[data-test="select-volume-button"]`).at(0).simulate('click');
+        expect(selectVolume).toHaveBeenCalledWith(volumes[0]);
     });
 });
