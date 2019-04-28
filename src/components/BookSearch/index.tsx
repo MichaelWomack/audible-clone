@@ -11,10 +11,10 @@ import IconButton from '@material-ui/core/IconButton';
 import { VolumeInfo } from '../../model/volume';
 
 export interface BookSearchProps extends WithStyles<typeof BookSearchStyles> {
-    selectVolume?: Function;
-    goToNextStep?: Function;
+    selectVolume?: (volume: VolumeInfo) => void;
+    goToNextStep?: () => void;
     volumes?: VolumeInfo[];
-    searchBooks?: Function;
+    searchBooks?: (query: string) => void;
     setNextStepDisabled: (disabled: boolean) => void;
 }
 
@@ -74,7 +74,10 @@ export class BookSearch extends Component<BookSearchProps, BookSearchState> {
                                 fullWidth={true}
                             />
                             {
-                                <IconButton onClick={this.searchBooks}>
+                                <IconButton
+                                    onClick={this.searchBooks}
+                                    data-test="search-button"
+                                >
                                     <SearchIcon />
                                 </IconButton>}
                         </div>
