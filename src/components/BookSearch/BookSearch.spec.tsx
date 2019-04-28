@@ -2,7 +2,8 @@ import * as React from 'react';
 import { mount, ReactWrapper } from 'enzyme';
 import BookSearchWrapped from './index';
 import { BookSearch, BookSearchProps, BookSearchState } from './index';
-import { createMount } from "@material-ui/core/test-utils";
+import BookDetail from './BookDetail';
+import { VolumeInfo } from "../../model/volume";
 
 describe("<BookSearch />", () => {
 
@@ -13,11 +14,17 @@ describe("<BookSearch />", () => {
     let goToNextStep: () => void;
     let searchBooks: (query: string) => void;
 
+    let volumes: VolumeInfo[] = [
+        { id: '1' }
+    ];
+
     beforeEach(() => {
         setNextStepDisabled = jest.fn();
         searchBooks = jest.fn();
+
         wrapper = mount(
             <BookSearchWrapped
+                volumes={volumes}
                 setNextStepDisabled={setNextStepDisabled}
                 goToNextStep={goToNextStep}
                 searchBooks={searchBooks}
@@ -26,8 +33,16 @@ describe("<BookSearch />", () => {
         component = wrapper.find(BookSearch);
     });
 
+    afterEach(() => {
+        wrapper.unmount();
+    });
+
     it('renders successfully', () => {
         expect(wrapper.exists()).toBe(true);
+    });
+
+    it('renders a BookDetail component per volume', () => {
+        expect(wrapper.find(BookDetail).length).toBe(volumes.length);
     });
 
     it('performs a book search when a query is provided', () => {
