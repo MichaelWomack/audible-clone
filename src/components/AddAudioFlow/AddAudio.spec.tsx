@@ -1,37 +1,116 @@
 import * as React from 'react';
-import WrappedAddAudio, { AddAudio } from './index';
 import { mount, ReactWrapper } from 'enzyme';
-import Button from "@material-ui/core/Button/Button";
+import { MemoryRouter } from "react-router-dom";
+import WrappedAddAudioFlow, { AddAudio, AddAudioProps, AddAudioState } from './index';
+import { VolumeInfo } from "../../model/volume";
+import Root from "../Root";
+import { ReduxState } from "../../model/state";
 
+describe('<AddAudioFlow/>', () => {
 
-describe('<AddAudio/>', () => {
-    // let wrapper: ReactWrapper;
+    let wrapper: ReactWrapper<AddAudioProps, AddAudioState, AddAudio>;
+    let component: ReactWrapper<AddAudioProps, AddAudioState>;
+    let instance: AddAudio;
 
-    // beforeEach(() => {
-    //     wrapper = mount(<WrappedAddAudio/>);
-    // });
+    let clearVolumes: () => void;
+    let setVolume: (volume: VolumeInfo) => void;
+    let clearUploadStatus: () => void;
+    let isUploading: boolean;
+    let uploadComplete: boolean;
+    let uploadProgress: number;
 
-    it('renders successfully', () => {
-        // expect(wrapper.exists()).toBe(true);
+    let current: HTMLDivElement;
+
+    let selectedVolume = {
+        id: '1',
+        title: 'A Game of Thrones',
+        subtitle: 'A Song of Ice and Fire',
+        authors: ['George R.R. Martin'],
+        description: 'Book 1'
+    };
+
+    beforeEach(() => {
+        clearVolumes = jest.fn();
+        setVolume = jest.fn();
+        clearUploadStatus = jest.fn();
+        isUploading = true;
+        uploadComplete = false;
+        uploadProgress = 0;
+
+        const initialState: Partial<ReduxState> = {
+            volumes: {
+                volumes: [],
+                selectedVolume
+            }
+        };
+
+        wrapper = mount(
+            <Root initialState={initialState}>
+                <MemoryRouter>
+                    <WrappedAddAudioFlow
+                        clearVolumes={clearVolumes}
+                        setVolume={setVolume}
+                        clearUploadStatus={clearUploadStatus}
+                        isUploading={isUploading}
+                        uploadComplete={uploadComplete}
+                        uploadProgress={uploadProgress}
+                    />
+                </MemoryRouter>
+            </Root>
+        );
+        component = wrapper.find(AddAudio);
+        instance = component.instance() as AddAudio;
+
+        current = document.createElement('div');
+        current.scrollIntoView = jest.fn();
+        instance.scrollRef = { current };
     });
 
-    // it('has the necessary inputs for adding audio', () => {
-    //     const wrapperInstance = wrapper.find(AddAudio).instance() as AddAudio;
+    afterEach(() => {
+        wrapper.unmount();
+        jest.restoreAllMocks();
+    });
 
-    //     // const titleField = wrapper.find('input#title-field').first();
-    //     // titleField.simulate('change', {target: {value: 'Test', name: 'title'}});
-    //     // expect(wrapperInstance.state.audio.title).toBe('Test');
+    it('renders successfully', () => {
+        expect(wrapper.exists()).toBe(true);
+        expect(component.exists()).toBe(true);
+    });
 
-    //     // const authorField = wrapper.find('input#author-field').first();
-    //     // authorField.simulate('change', {target: {name: 'author', value: 'Test Author'}});
-    //     // expect(wrapperInstance.state.audio.author).toBe('Test Author');
+    describe('#scrollIntoView', () => {
+        it('calls scrollIntoView on the refObject current', () => {
+            const current = document.createElement('div');
+            current.scrollIntoView = jest.fn();
+            instance.scrollRef = { current };
+            instance.scrollIntoView();
+            expect(instance.scrollRef.current.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
+        });
+    });
 
-    //     const fileInput = wrapper.find('input[type="file"]').first();
-    //     expect(fileInput.exists()).toBe(true);
+    describe('#nextStep', () => {
+        it('increments the active step', () => {
+            // jest.spyOn(instance, 'scrollIntoView');
+            instance.scrollIntoView = jest.fn();
+            instance.setState({ activeStep: 0 });
+            expect(instance.state.activeStep).toBe(0);
+            instance.nextStep();
+            expect(instance.state.activeStep).toBe(1);
+        });
+    });
 
-    //     const uploadLabel = wrapper.find('label');
-    //     expect(uploadLabel.exists()).toBe(true);
+    describe('#previousStep', () => {
+        it('decrements the active step', () => {
+            instance.setState({ activeStep: 1 });
+            expect(instance.state.activeStep).toBe(1);
+            instance.previousStep();
+            expect(instance.state.activeStep).toBe(0);
+        });
+    });
 
-    //     expect(uploadLabel.find(Button).exists()).toBe(true);
-    // });
+    describe('#setNextStepDisabled', () => {
+        it('sets the state to the passed boolean value', () => {
+            expect(instance.state.nextStepDisabled).toBe(true);
+            instance.setNextStepDisabled(false);
+            expect(instance.state.nextStepDisabled).toBe(false);
+        });
+    });
 });

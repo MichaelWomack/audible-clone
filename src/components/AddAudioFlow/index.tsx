@@ -42,13 +42,18 @@ export class AddAudio extends Component<AddAudioProps, AddAudioState> {
 
     scrollRef: React.RefObject<HTMLDivElement>;
 
-    componentDidMount() {
-        this.scrollRef = React.createRef();
+    constructor(props: AddAudioProps) {
+        super(props);
+        this.scrollRef = React.createRef<HTMLDivElement>();
     }
 
-    scrollIntoView() {
-        this.scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+
+    componentDidMount() {
     }
+
+    scrollIntoView = () => {
+        this.scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+    };
 
     exitAddAudioFlow = () => {
         this.clearSelections();
