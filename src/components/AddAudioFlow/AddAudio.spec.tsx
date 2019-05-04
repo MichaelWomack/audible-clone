@@ -5,6 +5,9 @@ import WrappedAddAudioFlow, { AddAudio, AddAudioProps, AddAudioState } from './i
 import { VolumeInfo } from "../../model/volume";
 import Root from "../Root";
 import { ReduxState } from "../../model/state";
+import { BookSearch } from "../BookSearch";
+import { EditDetails } from "../EditDetails";
+import { UploadAudio } from "../UploadAudio";
 
 describe('<AddAudioFlow/>', () => {
 
@@ -74,6 +77,25 @@ describe('<AddAudioFlow/>', () => {
     it('renders successfully', () => {
         expect(wrapper.exists()).toBe(true);
         expect(component.exists()).toBe(true);
+    });
+
+    it('renders the correct components for each active step', () => {
+        expect(instance.state.activeStep).toBe(0);
+        expect(wrapper.find(BookSearch).exists()).toBe(true);
+        expect(wrapper.find(EditDetails).exists()).toBe(false);
+        expect(wrapper.find(UploadAudio).exists()).toBe(false);
+
+        instance.setState({ activeStep: 1 });
+        wrapper.update();
+        expect(wrapper.find(EditDetails).exists()).toBe(true);
+        expect(wrapper.find(BookSearch).exists()).toBe(false);
+        expect(wrapper.find(UploadAudio).exists()).toBe(false);
+
+        instance.setState( {activeStep: 2 });
+        wrapper.update();
+        expect(wrapper.find(UploadAudio).exists()).toBe(true);
+        expect(wrapper.find(BookSearch).exists()).toBe(false);
+        expect(wrapper.find(EditDetails).exists()).toBe(false);
     });
 
     describe('#scrollIntoView', () => {
