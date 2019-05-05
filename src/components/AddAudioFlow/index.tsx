@@ -47,10 +47,6 @@ export class AddAudio extends Component<AddAudioProps, AddAudioState> {
         this.scrollRef = React.createRef<HTMLDivElement>();
     }
 
-
-    componentDidMount() {
-    }
-
     scrollIntoView = () => {
         this.scrollRef.current.scrollIntoView({ behavior: 'smooth' });
     };

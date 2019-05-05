@@ -110,7 +110,6 @@ describe('<AddAudioFlow/>', () => {
 
     describe('#nextStep', () => {
         it('increments the active step', () => {
-            // jest.spyOn(instance, 'scrollIntoView');
             instance.scrollIntoView = jest.fn();
             instance.setState({ activeStep: 0 });
             expect(instance.state.activeStep).toBe(0);
