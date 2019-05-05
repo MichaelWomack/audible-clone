@@ -13,13 +13,13 @@ module.exports = {
         // "config/firebase": "<rootDir>/__mocks__/firebaseMock.js"
     },
     coverageThreshold: {
-        // './src/components/': {
-        //     branches: 40,
-        //     statements: 80,
-        // },
+         './src/components/': {
+             branches: 40,
+             statements: 70,
+         },
         './src/services/': {
             branches: 40,
-            statements: 65,
+            statements: 90,
         },
     },
 };
