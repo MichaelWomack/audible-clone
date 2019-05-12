@@ -184,7 +184,7 @@ export interface UploadTaskAction {
 
 const uploadAudioRequest = () => ({
     type: UploadTaskActionType.UPLOAD_AUDIO_REQUEST
-})
+});
 
 const setUploadTasks = (uploadTasks: storage.UploadTask[]) => ({
     type: UploadTaskActionType.SET_UPLOAD_TASKS,
@@ -245,10 +245,10 @@ const onUploadError = (error: Error&{ code: string }, audio: Audio, dispatch: Fu
             message = 'Error during upload. User not authorized';
             break;
         case 'storage/canceled': // User canceled the upload
-            message = 'Upload has been canceled.'
+            message = 'Upload has been canceled.';
             break;
         case 'storage/unknown': // Unknown error occurred, inspect error.serverResponse
-            message = 'Unknown error ocurred during upload.'
+            message = 'Unknown error ocurred during upload.';
             break;
         default:
             console.error('Upload Error: ', error);
