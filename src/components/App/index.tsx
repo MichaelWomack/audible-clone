@@ -4,12 +4,12 @@ import { connect } from "react-redux";
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider, createMuiTheme, Theme } from '@material-ui/core/styles';
-import Login from '../../containers/Login';
+import Banner from "../Banner";
+import Login from '../Login';
 import Home from '../../containers/Home';
 import SignUp from '../SignUp'
 import ProtectedRoute from '../ProtectedRoute';
 import { authService } from '../../services';
-import Banner from "../Banner";
 import { AudioState, ReduxState, UiState, UserState } from "../../model/state";
 import NavBar from "../NavBar";
 import { Routes } from "../../config/constants";

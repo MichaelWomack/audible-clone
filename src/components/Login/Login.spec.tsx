@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { MemoryRouter } from "react-router-dom";
 import { mount, ReactWrapper } from 'enzyme';
-import LoginWrapped, { Login, LoginProps, LoginState } from './index';
-import Root from "../Root";
+import LoginWrapped, { Login, LoginProps, LoginState } from './Login';
 import { BannerType } from "../../config/constants";
 import { UiState } from "../../model/state";
 
@@ -30,7 +29,6 @@ describe('<Login />', () => {
         };
 
         wrapper = mount(
-            <Root>
                 <MemoryRouter>
                     <LoginWrapped
                         login={login}
@@ -38,7 +36,6 @@ describe('<Login />', () => {
                         ui={ui}
                     />
                 </MemoryRouter>
-            </Root>
         );
         component = wrapper.find(Login);
     });
