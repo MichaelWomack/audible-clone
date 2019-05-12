@@ -17,7 +17,6 @@ describe("<EditDetails />", () => {
                 description: '...'
             },
             setSelectedVolume: jest.fn(),
-            setNextStepDisabled: jest.fn()
         };
         wrapper = mount(
             <EditDetailsWrapped {...props} />
