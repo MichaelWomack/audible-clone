@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { mount, ReactWrapper } from 'enzyme';
-import App from './index';
+import App from './App';
 import Root from '../Root';
 import NavBar from "../NavBar";
 import Banner from '../Banner';
