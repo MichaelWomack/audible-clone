@@ -4,7 +4,7 @@ import { Component } from 'react';
 import AddAudioStyles from './AddAudioStyles';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 
-import BookSearch from '../../containers/BookSearch';
+import BookSearch from '../BookSearch';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';

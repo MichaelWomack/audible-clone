@@ -5,7 +5,7 @@ import WrappedAddAudioFlow, { AddAudio, AddAudioProps, AddAudioState } from './A
 import { VolumeInfo } from "../../model/volume";
 import Root from "../Root";
 import { ReduxState } from "../../model/state";
-import { BookSearch } from "../BookSearch";
+import { BookSearch } from "../BookSearch/BookSearch";
 import { EditDetails } from "../EditDetails";
 import { UploadAudio } from "../UploadAudio";
 

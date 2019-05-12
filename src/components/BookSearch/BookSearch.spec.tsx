@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { mount, ReactWrapper } from 'enzyme';
-import BookSearchWrapped from './index';
-import { BookSearch, BookSearchProps, BookSearchState } from './index';
+import BookSearchWrapped, { BookSearch, BookSearchProps, BookSearchState } from './BookSearch';
 import BookDetail from './BookDetail';
 import { VolumeInfo } from "../../model/volume";
 
