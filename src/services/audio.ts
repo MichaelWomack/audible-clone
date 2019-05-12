@@ -5,7 +5,7 @@ import { Collection } from '../config/constants';
 
 export class AudioService {
 
-    constructor(private readonly collection: Partial<firestore.CollectionReference>) {
+    constructor(private readonly collection: firestore.CollectionReference | any) {
         this.collection = collection;
     }
     

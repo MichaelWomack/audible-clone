@@ -3,7 +3,7 @@ import { storage } from 'firebase';
 
 export class StorageHelper {
 
-    constructor(private readonly reference: Partial<storage.Reference>) {
+    constructor(private readonly reference: storage.Reference | any) {
         this.reference = reference;
     }
 

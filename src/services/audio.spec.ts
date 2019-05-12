@@ -4,7 +4,7 @@ import { firestore } from "firebase";
 
 describe('AudioService', () => {
     let audioService: AudioService;
-    let audioCollection: Partial<firestore.CollectionReference>;
+    let audioCollection: any;
 
     it('is created successfully', () => {
         audioService = new AudioService({});

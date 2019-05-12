@@ -5,7 +5,7 @@ import { SerializableUser } from "../model/user";
 
 export class UserService {
 
-    constructor(private readonly collection: Partial<firestore.CollectionReference>) {
+    constructor(private readonly collection: firestore.CollectionReference | any) {
         this.collection = collection;
     }
 
