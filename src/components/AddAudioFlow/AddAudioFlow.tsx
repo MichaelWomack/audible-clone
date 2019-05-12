@@ -2,21 +2,21 @@ import * as React from 'react';
 import { Component } from 'react';
 
 import AddAudioStyles from './AddAudioStyles';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
-
-import BookSearch from '../BookSearch';
-import EditDetails from '../EditDetails';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import UploadAudio from '../../containers/UploadAudio';
 import ArrowBackIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForwardIos';
 import ClearSharpIcon from '@material-ui/icons/ClearSharp';
 import DoneAll from '@material-ui/icons/DoneAllOutlined';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { VolumeInfo } from '../../model/volume';
 import IconButton from '@material-ui/core/IconButton';
+
+import BookSearch from '../BookSearch';
+import EditDetails from '../EditDetails';
+import UploadAudio from '../UploadAudio';
+import { VolumeInfo } from '../../model/volume';
 
 export interface AddAudioProps extends WithStyles<typeof AddAudioStyles>, RouteComponentProps {
     clearVolumes: () => void;
