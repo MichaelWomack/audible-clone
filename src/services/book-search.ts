@@ -3,7 +3,7 @@ import { functions } from 'firebase';
 
 export class BookSearchService {
 
-    constructor(private readonly functions: Partial<functions.Functions>) {
+    constructor(private readonly functions: functions.Functions | any) {
         this.functions = functions;
     }
 

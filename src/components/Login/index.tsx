@@ -15,7 +15,6 @@ import { FormUtils } from "../../utils/FormUtils";
 import ValidationTextField from "../ValidationTextField";
 
 export interface LoginProps extends WithStyles<typeof LoginStyles>, RouteComponentProps {
-    user: firebase.User;
     ui: UiState;
     login: (email: string, password: string, callback: Function) => void;
     loginWithAuthProvider: (authProvider: auth.AuthProvider, callback: Function) => void
@@ -98,19 +97,29 @@ export class Login extends Component<LoginProps, LoginState> {
                                 size="large"
                                 onClick={this.login}
                                 fullWidth={true}
+                                data-test="login-button"
                             >
                                 login
                             </Button>
                         </div>
                         <Typography variant="subtitle2">login with provider</Typography>
                         <div className={classes.buttonRow}>
-                            <IconButton onClick={this.loginWithGoogle}>
+                            <IconButton
+                                onClick={this.loginWithGoogle}
+                                data-test="login-with-google"
+                            >
                                 <GoogleIcon/>
                             </IconButton>
-                            <IconButton onClick={this.loginWithTwitter}>
+                            <IconButton
+                                onClick={this.loginWithTwitter}
+                                data-test="login-with-twitter"
+                            >
                                 <TwitterIcon/>
                             </IconButton>
-                            <IconButton onClick={this.loginWithFacebook}>
+                            <IconButton
+                                onClick={this.loginWithFacebook}
+                                data-test="login-with-facebook"
+                            >
                                 <FacebookIcon/>
                             </IconButton>
                         </div>

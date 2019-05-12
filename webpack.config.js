@@ -35,36 +35,6 @@ module.exports = (env, argv) => {
                     test: /\.(png|svg|jpg|gif)$/,
                     use: 'file-loader',
                 },
-                {
-                    test: /\.(sa|sc|c)ss$/,
-                    exclude: /\.d.ts$/,
-                    use: [
-                        {
-                            loader:
-                                env.NODE_ENV === 'production'
-                                    ? MiniCssExtractPlugin.loader
-                                    : 'style-loader',
-                        },
-                        {
-                            loader: 'css-loader',
-                            options: {
-                                modules: true,
-                                localIdentName:
-                                    '[name]_[local]_[hash:base64:5]',
-                            },
-                        },
-                        {
-                            loader: 'sass-loader',
-                            options: {
-                                modules: true,
-                            },
-                        },
-                        {
-                            loader: 'typed-css-modules-loader',
-                            options: { camelCase: true, noEmit: true },
-                        },
-                    ],
-                },
             ],
         },
         plugins: [

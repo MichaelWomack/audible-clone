@@ -1,37 +1,82 @@
 import * as React from 'react';
+import { MemoryRouter } from "react-router-dom";
 import { mount, ReactWrapper } from 'enzyme';
-import { MemoryRouter } from 'react-router-dom';
-import WrappedLogin, { Login, LoginProps, LoginState } from './index';
+import LoginWrapped, { Login, LoginProps, LoginState } from './index';
+import Root from "../Root";
+import { BannerType } from "../../config/constants";
+import { UiState } from "../../model/state";
+
 
 describe('<Login />', () => {
-    let wrapper: ReactWrapper;
-    // beforeEach(() => {
-    //     wrapper = mount(
-    //         <MemoryRouter>
-    //             <WrappedLogin user={null}/>
-    //         </MemoryRouter>,
-    //     );
-    // });
+    let wrapper: ReactWrapper<LoginProps, LoginState, Login>;
+    let component: ReactWrapper<LoginProps, LoginState>;
 
-    it('should render successfully', () => {
-        // expect(wrapper).toBeTruthy();
+    let login: jest.Mock<(email: string, password: string, callback: Function) => void>;
+    let loginWithAuthProvider: jest.Mock<(provider: firebase.auth.AuthProvider, callback: Function) => void>;
+    let ui: UiState;
+
+    beforeEach(() => {
+        login = jest.fn();
+        loginWithAuthProvider = jest.fn();
+        ui = {
+            isLoading: false,
+            snackbarMessage: '',
+            snackbarOpen: false,
+            themeOptions: null,
+            error: null,
+            bannerOpen: false,
+            bannerType: BannerType.INFO,
+            bannerMessage: ''
+        };
+
+        wrapper = mount(
+            <Root>
+                <MemoryRouter>
+                    <LoginWrapped
+                        login={login}
+                        loginWithAuthProvider={loginWithAuthProvider}
+                        ui={ui}
+                    />
+                </MemoryRouter>
+            </Root>
+        );
+        component = wrapper.find(Login);
     });
 
-    // it('should call login() successfully', () => {
-    //     const login = wrapper.find(Login);
-    //     const emailInput = login.find('input[id="email"]');
-    //     const passwordInput = login.find('input[id="password"]');
-        
-    //     expect(emailInput.length).toBe(1);
-    //     expect(passwordInput.length).toBe(1);
+    it('renders successfully', () => {
+        expect(wrapper.exists()).toBe(true);
+    });
 
-    //     emailInput.simulate('change', {
-    //         target: { value: 'test@test.com', id: 'email' },
-    //     });
-    //     passwordInput.simulate('change', {
-    //         target: { value: 'test', id: 'password' },
-    //     });
-    //     const instance = login.instance() as Login;
-    //     instance.login();
-    // });
+    it('completes basic email/password login successfully', () => {
+        const emailInput = wrapper.find('input[id="email"]');
+        expect(emailInput.length).toBe(1);
+
+        const passwordInput = wrapper.find('input[id="password"]');
+        expect(passwordInput.length).toBe(1);
+
+        const email = 'test@test.com';
+        const password = 'test';
+        emailInput.simulate('change', { target: { value: email, id: 'email' } });
+        passwordInput.simulate('change', { target: { value: password, id: 'password' } });
+        wrapper.find(`Button[data-test="login-button"]`).simulate('click');
+
+        expect(login).toHaveBeenCalled();
+        expect(login.mock.calls[0][0]).toEqual(email);
+        expect(login.mock.calls[0][1]).toEqual(password);
+    });
+
+    it('calls Google auth provider login successfully', () => {
+        wrapper.find(`IconButton[data-test="login-with-google"]`).simulate('click');
+        expect(loginWithAuthProvider).toHaveBeenCalled();
+    });
+
+    it('calls Facebook auth provider login successfully', () => {
+        wrapper.find(`IconButton[data-test="login-with-facebook"]`).simulate('click');
+        expect(loginWithAuthProvider).toHaveBeenCalled();
+    });
+
+    it('calls Twitter auth provider login successfully', () => {
+        wrapper.find(`IconButton[data-test="login-with-twitter"]`).simulate('click');
+        expect(loginWithAuthProvider).toHaveBeenCalled();
+    });
 });

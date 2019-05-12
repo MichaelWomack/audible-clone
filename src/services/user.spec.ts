@@ -16,7 +16,7 @@ describe("UserService", () => {
             };
 
             const userService = new UserService(collectionRef);
-            const existsSpy = jest.spyOn(userService, 'userExists').mockImplementation(() => false);
+            const existsSpy = jest.spyOn(userService, 'userExists').mockImplementation(() => Promise.resolve(false));
             const document = await userService.addUser(user);
             expect(document.id).toEqual(documentId);
             expect(existsSpy).toHaveBeenCalledWith(user.email);
@@ -27,7 +27,7 @@ describe("UserService", () => {
         it('throws an error when the user already exists', async () => {
             const collectionRef = {};
             const userService = new UserService(collectionRef);
-            const existsSpy = jest.spyOn(userService, 'userExists').mockImplementation(() => true);
+            const existsSpy = jest.spyOn(userService, 'userExists').mockImplementation(() => Promise.resolve(true));
             await expect(userService.addUser(user)).rejects.toThrow(`User ${user.email} already exists!`);
             expect(existsSpy).toHaveBeenCalledWith(user.email);
         });

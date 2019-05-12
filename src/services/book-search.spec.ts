@@ -1,4 +1,5 @@
 import { BookSearchService } from "./book-search";
+import { functions } from "firebase";
 
 describe('BookSearchService', () => {
 

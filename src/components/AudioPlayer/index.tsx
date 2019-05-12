@@ -239,6 +239,7 @@ export class AudioPlayer extends Component<AudioPlayerProps, AudioPlayerState> {
                                 <IconButton
                                     color="inherit"
                                     onClick={this.togglePlaying}
+                                    data-test="toggle-playing"
                                 >
                                     {player.isPlaying ? (
                                         <PauseSharp />

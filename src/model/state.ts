@@ -3,7 +3,7 @@ import { firestore, storage } from "firebase";
 import { VolumeInfo } from "./volume";
 import { ThemeOptions } from "@material-ui/core/styles/createMuiTheme";
 import { BannerType } from "../config/constants";
-import { SerializableUser, UserSettings } from "./user";
+import { UserSettings } from "./user";
 
 
 export interface AudioState {

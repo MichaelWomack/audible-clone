@@ -35,7 +35,6 @@ export interface DispatchProps {
     toggleTheme: () => void;
     closeBanner: () => void;
     applyTheme: () => void;
-    setAudioFilter: (filter: AudioLibraryFilter) => void;
 }
 
 export interface HomeProps extends WithStyles<typeof HomeStyles>, RouteComponentProps, StateProps, DispatchProps {}
@@ -65,7 +64,6 @@ export class Home extends Component<HomeProps, {}> {
             changePassword,
             toggleTheme,
             applyTheme,
-            setAudioFilter,
         } = this.props;
         const selectedAudioId = player.audio ? player.audio.id : null;
         return (
@@ -96,8 +94,6 @@ export class Home extends Component<HomeProps, {}> {
                                     pauseAudio={pauseAudio}
                                     isPlaying={player.isPlaying}
                                     selectedAudioId={selectedAudioId}
-                                    setAudioFilter={setAudioFilter}
-                                    filter={audio.filter}
                                 /> : null
                         )}
                     />
