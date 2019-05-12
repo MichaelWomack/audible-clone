@@ -6,7 +6,7 @@ import AddIcon from '@material-ui/icons/Add';
 import Snackbar from '@material-ui/core/Snackbar';
 import Slide from '@material-ui/core/Slide';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
-import AudioPlayer from '../../containers/AudioPlayer';
+import AudioPlayer from '../AudioPlayer';
 import AddAudioFlow from '../AddAudioFlow';
 import Settings from "../Settings";
 import AudioList from '../AudioList';

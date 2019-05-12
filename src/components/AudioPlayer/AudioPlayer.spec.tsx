@@ -1,9 +1,8 @@
 import * as React from 'react';
 import PlayIcon from '@material-ui/icons/PlayArrowSharp';
 import PauseIcon from '@material-ui/icons/PauseSharp';
-import AudioPlayerWrapped from './index';
-import { AudioPlayer, AudioPlayerProps, AudioPlayerState } from './index';
-import { Audio, AudioBook } from '../../model/audio';
+import AudioPlayerWrapped, { AudioPlayer, AudioPlayerProps, AudioPlayerState } from './AudioPlayer';
+import { Audio } from '../../model/audio';
 import { mount, ReactWrapper } from 'enzyme';
 import { PlayerState } from "../../model/state";
 
