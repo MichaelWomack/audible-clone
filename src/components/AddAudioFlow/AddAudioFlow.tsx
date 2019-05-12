@@ -5,11 +5,11 @@ import AddAudioStyles from './AddAudioStyles';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 
 import BookSearch from '../BookSearch';
+import EditDetails from '../EditDetails';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import UploadAudio from '../../containers/UploadAudio';
-import EditDetails from '../../containers/EditDetails';
 import ArrowBackIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForwardIos';
 import ClearSharpIcon from '@material-ui/icons/ClearSharp';

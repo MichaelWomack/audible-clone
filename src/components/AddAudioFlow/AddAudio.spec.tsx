@@ -6,7 +6,7 @@ import { VolumeInfo } from "../../model/volume";
 import Root from "../Root";
 import { ReduxState } from "../../model/state";
 import { BookSearch } from "../BookSearch/BookSearch";
-import { EditDetails } from "../EditDetails";
+import { EditDetails } from "../EditDetails/EditDetails";
 import { UploadAudio } from "../UploadAudio";
 
 describe('<AddAudioFlow/>', () => {
