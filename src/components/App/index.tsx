@@ -6,7 +6,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider, createMuiTheme, Theme } from '@material-ui/core/styles';
 import Login from '../../containers/Login';
 import Home from '../../containers/Home';
-import SignUp from '../../containers/SignUp';
+import SignUp from '../SignUp'
 import ProtectedRoute from '../ProtectedRoute';
 import { authService } from '../../services';
 import Banner from "../Banner";
