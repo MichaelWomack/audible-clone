@@ -8,7 +8,6 @@ import { VolumeInfo } from '../../model/volume';
 export interface EditDetailsProps extends WithStyles<typeof EditDetailsStyles> {
     volume: VolumeInfo;
     setSelectedVolume: Function;
-    setNextStepDisabled: (disabled: boolean) => void;
 }
 
 export interface EditDetailsState {
