@@ -1,7 +1,7 @@
 import Home, { StateProps, DispatchProps } from '../components/Home';
-import { AudioBook, Audio, AudioLibraryFilter } from '../model/audio';
+import { AudioBook, Audio } from '../model/audio';
 import { togglePlaying, setAudio, pauseAudio } from '../store/actions/AudioPlayer';
-import { fetchUserAudio, updateAudio, deleteAudio, setAudioLibraryFilter } from '../store/actions/Audio';
+import { fetchUserAudio, updateAudio, deleteAudio } from '../store/actions/Audio';
 import { connect } from 'react-redux';
 import { ReduxState } from '../model/state';
 import { applyUserThemePreferences, changePassword, logout } from '../store/actions/User';
@@ -28,8 +28,7 @@ export const mapDispatchToProps = (dispatch: Function): DispatchProps => {
         changePassword: (password: string) => dispatch(changePassword(password)),
         toggleTheme: () => dispatch(uiToggleTheme()),
         closeBanner: () => dispatch(uiHideBanner(null)),
-        applyTheme: () => dispatch(applyUserThemePreferences()),
-        setAudioFilter: (filter: AudioLibraryFilter) => dispatch(setAudioLibraryFilter(filter))
+        applyTheme: () => dispatch(applyUserThemePreferences())
     }
 };
 

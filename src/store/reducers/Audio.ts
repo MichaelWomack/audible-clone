@@ -5,13 +5,11 @@ import {
     UploadTaskActionType,
     AudioCrudAction,
     AudioCrudActionType,
-    AudioFilterActionType,
-    AudioFilterAction
 } from '../actions/Audio';
 import { Audio, AudioMap, AudioLibraryFilter } from '../../model/audio';
 import { storage } from 'firebase';
 
-type AudioAction = FetchAudioAction | UploadTaskAction | AudioCrudAction | AudioFilterAction;
+type AudioAction = FetchAudioAction | UploadTaskAction | AudioCrudAction;
 
 const defaultState = {
     library: {} as AudioMap,
@@ -138,12 +136,6 @@ export const audio = (state = defaultState, action: AudioAction) => {
                 uploadTasks: null as storage.UploadTask[],
                 totalBytesUploaded: 0,
                 totalBytesToUpload: 0,
-            };
-        /** LIBRARY FILTER ACTIONS */
-        case AudioFilterActionType.SET_AUDIO_LIBRARY_FILTER:
-            return {
-                ...state,
-                filter: action.filter
             };
         default:
             return state;

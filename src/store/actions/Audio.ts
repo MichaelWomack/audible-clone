@@ -349,19 +349,3 @@ export const uploadAudio = (audio: Audio, files: File[]) => {
         });
     }
 };
-
-
-/******** LIBRARY ************/
-export enum AudioFilterActionType {
-    SET_AUDIO_LIBRARY_FILTER = 'SET_AUDIO_LIBRARY_FILTER',
-}
-
-export interface AudioFilterAction {
-    type: AudioFilterActionType,
-    filter: AudioFilterAction
-}
-
-export const setAudioLibraryFilter = (filter: AudioLibraryFilter) => ({
-    type: AudioFilterActionType.SET_AUDIO_LIBRARY_FILTER,
-    filter
-});
