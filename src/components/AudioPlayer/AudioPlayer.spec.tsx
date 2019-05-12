@@ -2,9 +2,10 @@ import * as React from 'react';
 import PlayIcon from '@material-ui/icons/PlayArrowSharp';
 import PauseIcon from '@material-ui/icons/PauseSharp';
 import AudioPlayerWrapped, { AudioPlayer, AudioPlayerProps, AudioPlayerState } from './AudioPlayer';
+import { mapStateToProps } from './index';
 import { Audio } from '../../model/audio';
 import { mount, ReactWrapper } from 'enzyme';
-import { PlayerState } from "../../model/state";
+import { PlayerState, ReduxState } from "../../model/state";
 
 describe('<AudioPlayer/>', () => {
     let wrapper: ReactWrapper<AudioPlayerProps, AudioPlayerState>;
@@ -61,24 +62,25 @@ describe('<AudioPlayer/>', () => {
             sleepTimer: null
         };
 
-        getComponent = () => <AudioPlayerWrapped
-            audio={audio}
-            togglePlaying={togglePlaying}
-            playAudio={playAudio}
-            pauseAudio={pauseAudio}
-            showPlayer={showPlayer}
-            hidePlayer={hidePlayer}
-            nextTrack={nextTrack}
-            previousTrack={previousTrack}
-            setTrack={setTrack}
-            setPlaybackSpeed={setPlaybackSpeed}
-            setSleepTimer={setSleepTimer}
-            clearSleepTimer={clearSleepTimer}
-            openFullscreen={openFullscreen}
-            closeFullscreen={closeFullscreen}
-            updateAudio={updateAudio}
-            player={player}
-        />;
+        getComponent = () =>
+            <AudioPlayerWrapped
+                audio={audio}
+                togglePlaying={togglePlaying}
+                playAudio={playAudio}
+                pauseAudio={pauseAudio}
+                showPlayer={showPlayer}
+                hidePlayer={hidePlayer}
+                nextTrack={nextTrack}
+                previousTrack={previousTrack}
+                setTrack={setTrack}
+                setPlaybackSpeed={setPlaybackSpeed}
+                setSleepTimer={setSleepTimer}
+                clearSleepTimer={clearSleepTimer}
+                openFullscreen={openFullscreen}
+                closeFullscreen={closeFullscreen}
+                updateAudio={updateAudio}
+                player={player}
+            />;
 
         wrapper = mount(getComponent());
         component = wrapper.find(AudioPlayer);
@@ -112,5 +114,25 @@ describe('<AudioPlayer/>', () => {
         expect(wrapper.find(PauseIcon).length).toBe(1);
         wrapper.find(`IconButton[data-test="toggle-playing"]`).simulate('click');
         expect(pauseAudio).toHaveBeenCalled();
+    });
+
+    describe('#mapStateToProps', () => {
+        it('assigns the necessary items from state', () => {
+            const state: ReduxState = {
+                player: {
+                    isPlaying: true,
+                    isShowing: true,
+                    fullscreen: true,
+                    audio: {},
+                    speed: 0,
+                    sleepTimer: null
+                }
+            };
+            const props = mapStateToProps(state);
+            expect(props.isPlaying).toBe(true);
+            expect(props.isShowing).toBe(true);
+            expect(props.fullscreen).toBe(true);
+            expect(props.audio).toEqual({});
+        });
     });
 });
