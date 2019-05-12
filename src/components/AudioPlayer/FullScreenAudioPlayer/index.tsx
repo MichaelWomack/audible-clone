@@ -25,7 +25,7 @@ function Transition(props: any) {
     return <Slide direction="left" unmountOnExit {...props} />;
 }
 
-interface FullScreenAudioPlayerProps extends WithStyles<typeof FullScreenAudioPlayerStyles> {
+export interface FullScreenAudioPlayerProps extends WithStyles<typeof FullScreenAudioPlayerStyles> {
     onClose: () => void;
     onOpen: () => void;
     nextTrack: () => void;
@@ -47,7 +47,7 @@ interface FullScreenAudioPlayerProps extends WithStyles<typeof FullScreenAudioPl
     audioRef: RefObject<HTMLAudioElement>;
 }
 
-class FullScreenAudioPlayer extends Component<FullScreenAudioPlayerProps, {}> {
+export class FullScreenAudioPlayer extends Component<FullScreenAudioPlayerProps, {}> {
 
     displayTimeRemaining() {
         const { current: { currentTime, duration } } = this.props.audioRef;
