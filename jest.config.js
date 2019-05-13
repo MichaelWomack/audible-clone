@@ -14,12 +14,12 @@ module.exports = {
     },
     coverageThreshold: {
          './src/components/': {
-             branches: 40,
-             statements: 70,
+             branches: 49,
+             statements: 75,
          },
         './src/services/': {
-            branches: 40,
-            statements: 90,
+            branches: 90,
+            statements: 95,
         },
     },
 };

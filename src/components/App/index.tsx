@@ -1,79 +1,8 @@
-import * as React from 'react';
-import { Component, Fragment } from 'react';
-import { connect } from "react-redux";
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { MuiThemeProvider, createMuiTheme, Theme } from '@material-ui/core/styles';
-import Login from '../../containers/Login';
-import Home from '../../containers/Home';
-import SignUp from '../../containers/SignUp';
-import ProtectedRoute from '../ProtectedRoute';
-import { authService } from '../../services';
-import Banner from "../Banner";
-import { AudioState, ReduxState, UiState, UserState } from "../../model/state";
-import NavBar from "../NavBar";
-import { Routes } from "../../config/constants";
-import { logout, setUser } from "../../store/actions/User";
-import { uiHideBanner } from "../../store/actions/Ui";
-
-export interface StateProps {
-    userState: UserState;
-    ui: UiState;
-    audio: AudioState;
-}
-
-export interface DispatchProps {
-    setUser: (user: firebase.User) => void;
-    logout: () => void;
-    closeBanner: () => void;
-}
-
-export interface AppProps extends StateProps, DispatchProps {}
-
-class App extends Component<AppProps, {}> {
-
-    componentDidMount() {
-        authService.getAuth().onAuthStateChanged((user: firebase.User) => {
-            const partialUser = { ...user };
-            delete partialUser.providerData;
-            this.props.setUser(user);
-        });
-    }
-
-    render() {
-        const { userState: { user }, ui, audio, logout, closeBanner } = this.props;
-        const theme: Theme = createMuiTheme(ui.themeOptions);
-        return (
-            <MuiThemeProvider theme={theme}>
-                <Router>
-                    <CssBaseline>
-                        <Fragment>
-                            <NavBar
-                                logout={logout}
-                                isLoading={ui.isLoading}
-                                isUploading={audio.isUploading}
-                                uploadProgress={audio.uploadProgress}
-                                user={user}
-                            />
-                            <Banner
-                                variant={ui.bannerType}
-                                open={ui.bannerOpen}
-                                message={ui.bannerMessage}
-                                onClose={closeBanner}
-                            />
-                            <Switch>
-                                <Route path={Routes.LOGIN} component={Login}/>
-                                <Route path={Routes.SIGNUP} component={SignUp}/>
-                                <ProtectedRoute path={Routes.HOME} user={user} component={Home}/>
-                                <Redirect from="/" to={Routes.HOME}/>
-                            </Switch>
-                        </Fragment>
-                    </CssBaseline>
-                </Router>
-            </MuiThemeProvider>
-        );
-    }
-}
+import App, { StateProps, DispatchProps } from './App';
+import { ReduxState } from '../../model/state';
+import { connect } from 'react-redux';
+import { logout, setUser } from '../../store/actions/User';
+import { uiHideBanner } from '../../store/actions/Ui';
 
 const mapStateToProps = (state: ReduxState): StateProps => ({
     userState: state.user,

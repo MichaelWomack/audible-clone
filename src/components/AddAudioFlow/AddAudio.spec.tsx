@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { mount, ReactWrapper } from 'enzyme';
 import { MemoryRouter } from "react-router-dom";
-import WrappedAddAudioFlow, { AddAudio, AddAudioProps, AddAudioState } from './index';
+import WrappedAddAudioFlow, { AddAudio, AddAudioProps, AddAudioState } from './AddAudioFlow';
 import { VolumeInfo } from "../../model/volume";
 import Root from "../Root";
 import { ReduxState } from "../../model/state";
-import { BookSearch } from "../BookSearch";
-import { EditDetails } from "../EditDetails";
-import { UploadAudio } from "../UploadAudio";
+import { BookSearch } from "../BookSearch/BookSearch";
+import { EditDetails } from "../EditDetails/EditDetails";
+import { UploadAudio } from "../UploadAudio/UploadAudio";
 
 describe('<AddAudioFlow/>', () => {
 

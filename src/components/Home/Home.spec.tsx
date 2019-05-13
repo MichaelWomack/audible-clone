@@ -1,5 +1,5 @@
 import * as React from 'react';
-import HomeWrapped, {HomeProps, Home} from './index';
+import HomeWrapped, {HomeProps, Home} from './Home';
 import { MemoryRouter } from 'react-router-dom';
 import { mount, ReactWrapper } from 'enzyme';
 
